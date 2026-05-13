@@ -145,13 +145,14 @@ body {
 }
 
 .branch-button:hover {
-  filter: brightness(1.1);
-  transform: scale(1.02);
-  box-shadow: 0 4px 15px rgba(24, 144, 255, 0.3);
+  filter: brightness(1.08);
+  transform: translateY(1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .branch-button:active {
-  transform: scale(0.98);
+  transform: translateY(2px);
+  filter: brightness(0.96);
 }
 
 .back-button {
@@ -168,9 +169,20 @@ body {
   gap: 6px;
 }
 
+.back-button {
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
 .back-button:hover {
   background: rgba(255, 255, 255, 0.1);
   color: white;
+  transform: translateY(1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.back-button:active {
+  transform: translateY(2px);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 @keyframes fadeIn {
@@ -319,7 +331,7 @@ body {
 
 /* 隨ｬ2螻､縺九ｉ隨ｬ3螻､・亥ｭ宣・岼・峨∈縺ｮ繧ｳ繝阪け繧ｿ縺ｯ髟ｷ繧√↓險ｭ螳・*/
 .visual-flow-node .visual-flow-connector {
-  height: 60px;
+  height: 48px;
 }
 
 /* 隨ｬ1螻､縺ｮ縲悟女髮ｻ繧ｹ繧ｿ繝ｼ繝医阪・30px縺ｧ讓ｪ邱壹↓謗･邯・*/
@@ -526,9 +538,14 @@ body {
 }
 
 .outgoing-memo-save-button:hover:not(:disabled) {
-    filter: brightness(1.2);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+    filter: brightness(1.1);
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(255, 77, 77, 0.25);
+}
+
+.outgoing-memo-save-button:active:not(:disabled) {
+    transform: translateY(2px);
+    filter: brightness(0.95);
 }
 
 .outgoing-memo-save-button:disabled {
@@ -560,6 +577,13 @@ body {
 
 .outgoing-memo-history-button:hover {
     background: rgba(255, 255, 255, 0.2);
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.outgoing-memo-history-button:active {
+    transform: translateY(2px);
+    background: rgba(255, 255, 255, 0.15);
 }
 
 /* ===========================================
@@ -620,6 +644,11 @@ body {
     background: rgba(255, 255, 255, 0.1);
     color: white;
     border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(1px);
+}
+
+.node-sidebar-close:active {
+    transform: translateY(2px);
 }
 
 .node-sidebar-body {
