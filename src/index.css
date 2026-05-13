@@ -113,7 +113,10 @@ body {
 
 .point-arrow {
   color: var(--primary);
-  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 6px;
+  flex-shrink: 0;
 }
 
 .point-text {
@@ -155,11 +158,14 @@ body {
   background: transparent;
   color: var(--text-secondary);
   border: 1px solid var(--glass-border);
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 8px;
   margin-bottom: 24px;
   cursor: pointer;
   font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .back-button:hover {
@@ -185,8 +191,14 @@ body {
 }
 
 .final-icon {
-  font-size: 4rem;
   margin-bottom: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(64, 169, 255, 0.1);
   animation: pulse 2s infinite;
 }
 
@@ -475,7 +487,9 @@ body {
 }
 
 .outgoing-memo-icon {
-    font-size: 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    color: var(--primary);
 }
 
 .outgoing-memo-inputs {
@@ -546,10 +560,10 @@ body {
 
 .outgoing-memo-history-panel {
     position: fixed;
-    top: 100px;
     right: 24px;
-    width: min(360px, calc(100vw - 48px));
-    max-height: calc(100vh - 200px);
+    bottom: 96px;
+    width: min(380px, calc(100vw - 48px));
+    max-height: calc(100vh - 180px);
     background: rgba(26, 26, 46, 0.98);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -587,9 +601,19 @@ body {
     background: transparent;
     border: none;
     color: var(--text-secondary);
-    font-size: 1.5rem;
     cursor: pointer;
     line-height: 1;
+    padding: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.history-header .close-button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
 }
 
 .history-list {

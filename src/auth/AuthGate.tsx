@@ -6,6 +6,7 @@ import {
 } from '@azure/msal-react';
 import { loginRequest } from './msalConfig';
 import { useProfile } from './useProfile';
+import { LogoutIcon } from '../components/Icons';
 import './authGate.css'; // sign-in screen styles
 
 /**
@@ -137,8 +138,14 @@ const UserBar: React.FC = () => {
                     <span className="auth-userbar-sub">{profile.department}</span>
                 )}
             </div>
-            <button onClick={handleLogout} className="auth-userbar-logout" type="button">
-                サインアウト
+            <button
+                onClick={handleLogout}
+                className="auth-userbar-logout"
+                type="button"
+                aria-label="サインアウト"
+                title="サインアウト"
+            >
+                <LogoutIcon size={16} strokeWidth={2} />
             </button>
         </div>
     );
