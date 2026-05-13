@@ -212,11 +212,14 @@ const App: React.FC = () => {
         };
 
         // 初回読み込み時のハッシュ処理
+        // 最終ノード(isFinal)はURL復元の対象外。リロードした際にいきなり結果画面が出ないように。
         const initialHash = window.location.hash.replace('#', '');
-        if (initialHash && scriptData.some(n => n.id === initialHash)) {
+        const initialNode = initialHash ? scriptData.find(n => n.id === initialHash) : null;
+        if (initialNode && !initialNode.isFinal) {
             setCurrentNodeId(initialHash);
             window.history.replaceState({ nodeId: initialHash }, '', `#${initialHash}`);
         } else {
+            setCurrentNodeId('juden');
             window.history.replaceState({ nodeId: 'juden' }, '', '#juden');
         }
 
@@ -242,7 +245,7 @@ const App: React.FC = () => {
                         <h1 className="script-text">{currentNode.text}</h1>
                         <button className="back-button" onClick={() => {
                             setCurrentNodeId('juden');
-                            setHistory([]);
+                            window.history.replaceState({ nodeId: 'juden' }, '', '#juden');
                         }}>
                             最初に戻る
                         </button>

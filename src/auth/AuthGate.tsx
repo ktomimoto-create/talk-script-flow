@@ -5,6 +5,7 @@ import {
     useMsal,
 } from '@azure/msal-react';
 import { loginRequest } from './msalConfig';
+import { useProfile } from './useProfile';
 import './authGate.css'; // sign-in screen styles
 
 /**
@@ -98,6 +99,7 @@ const SignInScreen: React.FC = () => {
 const UserBar: React.FC = () => {
     const { instance, accounts } = useMsal();
     const account = accounts[0];
+    const { profile } = useProfile();
 
     const handleLogout = () => {
         instance.logoutRedirect().catch((e) => {
@@ -108,12 +110,33 @@ const UserBar: React.FC = () => {
 
     if (!account) return null;
 
-    const initial = (account.name || account.username || '?').trim().charAt(0).toUpperCase();
+    const displayName = profile?.display_name || account.name || account.username || '';
+    const initial = (displayName || '?').trim().charAt(0).toUpperCase();
+    const avatarUrl = profile?.avatar_url || null;
 
     return (
         <div className="auth-userbar">
-            <div className="auth-userbar-avatar">{initial}</div>
-            <span className="auth-userbar-name">{account.name ?? account.username}</span>
+            <div className="auth-userbar-avatar">
+                {avatarUrl ? (
+                    <img
+                        src={avatarUrl}
+                        alt={displayName}
+                        className="auth-userbar-avatar-img"
+                        onError={(e) => {
+                            // 画像 404 などに備え、フォールバックでイニシャル表示に戻す
+                            (e.currentTarget as HTMLImageElement).style.display = 'none';
+                        }}
+                    />
+                ) : (
+                    initial
+                )}
+            </div>
+            <div className="auth-userbar-meta">
+                <span className="auth-userbar-name">{displayName}</span>
+                {profile?.department && (
+                    <span className="auth-userbar-sub">{profile.department}</span>
+                )}
+            </div>
             <button onClick={handleLogout} className="auth-userbar-logout" type="button">
                 サインアウト
             </button>
