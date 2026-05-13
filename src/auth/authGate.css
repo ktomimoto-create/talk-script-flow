@@ -1,0 +1,373 @@
+/* ====================================================
+   Auth Gate — Sign-in screen & top user bar
+   既存の Glassmorphism / dark gradient テーマに合わせる
+   ==================================================== */
+
+/* ---- フルビューポート背景 ---- */
+.auth-screen {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background:
+        radial-gradient(circle at 15% 20%, #1a1f3a 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, #0f3460 0%, transparent 50%),
+        linear-gradient(135deg, #0d1024 0%, #15182f 60%, #0a0f24 100%);
+    color: var(--text);
+    z-index: 1000;
+}
+
+/* ---- 背景のアニメ・ブロブ ---- */
+.auth-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.55;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.auth-blob-1 {
+    width: 520px;
+    height: 520px;
+    top: -160px;
+    left: -120px;
+    background: radial-gradient(circle, #4f7cff 0%, transparent 70%);
+    animation: blobFloat1 18s ease-in-out infinite;
+}
+
+.auth-blob-2 {
+    width: 460px;
+    height: 460px;
+    bottom: -140px;
+    right: -120px;
+    background: radial-gradient(circle, #7d4fff 0%, transparent 70%);
+    animation: blobFloat2 22s ease-in-out infinite;
+}
+
+.auth-blob-3 {
+    width: 360px;
+    height: 360px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, #40a9ff 0%, transparent 70%);
+    opacity: 0.25;
+    animation: blobPulse 12s ease-in-out infinite;
+}
+
+@keyframes blobFloat1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(60px, 80px) scale(1.1); }
+}
+@keyframes blobFloat2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-80px, -50px) scale(1.05); }
+}
+@keyframes blobPulse {
+    0%, 100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.35; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* ---- 細かいグリッド ---- */
+.auth-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+
+/* ---- メインカード ---- */
+.auth-card {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    background: rgba(20, 25, 50, 0.55);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 28px;
+    padding: 40px 36px 32px;
+    box-shadow:
+        0 30px 80px -20px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    animation: cardEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-card-glow {
+    position: absolute;
+    inset: -1px;
+    border-radius: 28px;
+    padding: 1px;
+    background: linear-gradient(
+        135deg,
+        rgba(79, 124, 255, 0.6) 0%,
+        rgba(255, 255, 255, 0.05) 40%,
+        rgba(125, 79, 255, 0.5) 100%
+    );
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+@keyframes cardEnter {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---- ブランド ---- */
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.auth-brand-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #4f7cff 0%, #7d4fff 100%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 8px 24px -4px rgba(79, 124, 255, 0.5);
+}
+
+.auth-brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.auth-brand-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.auth-brand-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #fff;
+    margin: 0;
+}
+
+/* ---- リード文 ---- */
+.auth-lead {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.72);
+    margin: 0 0 22px;
+}
+
+/* ---- 機能リスト ---- */
+.auth-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.auth-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.auth-features li svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: #5eead4;
+    background: rgba(94, 234, 212, 0.12);
+    border-radius: 999px;
+    padding: 2px;
+    box-sizing: content-box;
+}
+
+/* ---- サインインボタン ---- */
+.auth-signin-button {
+    width: 100%;
+    height: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 20px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    background: linear-gradient(135deg, #1f2547 0%, #161a36 100%);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-sizing: border-box;
+    line-height: 1;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.3s ease,
+        background 0.3s ease,
+        border-color 0.3s ease;
+    box-shadow:
+        0 8px 24px -8px rgba(0, 0, 0, 0.6),
+        0 0 0 0 rgba(79, 124, 255, 0);
+}
+
+.auth-signin-button:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #283063 0%, #1c2148 100%);
+    border-color: rgba(79, 124, 255, 0.5);
+    box-shadow:
+        0 16px 32px -8px rgba(0, 0, 0, 0.7),
+        0 0 32px -4px rgba(79, 124, 255, 0.45);
+}
+
+.auth-signin-button:active {
+    transform: translateY(0);
+}
+
+.auth-signin-button > span {
+    flex: 1;
+    text-align: left;
+}
+
+.auth-signin-button svg:last-child {
+    opacity: 0.7;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.auth-signin-button:hover svg:last-child {
+    transform: translateX(4px);
+    opacity: 1;
+}
+
+/* ---- フッター注釈 ---- */
+.auth-footnote {
+    margin-top: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.45);
+    width: 100%;
+    justify-content: center;
+}
+
+.auth-footnote svg {
+    flex-shrink: 0;
+}
+
+/* ---- バージョン表示 ---- */
+.auth-version {
+    position: absolute;
+    bottom: 16px;
+    right: 20px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+}
+
+/* ====================================================
+   ログイン後の右上ユーザーバー
+   ==================================================== */
+.auth-userbar {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1000;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    padding: 4px 6px 4px 4px;
+    background: rgba(20, 25, 50, 0.65);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 13px;
+    box-sizing: border-box;
+}
+
+.auth-userbar-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f7cff, #7d4fff);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: white;
+    flex-shrink: 0;
+}
+
+.auth-userbar-name {
+    font-weight: 600;
+    line-height: 1;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.auth-userbar-logout {
+    height: 28px;
+    padding: 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.auth-userbar-logout:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* ====================================================
+   小型画面対応
+   ==================================================== */
+@media (max-width: 520px) {
+    .auth-card {
+        padding: 32px 24px 24px;
+        border-radius: 24px;
+    }
+    .auth-brand-title {
+        font-size: 20px;
+    }
+    .auth-brand-icon {
+        width: 44px;
+        height: 44px;
+    }
+}

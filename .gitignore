@@ -3,3 +3,8 @@ node_portable
 dist
 .DS_Store
 *.log
+
+# 環境変数（Entra ID のクライアント ID 等を含むためコミット禁止）
+.env
+.env.local
+.env.*.local
