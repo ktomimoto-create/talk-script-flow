@@ -203,8 +203,19 @@ const App: React.FC = () => {
 
     const themeColor = useMemo(() => {
         if (currentNodeId === 'juden') return '#40a9ff';
-        const parentNode = scriptData.find(n => n.branches?.some(b => b.nextNodeId === currentNodeId));
-        return parentNode?.branches?.find(b => b.nextNodeId === currentNodeId)?.color || '#40a9ff';
+        // 主分岐から先に検索
+        for (const n of scriptData) {
+            const direct = n.branches?.find(b => b.nextNodeId === currentNodeId);
+            if (direct?.color) return direct.color;
+            // 同階層の subBranches も検索（管理会社→他部署→登録方法 のような深い枝対応）
+            for (const b of n.branches || []) {
+                const sub = b.subBranches?.find(sb => sb.nextNodeId === currentNodeId);
+                if (sub?.color) return sub.color;
+                // subBranches に色が無い場合は親 branch の色を継承
+                if (b.subBranches?.some(sb => sb.nextNodeId === currentNodeId) && b.color) return b.color;
+            }
+        }
+        return '#40a9ff';
     }, [currentNodeId]);
 
     // 初期化：popstateリスナーの登録と初期ハッシュの処理
