@@ -412,7 +412,7 @@ const App: React.FC = () => {
                     <span className="outgoing-memo-icon">
                         <PhoneIcon size={18} />
                     </span>
-                    架電メモ
+                    <span className="outgoing-memo-title-text">架電メモ</span>
                 </div>
                 <div className="outgoing-memo-inputs">
                     <div className="outgoing-memo-field">

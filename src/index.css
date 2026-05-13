@@ -493,19 +493,33 @@ body {
 }
 
 .outgoing-memo-title {
-    display: flex;
+    display: inline-flex;
+    flex-direction: row;
     align-items: center;
     gap: 8px;
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--primary);
     white-space: nowrap;
+    line-height: 1;
 }
 
 .outgoing-memo-icon {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     color: var(--primary);
+    line-height: 0;
+}
+
+.outgoing-memo-icon svg {
+    display: block;
+}
+
+.outgoing-memo-title-text {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
 }
 
 .outgoing-memo-inputs {
