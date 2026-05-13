@@ -336,7 +336,9 @@ body {
 
 /* 隨ｬ1螻､縺ｮ縲悟女髮ｻ繧ｹ繧ｿ繝ｼ繝医阪・30px縺ｧ讓ｪ邱壹↓謗･邯・*/
 .visual-flow-node.active .visual-flow-connector {
-  height: 30px;
+  /* layer1→layer2 の gap (48px) から column::before の高さ (30px) を引いた距離で
+     ちょうど横線の交点に届く */
+  height: 18px;
 }
 
 .visual-flow-column {
