@@ -54,7 +54,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
         <div className="visual-flow-map">
             {/* 第1層 */}
             <div className="visual-flow-layer">
-                <div className="visual-flow-node active" style={{ minWidth: '300px', fontSize: '1.4rem', padding: '24px' }}>
+                <div className="visual-flow-node active" style={{ minWidth: '0', width: 'min(260px, 30%)', fontSize: '1.2rem', padding: '18px 20px' }}>
                     <span className="visual-flow-node-label">受電</span>
                     <div className="visual-flow-connector"></div>
                 </div>
@@ -62,43 +62,43 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
 
             {/* 第2層および第3層 */}
             {/* 第2層および第3層 */}
-            <div className="visual-flow-layer" style={{ alignItems: 'flex-start', gap: '20px' }}>
+            <div className="visual-flow-layer" style={{ alignItems: 'flex-start', gap: '10px' }}>
                 {topLayerBranches.map((branch) => {
                     const midNode = scriptData.find(n => n.id === branch.nextNodeId);
                     return (
                         <React.Fragment key={`col-frag-${branch.nextNodeId}`}>
                             {branch.nextNodeId === 'mid-other' && (
-                                <div className="visual-flow-column spacer" style={{ width: '100px', minWidth: '100px' }}>
+                                <div className="visual-flow-column spacer" style={{ flex: '0 0 40px', minWidth: 0 }}>
                                     {/* 居住者前のスペーサー：横線のみを描画するため中身は空 */}
                                     <div className="spacer-inner"></div>
                                 </div>
                             )}
-                            <div className="visual-flow-column" style={{ 
+                            <div className="visual-flow-column" style={{
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
-                                gap: '60px', 
-                                width: 'max-content', 
-                                minWidth: '180px'
+                                gap: '40px',
+                                flex: '1 1 0',
+                                minWidth: 0
                             }}>
 
                                 {/* Layer 2 Node */}
                                 <div
                                     className="visual-flow-node"
-                                    style={{ width: '100%', padding: '16px 20px', fontSize: '1.1rem', cursor: 'default' }}
+                                    style={{ width: '100%', padding: '12px 14px', fontSize: '0.95rem', cursor: 'default' }}
                                 >
                                     <span className="visual-flow-node-label">{branch.label}</span>
                                     <div className="visual-flow-connector"></div>
                                 </div>
                                 {/* Layer 3 Nodes */}
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
                                     {midNode?.branches?.map((b) => (
                                         <div
                                             key={b.nextNodeId}
                                             className="visual-flow-node"
                                             style={{
-                                                fontSize: '0.9rem',
-                                                padding: b.subBranches ? '12px 8px' : '12px',
+                                                fontSize: '0.8rem',
+                                                padding: b.subBranches ? '10px 8px' : '10px',
                                                 width: '100%',
                                                 display: 'flex',
                                                 flexDirection: 'column',
@@ -109,10 +109,10 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                             } as React.CSSProperties}
                                             onClick={() => !b.subBranches && onSelect(b.nextNodeId)}
                                         >
-                                            <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? '#ffffff' : (b.color || '#ffffff') }}>{b.label}</div>
+                                            <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? '#ffffff' : (b.color || '#ffffff'), wordBreak: 'break-word' }}>{b.label}</div>
                                             {b.middleBox && (
                                                 <div style={{
-                                                    fontSize: '0.85rem',
+                                                    fontSize: '0.75rem',
                                                     fontWeight: 'bold',
                                                     color: b.middleBox.color || '#ffffff',
                                                     marginTop: '4px',
@@ -137,7 +137,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                                     ))}
                                                 </div>
                                             ) : b.subLabel ? (
-                                                <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>
+                                                <div style={{ fontSize: '0.7rem', opacity: 0.8, wordBreak: 'break-word' }}>
                                                     {b.subLabel}
                                                 </div>
                                             ) : null}
