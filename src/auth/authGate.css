@@ -297,7 +297,8 @@
     position: fixed;
     top: 16px;
     right: 16px;
-    z-index: 1000;
+    z-index: 1200;
+    transition: right 0.32s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -390,6 +391,11 @@
 
 .auth-userbar-logout:active {
     transform: translateY(2px);
+}
+
+/* サイドバー展開時はユーザーバーを左へずらしてサイドバーの閉じる×と被らないように */
+body.sidebar-open .auth-userbar {
+    right: calc(min(480px, 36vw) + 16px);
 }
 
 /* ====================================================
