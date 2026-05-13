@@ -545,20 +545,27 @@ body {
 }
 
 .outgoing-memo-history-panel {
-    position: absolute;
-    bottom: 100%;
-    right: 40px;
-    width: 350px;
-    max-height: 400px;
+    position: fixed;
+    top: 100px;
+    right: 24px;
+    width: min(360px, calc(100vw - 48px));
+    max-height: calc(100vh - 200px);
     background: rgba(26, 26, 46, 0.98);
     backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-bottom: none;
-    border-radius: 16px 16px 0 0;
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(64, 169, 255, 0.35);
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
-    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(64, 169, 255, 0.12);
+    animation: slideInRight 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1100;
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(24px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes slideUp {
