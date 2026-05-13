@@ -449,6 +449,8 @@ body {
 }
 
 .memo-input {
+    width: 100%;
+    box-sizing: border-box;
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid var(--glass-border);
     border-radius: 10px;
@@ -670,13 +672,51 @@ body {
 .node-sidebar-body {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 24px 20px 40px;
 }
 
 .node-sidebar-body .card {
     margin: 0;
-    max-width: none !important;
+    width: 100%;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    padding: 28px 24px;
     animation: sidebarBodyFade 0.28s ease;
+}
+
+/* サイドバー内の中身を 100% 幅基準で扱う */
+.node-sidebar-body .card .memo-section,
+.node-sidebar-body .card .points-section {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.node-sidebar-body .card .memo-section {
+    padding: 18px;
+}
+
+.node-sidebar-body .card .memo-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+.node-sidebar-body .card .memo-field.full-width {
+    grid-column: span 1;
+}
+
+.node-sidebar-body .card .script-text {
+    font-size: 1.25rem;
+    word-break: break-word;
+}
+
+.node-sidebar-body .card .branches {
+    gap: 10px;
+}
+
+.node-sidebar-body .card .branch-button {
+    padding: 14px 18px;
+    font-size: 1rem;
 }
 
 @keyframes sidebarBodyFade {
