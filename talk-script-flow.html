@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>トークスクリプト・フロー</title>
+    <!-- React & Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #40a9ff;
+            --success: #73d13d;
+            --warning: #faad14;
+            --error: #ff4d4d;
+            --bg-gradient: radial-gradient(circle at top left, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        #root {
+            width: 100%;
+            max-width: 1550px;
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            animation: fadeIn 0.4s ease-out;
+            width: 100%;
+            position: relative;
+        }
+
+        .script-text {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .sub-text {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            padding-left: 12px;
+            border-left: 3px solid var(--primary);
+            text-align: left;
+        }
+
+        .visual-flow-map {
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            overflow-x: auto;
+            min-height: 550px;
+            position: relative;
+            margin-top: 20px;
+            will-change: transform;
+        }
+
+        .visual-flow-layer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            min-width: max-content;
+        }
+
+        .visual-flow-node {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            min-width: 180px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            z-index: 2;
+        }
+
+        .visual-flow-node:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px color-mix(in srgb, var(--hover-color, var(--primary)) 25%, transparent);
+            border-color: var(--hover-color, var(--primary));
+        }
+
+        .visual-flow-node.active {
+            background: var(--primary);
+            border-color: #fff;
+        }
+
+        .visual-flow-connector {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            width: 2px;
+            height: 30px;
+            background: var(--glass-border);
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+
+        .visual-flow-node.active .visual-flow-connector {
+            height: 30px;
+        }
+
+        .visual-flow-node .visual-flow-connector {
+            height: 60px;
+        }
+
+        .visual-flow-column {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .visual-flow-column::before {
+            content: "";
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            width: 2px;
+            height: 30px;
+            background: var(--glass-border);
+        }
+
+        .visual-flow-column.spacer::before {
+            display: none;
+        }
+
+        .visual-flow-column::after {
+            content: "";
+            position: absolute;
+            top: -30px;
+            left: 0;
+            width: calc(100% + 20px);
+            height: 2px;
+            background: var(--glass-border);
+        }
+
+        .visual-flow-column:first-child::after {
+            left: 50%;
+            width: calc(50% + 20px);
+        }
+
+        .visual-flow-column:last-child::after {
+            width: 50%;
+        }
+
+        .visual-flow-column:only-child::after {
+            display: none;
+        }
+
+        .visual-flow-sub-link {
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.1);
+            padding: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+            transition: all 0.2s ease;
+            color: #ffffff;
+            border: 1px solid transparent;
+        }
+
+        .visual-flow-sub-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+        }
+
+        .branches {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .branch-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+
+        .back-button {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            align-self: flex-start;
+        }
+
+        .points-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            text-align: left;
+        }
+
+        .outgoing-memo-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid var(--glass-border);
+            padding: 12px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .outgoing-memo-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+
+        .outgoing-memo-inputs {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            max-width: 800px;
+        }
+
+        .outgoing-memo-field {
+            flex: 1;
+        }
+
+        .outgoing-memo-field .memo-input {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .outgoing-memo-save-button {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .outgoing-memo-save-button:hover:not(:disabled) {
+            filter: brightness(1.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+        }
+
+        .outgoing-memo-save-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .caller-match-badge {
+            background: var(--success);
+            color: #1a1a2e;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+            font-weight: 700;
+        }
+
+        .outgoing-memo-history-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--glass-border);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .outgoing-memo-history-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .outgoing-memo-history-panel {
+            position: absolute;
+            bottom: 100%;
+            right: 40px;
+            width: 350px;
+            max-height: 400px;
+            background: rgba(26, 26, 46, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: left;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .history-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .history-header .close-button {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .history-empty {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .history-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .history-phone {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .history-name {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .history-caller {
+            color: var(--primary);
+            margin-left: 4px;
+            font-weight: 600;
+        }
+
+        .history-item .delete-button {
+            background: rgba(255, 77, 77, 0.1);
+            color: #ff4d4d;
+            border: 1px solid rgba(255, 77, 77, 0.2);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .history-item .delete-button:hover {
+            background: #ff4d4d;
+            color: white;
+        }
+
+        .memo-section {
+            margin: 24px 0;
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            text-align: left;
+        }
+
+        .memo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .memo-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .memo-field.full-width {
+            grid-column: span 2;
+        }
+
+        .memo-input {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            width: 100%;
+        }
+
+        .memo-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useCallback, useEffect } = React;
+
+        const scriptData = [
+            // --- 第1層: 受電 ---
+            {
+                id: 'juden',
+                text: '受電',
+                subText: '受電相手を選択してください。',
+                branches: [
+                    { label: '管理会社', nextNodeId: 'mid-kanri-gaisha' },
+                    { label: '管理員', nextNodeId: 'mid-kanri-in' },
+                    { label: '協力会社', nextNodeId: 'mid-kyoryoku' },
+                    { label: '建築', nextNodeId: 'mid-kenchiku' },
+                    { label: '連動相手', nextNodeId: 'mid-tasha' },
+                    { label: '居住者', nextNodeId: 'mid-other' }
+                ]
+            },
+            // 管理会社
+            {
+                id: 'mid-kanri-gaisha',
+                text: '【管理会社】内容を選択',
+                branches: [
+                    {
+                        label: 'ディスパッチャー',
+                        nextNodeId: 'final-dis',
+                        color: '#ff4d4f',
+                        subBranches: [
+                            { label: '架電の折り返し', nextNodeId: 'bottom-kanri-dis-orikaeshi', color: '#ff4d4f' },
+                            { label: '対応結果に関する問い合わせ', nextNodeId: 'bottom-kanri-dis-confirm', color: '#ff4d4f' }
+                        ]
+                    },
+                    {
+                        label: '保守管理',
+                        nextNodeId: 'final-hoshu',
+                        color: '#40a9ff',
+                        subBranches: [
+                            { label: 'メンテナンス日の確認', nextNodeId: 'bottom-kanri-hoshu-date', color: '#40a9ff' },
+                            { label: '報告書に関する問い合わせ', nextNodeId: 'bottom-kanri-hoshu-report', color: '#40a9ff' }
+                        ]
+                    },
+                    {
+                        label: '他部署',
+                        nextNodeId: 'final-tabusho',
+                        color: '#9254de',
+                        subBranches: [
+                            { label: '不具合の通報', nextNodeId: 'bottom-kanri-tabusho-bug', color: '#9254de' },
+                            { label: '登録方法', nextNodeId: 'bottom-kanri-tabusho-register', color: '#9254de' },
+                            { label: '契約内容に関する問い合わせ', nextNodeId: 'bottom-kanri-tabusho-contract', color: '#9254de' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'bottom-kanri-dis-orikaeshi',
+                text: '架電の折り返し',
+                subText: '以下の内容を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
+                points: ['誰から連絡があったか（個人名が分かればそちらへ引き継ぎ）', '何の案件に関する折り返しか（物件名等）']
+            },
+            {
+                id: 'bottom-kanri-dis-confirm',
+                text: '対応結果に関する問い合わせ',
+                subText: '以下の状況を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
+                points: ['該当FCの確認', '対応結果を確認し回答可能であれば説明']
+            },
+            {
+                id: 'bottom-kanri-hoshu-date',
+                text: 'メンテナンス日の確認',
+                subText: '以下の内容を確認のうえ、保守管理へ引き継ぎしてください。',
+                points: ['過去の定期点検日の確認。　→FC右上の「ﾒﾝﾃﾅﾝｽ報告書一覧」・「定期ﾒﾝﾃﾅﾝｽ予定一覧」から確認する。', '定期点検予定日の確認。　→FC右上のﾒﾝﾃ予定　今月・次月の欄を確認する。指定日有無を確認する。']
+            },
+            {
+                id: 'bottom-kanri-hoshu-report',
+                text: '報告書に関する問い合わせ',
+                subText: '以下の内容を確認のうえ、保守管理へ引き継ぎしてください。',
+                points: [
+                    '定期メンテナンス報告書が送られてきていない\n→2026年4月で報告書の原紙送付が廃止されたためFリポート　アカウント作成申請を行うよう推進。\n→データでの送付を要望された場合、メールアドレスを伺い保守管理へ引き継ぐ。',
+                    '報告書の特記事項や不具合の内容を確認。\n→FC・報告書を参照して内容を伝える。\n見積書の再送付要望であればトータル事業部へ引き継ぐ。',
+                    'メンテナンス作業の対応時間を確認\n→FC[ｱﾗｰﾑ一覧]　の保守開始・終了ログの時間を伝える。'
+                ]
+            },
+            {
+                id: 'bottom-kanri-tabusho-bug',
+                text: '不具合の通報',
+                subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+                points: [
+                    '号機・物件名を確認',
+                    '該当するコントロールセンターへの連絡先を案内\n→FC左下連絡先一覧のサービス別連絡先一覧を参照'
+                ]
+            },
+            {
+                id: 'bottom-kanri-tabusho-register',
+                text: '登録方法に関する問い合わせ',
+                subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+                points: [
+                    '号機・物件名を確認',
+                    '機種に沿った案内\n→オンラインの場合、フルタイムカスタマーサイトを案内。\n不明点等はコントロールセンターへ確認いただくよう案内。\n→オフラインの場合、ロッカー操作にて登録する旨を案内。\n不明点等はコントロールセンターへ確認いただくよう案内。'
+                ]
+            },
+            {
+                id: 'bottom-kanri-tabusho-contract',
+                text: '契約内容に関する問い合わせ',
+                subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+                points: [
+                    '号機・物件名を確認',
+                    '問い合わせ内容を確認',
+                    '管理部へ引き継ぐ'
+                ]
+            },
+            // 管理員
+            {
+                id: 'mid-kanri-in',
+                text: '【管理員】内容を選択',
+                branches: [
+                    {
+                        label: 'ディスパッチャー',
+                        nextNodeId: 'final-dis',
+                        color: '#ff4d4f',
+                        subBranches: [
+                            { label: '架電の折り返し', nextNodeId: 'bottom-kanri-in-dis-orikaeshi', color: '#ff4d4f' },
+                            { label: '障害対応結果に関する問い合わせ', nextNodeId: 'bottom-kanri-in-dis-shogai', color: '#ff4d4f' }
+                        ]
+                    },
+                    {
+                        label: '保守管理',
+                        nextNodeId: 'final-hoshu',
+                        color: '#40a9ff',
+                        subBranches: [
+                            { label: 'メンテナンス日の確認', nextNodeId: 'bottom-kanri-in-hoshu-date', color: '#40a9ff' },
+                            { label: '定期点検対応結果に関する問い合わせ', nextNodeId: 'bottom-kanri-in-hoshu-teiki', color: '#40a9ff' }
+                        ]
+                    },
+                    {
+                        label: '他部署',
+                        nextNodeId: 'final-tabusho',
+                        color: '#9254de',
+                        subBranches: [
+                            { label: '不具合の通報', nextNodeId: 'bottom-kanri-in-tabusho-bug', color: '#9254de' },
+                            { label: '登録方法', nextNodeId: 'bottom-kanri-in-tabusho-register', color: '#9254de' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'bottom-kanri-in-dis-orikaeshi',
+                text: '架電の折り返し',
+                subText: '以下の内容を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
+                points: ['誰から連絡があったか（個人名が分かればそちらへ引き継ぎ）', '何の案件に関する折り返しか（物件名等）']
+            },
+            {
+                id: 'bottom-kanri-in-dis-shogai',
+                text: '障害対応結果に関する問い合わせ',
+                subText: '以下の状況を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
+                points: ['該当FCの確認', '対応結果を確認し回答可能であれば説明']
+            },
+            {
+                id: 'bottom-kanri-in-hoshu-date',
+                text: 'メンテナンス日の確認',
+                subText: '以下の内容を確認のうえ、保守管理へ引き継ぎしてください。',
+                points: ['過去の定期点検日の確認。　→FC右上の「ﾒﾝﾃﾅﾝｽ報告書一覧」・「定期ﾒﾝﾃﾅﾝｽ予定一覧」から確認する。', '定期点検予定日の確認。　→FC右上のﾒﾝﾃ予定　今月・次月の欄を確認する。指定日有無を確認する。']
+            },
+            {
+                id: 'bottom-kanri-in-hoshu-teiki',
+                text: '定期点検対応結果に関する問い合わせ',
+                subText: '以下の内容を確認のうえ、保守管理へ引き継ぎしてください。',
+                points: [
+                    '問い合わせの具体的な内容\n→該当FCが起票されているか確認',
+                    '記載内容について\n→FC・報告書を参照して内容を伝える。\nFC右上のﾒﾝﾃﾅﾝｽ報告書一覧からPDFファイルの閲覧ができる'
+                ]
+            },
+            {
+                id: 'bottom-kanri-in-tabusho-bug',
+                text: '不具合の通報',
+                subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+                points: [
+                    '号機・物件名を確認',
+                    '該当するコントロールセンターへの連絡先を案内\n→FC左下連絡先一覧のサービス別連絡先一覧を参照'
+                ]
+            },
+            {
+                id: 'bottom-kanri-in-tabusho-register',
+                text: '登録方法に関する問い合わせ',
+                subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+                points: [
+                    '号機・物件名を確認',
+                    '機種に沿った案内\n→オンラインの場合、フルタイムカスタマーサイトを案内。\n不明点等はコントロールセンターへ確認いただくよう案内。\n→オフラインの場合、ロッカー操作にて登録する旨を案内。\n不明点等はコントロールセンターへ確認いただくよう案内。'
+                ]
+            },
+            // 協力会社
+            {
+                id: 'mid-kyoryoku',
+                text: '【協力会社】内容を選択',
+                branches: [
+                    {
+                        label: 'AFC、BLP等',
+                        nextNodeId: 'mid-kyoryoku-afc',
+                        color: '#ff4d4f',
+                        middleBox: { label: 'ディスパッチャー', color: '#ff4d4f' },
+                        subBranches: [
+                            { label: '現地作業に関する問い合わせ', nextNodeId: 'bottom-kyoryoku-dis-genchi', color: '#ff4d4f' }
+                        ]
+                    },
+                    {
+                        label: 'FRESH ROOM、設置業者等',
+                        nextNodeId: 'mid-kyoryoku-fresh',
+                        color: '#73d13d',
+                        middleBox: { label: '施工管理', color: '#73d13d' },
+                        subBranches: [
+                            { label: '現地作業に関する問い合わせ', nextNodeId: 'bottom-kyoryoku-sekou-genchi', color: '#73d13d' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'bottom-kyoryoku-dis-genchi',
+                text: '現地作業に関する問い合わせ（AFC、BLP等）',
+                subText: '以下の内容を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
+                points: [
+                    '定期点検or障害対応の確認',
+                    '定期点検\n→作業時の不具合の場合は現地対応するか見積にするかを確認。\nその後FC起票。',
+                    '障害対応\n→該当FCを確認し対応報告受付を入力。\n作業中の不明点がある場合は内容を確認しディスパッチャーへ引き継ぐ。'
+                ]
+            },
+
+            {
+                id: 'bottom-kyoryoku-sekou-genchi',
+                text: '現地作業に関する問い合わせ（FRESH ROOM、設置業者等）',
+                subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
+                points: [
+                    '定期点検or障害対応の確認',
+                    '定期点検\n→作業時の不具合の場合は現地対応するか見積にするかを確認。\nその後FC起票。',
+                    '障害対応\n→該当FCを確認し対応報告受付を入力。\n作業中の不明点がある場合は内容を確認し施工管理へ引き継ぐ。'
+                ]
+            },
+            // 建築
+            {
+                id: 'mid-kenchiku',
+                text: '【建築】内容を選択',
+                branches: [
+                    {
+                        label: '施工管理',
+                        nextNodeId: 'final-sekou',
+                        color: '#73d13d',
+                        subBranches: [
+                            { label: '連動日の確認', nextNodeId: 'bottom-kenchiku-sekou-rendo', color: '#73d13d' },
+                            { label: '設置日の確認', nextNodeId: 'bottom-kenchiku-sekou-setchi', color: '#73d13d' },
+                            { label: '現場状況の確認', nextNodeId: 'bottom-kenchiku-sekou-genba', color: '#73d13d' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'bottom-kenchiku-sekou-rendo',
+                text: '連動日の確認',
+                subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
+                points: ['物件名', 'お問い合わせの具体的な内容']
+            },
+            {
+                id: 'bottom-kenchiku-sekou-setchi',
+                text: '設置日の確認',
+                subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
+                points: ['物件名', 'お問い合わせの具体的な内容']
+            },
+            {
+                id: 'bottom-kenchiku-sekou-genba',
+                text: '現場状況の確認',
+                subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
+                points: ['物件名', 'お問い合わせの具体的な内容']
+            },
+            // 連動相手
+            {
+                id: 'mid-tasha',
+                text: '【連動相手】内容を選択',
+                branches: [
+                    {
+                        label: '施工管理',
+                        nextNodeId: 'final-sekou',
+                        color: '#73d13d',
+                        subBranches: [
+                            { label: '連動日の確認', nextNodeId: 'bottom-tasha-sekou-rendo', color: '#73d13d' },
+                            { label: '現場作業時の報告', nextNodeId: 'bottom-tasha-sekou-houkoku', color: '#73d13d' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'bottom-tasha-sekou-rendo',
+                text: '連動日の確認',
+                subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
+                points: ['物件名', 'お問い合わせの具体的な内容']
+            },
+            {
+                id: 'bottom-tasha-sekou-houkoku',
+                text: '現場作業時の報告',
+                subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
+                points: ['物件名', '報告の具体的な内容']
+            },
+            // 居住者
+            {
+                id: 'mid-other',
+                text: '【居住者】内容を選択',
+                branches: [
+                    {
+                        label: '他部署',
+                        nextNodeId: 'final-tabusho',
+                        color: '#9254de',
+                        subBranches: [
+                            { label: '登録方法の問い合わせ', nextNodeId: 'bottom-other-tabusho-touroku', color: '#9254de' },
+                            { label: '利用方法の問い合わせ', nextNodeId: 'bottom-other-tabusho-riyou', color: '#9254de' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'bottom-other-tabusho-touroku',
+                text: '登録方法の問い合わせ',
+                subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+                points: ['物件名・号室', 'お問い合わせの具体的な内容']
+            },
+            {
+                id: 'bottom-other-tabusho-riyou',
+                text: '利用方法の問い合わせ',
+                subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+                points: ['物件名・号室', 'お問い合わせの具体的な内容']
+            },
+            // 最終
+            { id: 'final-dis', text: 'ディスパッチャーへ転送中...', isFinal: true },
+            { id: 'final-hoshu', text: '保守管理へ転送中...', isFinal: true },
+            { id: 'final-sekou', text: '施工管理へ転送中...', isFinal: true },
+            { id: 'final-tabusho', text: '他部署へ転送中...', isFinal: true }
+        ];
+
+        const VisualFlow = React.memo(({ onSelect }) => {
+            const topLayerBranches = useMemo(() => 
+                scriptData.find(n => n.id === 'juden')?.branches || [],
+            []);
+
+            return (
+                <div className="visual-flow-map">
+                    <div className="visual-flow-layer">
+                        <div className="visual-flow-node active" style={{ minWidth: '300px', fontSize: '1.4rem', padding: '24px' }}>
+                            <span className="visual-flow-node-label">受電</span>
+                            <div className="visual-flow-connector"></div>
+                        </div>
+                    </div>
+
+                    <div className="visual-flow-layer" style={{ alignItems: 'flex-start', gap: '20px' }}>
+                        {topLayerBranches.map((branch) => {
+                            const midNode = scriptData.find(n => n.id === branch.nextNodeId);
+                            return (
+                                <React.Fragment key={branch.nextNodeId}>
+                                    {branch.nextNodeId === 'mid-other' && (
+                                        <div className="visual-flow-column spacer" style={{ width: '100px', minWidth: '100px' }}></div>
+                                    )}
+                                    <div className="visual-flow-column" style={{ minWidth: '180px' }}>
+                                        <div className="visual-flow-node" style={{ width: '100%', cursor: 'default' }}>
+                                            <span className="visual-flow-node-label">{branch.label}</span>
+                                            <div className="visual-flow-connector"></div>
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', marginTop: '60px' }}>
+                                            {midNode?.branches?.map((b) => (
+                                                <div
+                                                    key={b.nextNodeId}
+                                                    className="visual-flow-node"
+                                                    style={{
+                                                        fontSize: '0.9rem',
+                                                        padding: '12px',
+                                                        width: '100%',
+                                                        '--hover-color': b.color || '#40a9ff'
+                                                    }}
+                                                    onClick={() => !b.subBranches && onSelect(b.nextNodeId)}
+                                                >
+                                                    <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? '#ffffff' : (b.color || '#ffffff') }}>{b.label}</div>
+                                                    {b.middleBox && (
+                                                        <div style={{
+                                                            fontSize: '0.85rem',
+                                                            fontWeight: 'bold',
+                                                            color: b.middleBox.color || '#fff',
+                                                            marginTop: '6px'
+                                                        }}>{b.middleBox.label}</div>
+                                                    )}
+                                                    {b.subBranches && (
+                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', marginTop: '8px' }}>
+                                                            {b.subBranches.map(sb => (
+                                                                <div
+                                                                    key={sb.nextNodeId}
+                                                                    className="visual-flow-sub-link"
+                                                                    onClick={(e) => { e.stopPropagation(); onSelect(sb.nextNodeId); }}
+                                                                >
+                                                                    {sb.label}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </React.Fragment>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        });
+
+        const App = () => {
+            const [currentNodeId, setCurrentNodeId] = useState(() => {
+                const hash = window.location.hash.replace('#', '');
+                return hash && scriptData.some(n => n.id === hash) ? hash : 'juden';
+            });
+
+            // 架電メモの状態管理
+            const [outgoingMemos, setOutgoingMemos] = useState(() => {
+                const saved = localStorage.getItem('outgoingMemos');
+                return saved ? JSON.parse(saved) : [];
+            });
+
+            // 架電メモ入力フォームの状態
+            const [tempPhone, setTempPhone] = useState('');
+            const [tempName, setTempName] = useState('');
+            const [tempCaller, setTempCaller] = useState('');
+
+            // 履歴表示の状態
+            const [showHistory, setShowHistory] = useState(false);
+
+            // 受電メモ入力欄の状態（照合用）
+            const [callbackPhone, setCallbackPhone] = useState('');
+
+            const saveOutgoingMemo = () => {
+                if (!tempPhone) return;
+                const newMemos = [{ phone: tempPhone, name: tempName, caller: tempCaller, id: Date.now() }, ...outgoingMemos];
+                setOutgoingMemos(newMemos);
+                localStorage.setItem('outgoingMemos', JSON.stringify(newMemos));
+                setTempPhone('');
+                setTempName('');
+                setTempCaller('');
+            };
+
+            const deleteMemo = (id) => {
+                const newMemos = outgoingMemos.filter(m => m.id !== id);
+                setOutgoingMemos(newMemos);
+                localStorage.setItem('outgoingMemos', JSON.stringify(newMemos));
+            };
+
+            const matchedCaller = useMemo(() => {
+                if (!callbackPhone) return null;
+                return outgoingMemos.find(m => m.phone === callbackPhone)?.name;
+            }, [callbackPhone, outgoingMemos]);
+
+            useEffect(() => {
+                const handlePopState = () => {
+                    const hash = window.location.hash.replace('#', '');
+                    setCurrentNodeId(hash || 'juden');
+                };
+                window.addEventListener('popstate', handlePopState);
+                return () => window.removeEventListener('popstate', handlePopState);
+            }, []);
+
+            const currentNode = useMemo(() => scriptData.find(n => n.id === currentNodeId) || scriptData[0], [currentNodeId]);
+            
+            const themeColor = useMemo(() => {
+                if (currentNodeId === 'juden') return '#40a9ff';
+                const parent = scriptData.find(n => n.branches?.some(b => b.nextNodeId === currentNodeId || b.subBranches?.some(sb => sb.nextNodeId === currentNodeId)));
+                const branch = parent?.branches?.find(b => b.nextNodeId === currentNodeId || b.subBranches?.some(sb => sb.nextNodeId === currentNodeId));
+                return branch?.color || '#40a9ff';
+            }, [currentNodeId]);
+
+            const handleNext = useCallback((id) => {
+                window.history.pushState({ id }, '', `#${id}`);
+                setCurrentNodeId(id);
+            }, []);
+
+            const handleBack = () => window.history.back();
+
+            const renderMemo = () => {
+                const needsMemo = ['bottom-kanri-', 'bottom-kyoryoku-', 'bottom-kenchiku-', 'bottom-tasha-'].some(p => currentNodeId.startsWith(p));
+                if (!needsMemo) return null;
+
+                const isKen = currentNodeId.startsWith('bottom-kenchiku-') || currentNodeId.startsWith('bottom-tasha-');
+                return (
+                    <div className="memo-section">
+                        <div className="memo-title">📝 メモ入力欄</div>
+                        <div className="memo-grid">
+                            <div className="memo-field">
+                                <label className="memo-label">{isKen ? '現場名' : '号機/物件名'}</label>
+                                <input type="text" className="memo-input" placeholder={isKen ? "例：〇〇新築現場" : "例：FTSビル 101号室"} />
+                            </div>
+                            <div className="memo-field">
+                                <label className="memo-label">会社名/氏名</label>
+                                <input type="text" className="memo-input" placeholder="例：山田 太郎 様" />
+                            </div>
+                            <div className="memo-field full-width">
+                                <label className="memo-label">内容</label>
+                                <textarea className="memo-input memo-textarea" placeholder="詳細を入力してください..."></textarea>
+                            </div>
+                            <div className="memo-field full-width">
+                                <label className="memo-label">
+                                    折り返し先
+                                    {matchedCaller && (
+                                        <span className="caller-match-badge">
+                                            架電者: {matchedCaller}
+                                        </span>
+                                    )}
+                                </label>
+                                <input 
+                                    type="text" 
+                                    className="memo-input" 
+                                    placeholder="例：03-xxxx-xxxx" 
+                                    value={callbackPhone}
+                                    onChange={(e) => setCallbackPhone(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            if (currentNode.isFinal) {
+                return (
+                    <div className="card final-screen" style={{ borderTop: `6px solid ${themeColor}`, maxWidth: '600px', transform: 'scale(0.85)' }}>
+                        <div className="final-icon">📡</div>
+                        <h1 className="script-text">{currentNode.text}</h1>
+                        <button className="branch-button" onClick={() => handleNext('juden')} style={{ marginTop: '40px', justifyContent: 'center' }}>最初に戻る</button>
+                    </div>
+                );
+            }
+
+            return (
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div className="card" style={{ 
+                        maxWidth: currentNodeId === 'juden' ? '1500px' : '700px', 
+                        transform: 'scale(0.85)',
+                        transformOrigin: 'top center',
+                        borderTop: `6px solid ${themeColor}`
+                    }}>
+                        {currentNodeId !== 'juden' && <button className="back-button" onClick={handleBack}>← 戻る</button>}
+                        
+                        <h1 className="script-text">{currentNode.text}</h1>
+                        {currentNode.subText && <p className="sub-text">{currentNode.subText}</p>}
+
+                        {currentNodeId === 'juden' && <VisualFlow onSelect={handleNext} />}
+
+                        {currentNode.points && (
+                            <div className="points-section">
+                                <div className="points-header" style={{ fontSize: '1rem', fontWeight: 'bold', marginBottom: '16px', color: 'var(--warning)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span style={{ fontSize: '1.2rem' }}>💡</span> 確認事項
+                                </div>
+                                <div className="points-list" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                    {currentNode.points.map((p, i) => {
+                                        let content;
+                                        if (p.includes('→')) {
+                                            const parts = p.split('→');
+                                            content = (
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                    <div style={{ fontWeight: '500', color: '#fff', whiteSpace: 'pre-wrap' }}>{parts[0].trim()}</div>
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                                        {parts.slice(1).map((part, idx) => (
+                                                            <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', color: 'var(--text-secondary)', paddingLeft: '12px', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
+                                                                <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>→</span>
+                                                                <div style={{ flex: 1 }}>{part.trim()}</div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            );
+                                        } else if (p.match(/　{2,}/)) {
+                                            const parts = p.split(/　{2,}/);
+                                            content = (
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                    <div style={{ fontWeight: '500', color: '#fff', whiteSpace: 'pre-wrap' }}>{parts[0].trim()}</div>
+                                                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', color: 'var(--text-secondary)', paddingLeft: '12px', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
+                                                        <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>→</span>
+                                                        <div style={{ flex: 1 }}>{parts.slice(1).join(' ').trim()}</div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        } else {
+                                            content = <div style={{ color: '#fff', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>{p}</div>;
+                                        }
+                                        return (
+                                            <div key={i} style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '16px 20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                                {content}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {renderMemo()}
+
+                        {currentNodeId !== 'juden' && (
+                            <div className="branches">
+                                {currentNode.branches?.map(b => (
+                                    <button 
+                                        key={b.nextNodeId} 
+                                        className="branch-button" 
+                                        style={{ backgroundColor: b.color || '#40a9ff' }}
+                                        onClick={() => handleNext(b.nextNodeId)}
+                                    >
+                                        {b.label}
+                                        <span>→</span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="outgoing-memo-bar">
+                        <div className="outgoing-memo-title">
+                            <span>📞</span>
+                            架電メモ
+                        </div>
+                        <div className="outgoing-memo-inputs">
+                            <div className="outgoing-memo-field">
+                                <input 
+                                    type="text" 
+                                    className="memo-input" 
+                                    placeholder="電話番号" 
+                                    value={tempPhone}
+                                    onChange={(e) => setTempPhone(e.target.value)}
+                                />
+                            </div>
+                            <div className="outgoing-memo-field">
+                                <input 
+                                    type="text" 
+                                    className="memo-input" 
+                                    placeholder="名前（架電先）" 
+                                    value={tempName}
+                                    onChange={(e) => setTempName(e.target.value)}
+                                />
+                            </div>
+                            <div className="outgoing-memo-field">
+                                <input 
+                                    type="text" 
+                                    className="memo-input" 
+                                    placeholder="架電者" 
+                                    value={tempCaller}
+                                    onChange={(e) => setTempCaller(e.target.value)}
+                                />
+                            </div>
+                            <button 
+                                className="outgoing-memo-save-button"
+                                onClick={saveOutgoingMemo}
+                                disabled={!tempPhone}
+                            >
+                                不通
+                            </button>
+                            <button 
+                                className="outgoing-memo-history-button"
+                                onClick={() => setShowHistory(!showHistory)}
+                            >
+                                履歴 {outgoingMemos.length > 0 && `(${outgoingMemos.length})`}
+                            </button>
+                        </div>
+
+                        {showHistory && (
+                            <div className="outgoing-memo-history-panel">
+                                <div className="history-header">
+                                    <span>不通履歴一覧</span>
+                                    <button className="close-button" onClick={() => setShowHistory(false)}>×</button>
+                                </div>
+                                <div className="history-list">
+                                    {outgoingMemos.length === 0 ? (
+                                        <div className="history-empty">履歴はありません</div>
+                                    ) : (
+                                        outgoingMemos.map((m) => (
+                                            <div key={m.id} className="history-item">
+                                                <div className="history-info">
+                                                    <div className="history-phone">{m.phone}</div>
+                                                    <div className="history-name">
+                                                        {m.name || '(名前なし)'}
+                                                        {m.caller && <span className="history-caller"> / 架電者: {m.caller}</span>}
+                                                    </div>
+                                                </div>
+                                                <button className="delete-button" onClick={() => deleteMemo(m.id)}>削除</button>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
