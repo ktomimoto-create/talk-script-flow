@@ -1,6 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { scriptData } from './data/scriptData';
 import { ScriptNode } from './types/script';
+import {
+    PhoneIcon,
+    ArrowRightIcon,
+    ArrowLeftIcon,
+    CloseIcon,
+    TransferIcon,
+} from './components/Icons';
 import './index.css';
 
 const renderPoint = (pointText: string) => {
@@ -12,7 +19,7 @@ const renderPoint = (pointText: string) => {
                 <div className="point-answers" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {parts.slice(1).map((part, index) => (
                         <div key={index} className="point-answer" style={{ whiteSpace: 'pre-wrap' }}>
-                            <span className="point-arrow">→</span>
+                            <span className="point-arrow"><ArrowRightIcon size={14} strokeWidth={2.2} /></span>
                             <div style={{ flex: 1 }}>{part.trim()}</div>
                         </div>
                     ))}
@@ -241,7 +248,9 @@ const App: React.FC = () => {
             <React.Fragment>
                 <div className="app-container" style={{ transform: 'scale(0.85)', transformOrigin: 'top center' }}>
                     <div className="card final-screen" style={{ borderTop: `6px solid ${themeColor}` }}>
-                        <div className="final-icon">📡</div>
+                        <div className="final-icon" style={{ color: themeColor }}>
+                            <TransferIcon size={48} strokeWidth={1.6} />
+                        </div>
                         <h1 className="script-text">{currentNode.text}</h1>
                         <button className="back-button" onClick={() => {
                             setCurrentNodeId('juden');
@@ -260,7 +269,8 @@ const App: React.FC = () => {
             <div className="app-container" style={{ maxWidth: currentNodeId === 'juden' ? '1550px' : '700px', transform: 'scale(0.85)', transformOrigin: 'top center' }}>
             {currentNodeId !== 'juden' && (
                 <button className="back-button" onClick={handleBack}>
-                    ← 戻る
+                    <ArrowLeftIcon size={16} />
+                    <span>戻る</span>
                 </button>
             )}
 
@@ -356,7 +366,7 @@ const App: React.FC = () => {
                             onClick={() => handleNext(branch.nextNodeId)}
                         >
                             {branch.label}
-                            <span>→</span>
+                            <ArrowRightIcon size={18} />
                         </button>
                     ))}
                 </div>
@@ -366,7 +376,9 @@ const App: React.FC = () => {
             {/* 架電メモ入力フォーム（旧クイックアクションの場所） */}
             <div className="outgoing-memo-bar">
                 <div className="outgoing-memo-title">
-                    <span className="outgoing-memo-icon">📞</span>
+                    <span className="outgoing-memo-icon">
+                        <PhoneIcon size={18} />
+                    </span>
                     架電メモ
                 </div>
                 <div className="outgoing-memo-inputs">
@@ -416,7 +428,9 @@ const App: React.FC = () => {
                     <div className="outgoing-memo-history-panel">
                         <div className="history-header">
                             <span>不通履歴一覧</span>
-                            <button className="close-button" onClick={() => setShowHistory(false)}>×</button>
+                            <button className="close-button" aria-label="閉じる" onClick={() => setShowHistory(false)}>
+                                <CloseIcon size={18} />
+                            </button>
                         </div>
                         <div className="history-list">
                             {outgoingMemos.length === 0 ? (
