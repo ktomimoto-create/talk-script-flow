@@ -157,7 +157,8 @@ const App: React.FC = () => {
     const [currentNodeId, setCurrentNodeId] = useState<string>('juden');
 
     // 架電メモの状態管理
-    const [outgoingMemos, setOutgoingMemos] = useState<{ phone: string, name: string, caller?: string }[]>(() => {
+    type OutgoingMemo = { id: number; phone: string; name: string; caller?: string };
+    const [outgoingMemos, setOutgoingMemos] = useState<OutgoingMemo[]>(() => {
         const saved = localStorage.getItem('outgoingMemos');
         return saved ? JSON.parse(saved) : [];
     });
@@ -185,7 +186,7 @@ const App: React.FC = () => {
     };
 
     const deleteMemo = (id: number) => {
-        const newMemos = outgoingMemos.filter(m => (m as any).id !== id);
+        const newMemos = outgoingMemos.filter(m => m.id !== id);
         setOutgoingMemos(newMemos);
         localStorage.setItem('outgoingMemos', JSON.stringify(newMemos));
     };
@@ -468,7 +469,7 @@ const App: React.FC = () => {
                             {outgoingMemos.length === 0 ? (
                                 <div className="history-empty">履歴はありません</div>
                             ) : (
-                                outgoingMemos.map((m: any) => (
+                                outgoingMemos.map((m) => (
                                     <div key={m.id} className="history-item">
                                         <div className="history-info">
                                             <div className="history-phone">{m.phone}</div>

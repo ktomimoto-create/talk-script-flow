@@ -32,7 +32,6 @@ export const msalConfig: Configuration = {
     },
     cache: {
         cacheLocation: 'sessionStorage', // 社内利用前提なので sessionStorage で OK
-        storeAuthStateInCookie: false,
     },
     system: {
         loggerOptions: {
