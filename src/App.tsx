@@ -243,54 +243,42 @@ const App: React.FC = () => {
         window.history.back();
     }, []);
 
-    if (currentNode.isFinal) {
-        return (
-            <React.Fragment>
-                <div className="app-container" style={{ transform: 'scale(0.85)', transformOrigin: 'top center' }}>
-                    <div className="card final-screen" style={{ borderTop: `6px solid ${themeColor}` }}>
-                        <div className="final-icon" style={{ color: themeColor }}>
-                            <TransferIcon size={48} strokeWidth={1.6} />
-                        </div>
-                        <h1 className="script-text">{currentNode.text}</h1>
-                        <button className="back-button" onClick={() => {
-                            setCurrentNodeId('juden');
-                            window.history.replaceState({ nodeId: 'juden' }, '', '#juden');
-                        }}>
-                            最初に戻る
-                        </button>
+    const jubenNode = scriptData.find(n => n.id === 'juden') as ScriptNode;
+    const isSidebarOpen = currentNodeId !== 'juden';
+
+    const closeSidebar = React.useCallback(() => {
+        setCurrentNodeId('juden');
+        window.history.replaceState({ nodeId: 'juden' }, '', '#juden');
+    }, []);
+
+    const renderSidebarBody = (node: ScriptNode) => {
+        if (node.isFinal) {
+            return (
+                <div className="card final-screen" style={{ borderTop: `6px solid ${themeColor}` }}>
+                    <div className="final-icon" style={{ color: themeColor }}>
+                        <TransferIcon size={48} strokeWidth={1.6} />
                     </div>
+                    <h1 className="script-text">{node.text}</h1>
+                    <button className="back-button" onClick={closeSidebar}>
+                        最初に戻る
+                    </button>
                 </div>
-            </React.Fragment>
-        );
-    }
+            );
+        }
+        const isMemoNode =
+            node.id.startsWith('bottom-kanri-') ||
+            node.id.startsWith('bottom-kyoryoku-') ||
+            node.id.startsWith('bottom-kenchiku-') ||
+            node.id.startsWith('bottom-tasha-');
+        return (
+            <div className="card" key={node.id} style={{ borderTop: `6px solid ${themeColor}` }}>
+                <h1 className="script-text">{node.text}</h1>
 
-    return (
-        <React.Fragment>
-            <div className="app-container" style={{ maxWidth: currentNodeId === 'juden' ? '1550px' : '700px', transform: 'scale(0.85)', transformOrigin: 'top center' }}>
-            {currentNodeId !== 'juden' && (
-                <button className="back-button" onClick={handleBack}>
-                    <ArrowLeftIcon size={16} />
-                    <span>戻る</span>
-                </button>
-            )}
-
-            <div className="card" key={currentNode.id} style={{ borderTop: `6px solid ${themeColor}`, maxWidth: currentNodeId === 'juden' ? '1500px' : '650px' }}>
-                <h1 className="script-text">{currentNode.text}</h1>
-
-                {currentNode.subText && (
-                    <p className="sub-text" style={{ borderLeftColor: themeColor }}>{currentNode.subText}</p>
+                {node.subText && (
+                    <p className="sub-text" style={{ borderLeftColor: themeColor }}>{node.subText}</p>
                 )}
 
-                {currentNodeId === 'juden' && (
-                    <div style={{ marginTop: '20px' }}>
-                        <VisualFlow onSelect={handleNext} />
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)', marginTop: '20px', textAlign: 'center' }}>
-                            ※ 地図上の各ボックスをクリックすると、直接そのプロセスを開始できます。
-                        </p>
-                    </div>
-                )}
-
-                {currentNode.points && currentNode.points.length > 0 && (
+                {node.points && node.points.length > 0 && (
                     <div className="points-section">
                         <div className="points-header">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={themeColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
@@ -300,7 +288,7 @@ const App: React.FC = () => {
                             確認ポイント（ヒアリング事項）
                         </div>
                         <div className="points-list">
-                            {currentNode.points.map((point, index) => (
+                            {node.points.map((point, index) => (
                                 <div key={index} className="point-item">
                                     {renderPoint(point)}
                                 </div>
@@ -309,10 +297,7 @@ const App: React.FC = () => {
                     </div>
                 )}
 
-                {(currentNodeId.startsWith('bottom-kanri-') || 
-                  currentNodeId.startsWith('bottom-kyoryoku-') ||
-                  currentNodeId.startsWith('bottom-kenchiku-') ||
-                  currentNodeId.startsWith('bottom-tasha-')) && (
+                {isMemoNode && (
                     <div className="memo-section">
                         <div className="memo-title">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={themeColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -324,9 +309,9 @@ const App: React.FC = () => {
                         <div className="memo-grid">
                             <div className="memo-field">
                                 <label className="memo-label">
-                                    {(currentNodeId.startsWith('bottom-kenchiku-') || currentNodeId.startsWith('bottom-tasha-')) ? '現場名' : '号機/物件名'}
+                                    {(node.id.startsWith('bottom-kenchiku-') || node.id.startsWith('bottom-tasha-')) ? '現場名' : '号機/物件名'}
                                 </label>
-                                <input type="text" className="memo-input" placeholder={(currentNodeId.startsWith('bottom-kenchiku-') || currentNodeId.startsWith('bottom-tasha-')) ? "例：〇〇新築現場" : "例：FTSビル 101号室"} />
+                                <input type="text" className="memo-input" placeholder={(node.id.startsWith('bottom-kenchiku-') || node.id.startsWith('bottom-tasha-')) ? "例：〇〇新築現場" : "例：FTSビル 101号室"} />
                             </div>
                             <div className="memo-field">
                                 <label className="memo-label">会社名/氏名</label>
@@ -345,10 +330,10 @@ const App: React.FC = () => {
                                         </span>
                                     )}
                                 </label>
-                                <input 
-                                    type="text" 
-                                    className="memo-input" 
-                                    placeholder="例：03-xxxx-xxxx" 
+                                <input
+                                    type="text"
+                                    className="memo-input"
+                                    placeholder="例：03-xxxx-xxxx"
                                     value={callbackPhone}
                                     onChange={(e) => setCallbackPhone(e.target.value)}
                                 />
@@ -358,7 +343,7 @@ const App: React.FC = () => {
                 )}
 
                 <div className="branches">
-                    {currentNode.branches?.map((branch) => (
+                    {node.branches?.map((branch) => (
                         <button
                             key={branch.nextNodeId}
                             className="branch-button"
@@ -371,7 +356,54 @@ const App: React.FC = () => {
                     ))}
                 </div>
             </div>
+        );
+    };
+
+    return (
+        <React.Fragment>
+            <div className={`app-container ${isSidebarOpen ? 'with-sidebar' : ''}`} style={{ maxWidth: '1550px', transform: 'scale(0.85)', transformOrigin: 'top center' }}>
+                <div className="card" key="juden" style={{ borderTop: '6px solid #40a9ff', maxWidth: '1500px' }}>
+                    <h1 className="script-text">{jubenNode.text}</h1>
+                    {jubenNode.subText && (
+                        <p className="sub-text" style={{ borderLeftColor: '#40a9ff' }}>{jubenNode.subText}</p>
+                    )}
+                    <div style={{ marginTop: '20px' }}>
+                        <VisualFlow onSelect={handleNext} />
+                        <p className="flow-hint">
+                            ※ フロー上の各ボックスをクリックすると、直接そのプロセスを開始できます。
+                        </p>
+                    </div>
+                    <div className="branches">
+                        {jubenNode.branches?.map((branch) => (
+                            <button
+                                key={branch.nextNodeId}
+                                className="branch-button"
+                                style={{ backgroundColor: branch.color || '#40a9ff' }}
+                                onClick={() => handleNext(branch.nextNodeId)}
+                            >
+                                {branch.label}
+                                <ArrowRightIcon size={18} />
+                            </button>
+                        ))}
+                    </div>
+                </div>
             </div>
+
+            {/* 選択ノードを表示する右サイドバー */}
+            <aside className={`node-sidebar ${isSidebarOpen ? 'open' : ''}`} aria-hidden={!isSidebarOpen}>
+                <div className="node-sidebar-header">
+                    <button className="back-button" onClick={handleBack} disabled={!isSidebarOpen}>
+                        <ArrowLeftIcon size={16} />
+                        <span>戻る</span>
+                    </button>
+                    <button className="node-sidebar-close" onClick={closeSidebar} aria-label="閉じる">
+                        <CloseIcon size={20} />
+                    </button>
+                </div>
+                <div className="node-sidebar-body" key={currentNodeId}>
+                    {isSidebarOpen && renderSidebarBody(currentNode)}
+                </div>
+            </aside>
 
             {/* 架電メモ入力フォーム（旧クイックアクションの場所） */}
             <div className="outgoing-memo-bar">
