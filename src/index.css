@@ -224,12 +224,12 @@ body {
   padding: 28px 20px;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 20px;
-  overflow-x: hidden;
+  overflow-x: auto;
   min-height: 460px;
   position: relative;
   margin-top: 20px;
   will-change: transform;
-  container-type: inline-size;
+  width: 100%;
 }
 
 .visual-flow-layer {
@@ -245,7 +245,7 @@ body {
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   padding: 12px 14px;
-  min-width: 0;
+  min-width: 120px;
   text-align: center;
   font-size: 0.95rem;
   font-weight: 600;
@@ -258,7 +258,9 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  word-break: break-word;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
   z-index: 2; /* 邱壹ｈ繧贋ｸ翫↓陦ｨ遉ｺ */
 }
 
