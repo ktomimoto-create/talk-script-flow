@@ -54,7 +54,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
         <div className="visual-flow-map">
             {/* 第1層 */}
             <div className="visual-flow-layer">
-                <div className="visual-flow-node active" style={{ minWidth: '0', width: 'min(260px, 30%)', fontSize: '1.2rem', padding: '18px 20px' }}>
+                <div className="visual-flow-node active" style={{ minWidth: '220px', width: 'auto', fontSize: '1.25rem', padding: '18px 28px' }}>
                     <span className="visual-flow-node-label">受電</span>
                     <div className="visual-flow-connector"></div>
                 </div>
@@ -77,15 +77,15 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
-                                gap: '40px',
+                                gap: '48px',
                                 flex: '1 1 0',
-                                minWidth: 0
+                                minWidth: '140px'
                             }}>
 
                                 {/* Layer 2 Node */}
                                 <div
                                     className="visual-flow-node"
-                                    style={{ width: '100%', padding: '12px 14px', fontSize: '0.95rem', cursor: 'default' }}
+                                    style={{ width: '100%', padding: '14px 12px', fontSize: '1rem', cursor: 'default' }}
                                 >
                                     <span className="visual-flow-node-label">{branch.label}</span>
                                     <div className="visual-flow-connector"></div>
@@ -97,7 +97,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                             key={b.nextNodeId}
                                             className="visual-flow-node"
                                             style={{
-                                                fontSize: '0.8rem',
+                                                fontSize: '0.85rem',
                                                 padding: b.subBranches ? '10px 8px' : '10px',
                                                 width: '100%',
                                                 display: 'flex',
@@ -109,7 +109,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                             } as React.CSSProperties}
                                             onClick={() => !b.subBranches && onSelect(b.nextNodeId)}
                                         >
-                                            <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? '#ffffff' : (b.color || '#ffffff'), wordBreak: 'break-word' }}>{b.label}</div>
+                                            <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? '#ffffff' : (b.color || '#ffffff') }}>{b.label}</div>
                                             {b.middleBox && (
                                                 <div style={{
                                                     fontSize: '0.75rem',
@@ -137,7 +137,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                                     ))}
                                                 </div>
                                             ) : b.subLabel ? (
-                                                <div style={{ fontSize: '0.7rem', opacity: 0.8, wordBreak: 'break-word' }}>
+                                                <div style={{ fontSize: '0.72rem', opacity: 0.8 }}>
                                                     {b.subLabel}
                                                 </div>
                                             ) : null}
@@ -362,8 +362,8 @@ const App: React.FC = () => {
 
     return (
         <React.Fragment>
-            <div className={`app-container ${isSidebarOpen ? 'with-sidebar' : ''}`} style={{ maxWidth: '1550px', transform: 'scale(0.85)', transformOrigin: 'top center' }}>
-                <div className="card" key="juden" style={{ borderTop: '6px solid #40a9ff', maxWidth: '1500px' }}>
+            <div className={`app-container ${isSidebarOpen ? 'with-sidebar' : ''}`} style={{ width: '100%', maxWidth: '1550px', transform: 'scale(0.85)', transformOrigin: 'top center' }}>
+                <div className="card" key="juden" style={{ borderTop: '6px solid #40a9ff', width: '100%', maxWidth: '1500px' }}>
                     <h1 className="script-text">{jubenNode.text}</h1>
                     {jubenNode.subText && (
                         <p className="sub-text" style={{ borderLeftColor: '#40a9ff' }}>{jubenNode.subText}</p>
