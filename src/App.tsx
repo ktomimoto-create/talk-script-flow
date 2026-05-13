@@ -263,6 +263,14 @@ const App: React.FC = () => {
         window.history.replaceState({ nodeId: 'juden' }, '', '#juden');
     }, []);
 
+    // サイドバー開閉に応じて body に class を付け、ユーザーバーなど画面右上の要素を逃がす
+    React.useEffect(() => {
+        document.body.classList.toggle('sidebar-open', isSidebarOpen);
+        return () => {
+            document.body.classList.remove('sidebar-open');
+        };
+    }, [isSidebarOpen]);
+
     const renderSidebarBody = (node: ScriptNode) => {
         if (node.isFinal) {
             return (
