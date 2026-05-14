@@ -8,7 +8,31 @@ import {
     CloseIcon,
     TransferIcon,
 } from './components/Icons';
+import {
+    CallMemo,
+    fetchCallMemos,
+    insertCallMemo,
+    deleteCallMemo,
+    PersonalMemo,
+    fetchPersonalMemos,
+    insertPersonalMemo,
+    deletePersonalMemo,
+} from './lib/memoRepo';
+import { useProfile } from './auth/useProfile';
 import './index.css';
+
+const formatRelativeTime = (iso: string): string => {
+    const date = new Date(iso);
+    const diffMs = Date.now() - date.getTime();
+    const minutes = Math.floor(diffMs / 60000);
+    if (minutes < 1) return 'たった今';
+    if (minutes < 60) return `${minutes}分前`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}時間前`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}日前`;
+    return `${date.getMonth() + 1}/${date.getDate()}`;
+};
 
 const renderPoint = (pointText: string) => {
     if (pointText.includes('→')) {
@@ -155,13 +179,19 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
 
 const App: React.FC = () => {
     const [currentNodeId, setCurrentNodeId] = useState<string>('juden');
+    const { profile, email: msalEmail } = useProfile();
+    const ownerEmail = (profile?.email || msalEmail || '').trim();
+    const ownerDisplayName = profile?.display_name || msalEmail || '';
 
-    // 架電メモの状態管理
-    type OutgoingMemo = { id: number; phone: string; name: string; caller?: string };
-    const [outgoingMemos, setOutgoingMemos] = useState<OutgoingMemo[]>(() => {
-        const saved = localStorage.getItem('outgoingMemos');
-        return saved ? JSON.parse(saved) : [];
-    });
+    // 架電メモ（Supabase で全認証ユーザー間で共有）
+    const [outgoingMemos, setOutgoingMemos] = useState<CallMemo[]>([]);
+    React.useEffect(() => {
+        let cancelled = false;
+        fetchCallMemos().then(list => {
+            if (!cancelled) setOutgoingMemos(list);
+        });
+        return () => { cancelled = true; };
+    }, []);
 
     // 架電メモ入力フォームの状態
     const [tempPhone, setTempPhone] = useState('');
@@ -174,21 +204,82 @@ const App: React.FC = () => {
     // 受電メモ入力欄の状態（照合用）
     const [callbackPhone, setCallbackPhone] = useState('');
 
-    const saveOutgoingMemo = () => {
-        if (!tempPhone) return;
-        const newMemos = [{ phone: tempPhone, name: tempName, caller: tempCaller, id: Date.now() }, ...outgoingMemos];
-        setOutgoingMemos(newMemos);
-        localStorage.setItem('outgoingMemos', JSON.stringify(newMemos));
-        setTempPhone('');
-        setTempName('');
-        setTempCaller('');
-        // alertは煩わしいので削除するか、トースト的なものにしたいが、まずはシンプルに
+    // サイドバー内メモ入力欄 ─ 個人メモ
+    const [memoSite, setMemoSite] = useState('');
+    const [memoCompany, setMemoCompany] = useState('');
+    const [memoContent, setMemoContent] = useState('');
+
+    // 個人メモ履歴
+    const [personalMemos, setPersonalMemos] = useState<PersonalMemo[]>([]);
+    const [showPersonalHistory, setShowPersonalHistory] = useState(false);
+    const reloadPersonalMemos = React.useCallback(() => {
+        if (!ownerEmail) return;
+        fetchPersonalMemos(ownerEmail).then(setPersonalMemos);
+    }, [ownerEmail]);
+    React.useEffect(() => {
+        reloadPersonalMemos();
+    }, [reloadPersonalMemos]);
+
+    const savePersonalMemo = async (nodeId: string, nodeLabel: string) => {
+        if (!ownerEmail) {
+            alert('プロフィール情報が取得できていません');
+            return;
+        }
+        if (!memoSite && !memoCompany && !memoContent && !callbackPhone) {
+            alert('メモが空です');
+            return;
+        }
+        const created = await insertPersonalMemo({
+            owner_email: ownerEmail,
+            node_id: nodeId,
+            node_label: nodeLabel,
+            site_name: memoSite,
+            company_name: memoCompany,
+            content: memoContent,
+            callback_phone: callbackPhone,
+        });
+        if (created) {
+            setPersonalMemos(prev => [created, ...prev]);
+            setMemoSite('');
+            setMemoCompany('');
+            setMemoContent('');
+            setCallbackPhone('');
+        } else {
+            alert('個人メモの保存に失敗しました');
+        }
     };
 
-    const deleteMemo = (id: number) => {
-        const newMemos = outgoingMemos.filter(m => m.id !== id);
-        setOutgoingMemos(newMemos);
-        localStorage.setItem('outgoingMemos', JSON.stringify(newMemos));
+    const removePersonalMemo = async (id: number) => {
+        const ok = await deletePersonalMemo(id);
+        if (ok) setPersonalMemos(prev => prev.filter(m => m.id !== id));
+    };
+
+    const saveOutgoingMemo = async () => {
+        if (!tempPhone) return;
+        const created = await insertCallMemo({
+            phone: tempPhone,
+            name: tempName,
+            caller: tempCaller,
+            created_by_email: ownerEmail || null,
+            created_by_name: ownerDisplayName || null,
+        });
+        if (created) {
+            setOutgoingMemos(prev => [created, ...prev]);
+            setTempPhone('');
+            setTempName('');
+            setTempCaller('');
+        } else {
+            alert('架電メモの保存に失敗しました');
+        }
+    };
+
+    const deleteMemo = async (id: number) => {
+        const ok = await deleteCallMemo(id);
+        if (ok) {
+            setOutgoingMemos(prev => prev.filter(m => m.id !== id));
+        } else {
+            alert('削除に失敗しました');
+        }
     };
 
     const matchedCaller = useMemo(() => {
@@ -331,15 +422,32 @@ const App: React.FC = () => {
                                 <label className="memo-label">
                                     {(node.id.startsWith('bottom-kenchiku-') || node.id.startsWith('bottom-tasha-')) ? '現場名' : '号機/物件名'}
                                 </label>
-                                <input type="text" className="memo-input" placeholder={(node.id.startsWith('bottom-kenchiku-') || node.id.startsWith('bottom-tasha-')) ? "例：〇〇新築現場" : "例：FTSビル 101号室"} />
+                                <input
+                                    type="text"
+                                    className="memo-input"
+                                    placeholder={(node.id.startsWith('bottom-kenchiku-') || node.id.startsWith('bottom-tasha-')) ? "例：〇〇新築現場" : "例：FTSビル 101号室"}
+                                    value={memoSite}
+                                    onChange={(e) => setMemoSite(e.target.value)}
+                                />
                             </div>
                             <div className="memo-field">
                                 <label className="memo-label">会社名/氏名</label>
-                                <input type="text" className="memo-input" placeholder="例：山田 太郎 様" />
+                                <input
+                                    type="text"
+                                    className="memo-input"
+                                    placeholder="例：山田 太郎 様"
+                                    value={memoCompany}
+                                    onChange={(e) => setMemoCompany(e.target.value)}
+                                />
                             </div>
                             <div className="memo-field full-width">
                                 <label className="memo-label">内容</label>
-                                <textarea className="memo-input memo-textarea" placeholder="詳細を入力してください..."></textarea>
+                                <textarea
+                                    className="memo-input memo-textarea"
+                                    placeholder="詳細を入力してください..."
+                                    value={memoContent}
+                                    onChange={(e) => setMemoContent(e.target.value)}
+                                />
                             </div>
                             <div className="memo-field full-width">
                                 <label className="memo-label">
@@ -359,6 +467,46 @@ const App: React.FC = () => {
                                 />
                             </div>
                         </div>
+                        <div className="memo-actions">
+                            <button
+                                className="memo-save-button"
+                                onClick={() => savePersonalMemo(node.id, node.text)}
+                                style={{ backgroundColor: themeColor }}
+                            >
+                                個人メモとして保存
+                            </button>
+                            <button
+                                className="memo-history-toggle"
+                                onClick={() => setShowPersonalHistory(v => !v)}
+                            >
+                                履歴 {personalMemos.length > 0 && `(${personalMemos.length})`}
+                            </button>
+                        </div>
+                        {showPersonalHistory && (
+                            <div className="personal-memo-list">
+                                {personalMemos.length === 0 ? (
+                                    <div className="personal-memo-empty">まだ保存された個人メモはありません</div>
+                                ) : (
+                                    personalMemos.map((pm) => (
+                                        <div key={pm.id} className="personal-memo-item">
+                                            <div className="personal-memo-meta">
+                                                <span className="personal-memo-node">{pm.node_label || pm.node_id}</span>
+                                                <span className="personal-memo-time">{formatRelativeTime(pm.created_at)}</span>
+                                            </div>
+                                            <div className="personal-memo-body">
+                                                {pm.site_name && <div><strong>現場/物件:</strong> {pm.site_name}</div>}
+                                                {pm.company_name && <div><strong>会社/氏名:</strong> {pm.company_name}</div>}
+                                                {pm.content && <div className="personal-memo-content">{pm.content}</div>}
+                                                {pm.callback_phone && <div><strong>折り返し:</strong> {pm.callback_phone}</div>}
+                                            </div>
+                                            <button className="personal-memo-delete" onClick={() => removePersonalMemo(pm.id)} aria-label="削除">
+                                                <CloseIcon size={14} />
+                                            </button>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -492,6 +640,10 @@ const App: React.FC = () => {
                                             <div className="history-name">
                                                 {m.name || '(名前なし)'}
                                                 {m.caller && <span className="history-caller"> / 架電者: {m.caller}</span>}
+                                            </div>
+                                            <div className="history-meta">
+                                                {m.created_by_name && <span>投稿: {m.created_by_name}</span>}
+                                                <span className="history-meta-time">{formatRelativeTime(m.created_at)}</span>
                                             </div>
                                         </div>
                                         <button className="delete-button" onClick={() => deleteMemo(m.id)}>削除</button>
