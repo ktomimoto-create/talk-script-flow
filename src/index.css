@@ -496,11 +496,11 @@ body {
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-top: 1px solid var(--glass-border);
-    padding: 12px 40px;
+    padding: 16px 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 30px;
+    gap: 20px;
     z-index: 1000;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
 }
@@ -538,50 +538,63 @@ body {
 .outgoing-memo-inputs {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     flex: 1;
-    max-width: 800px;
+    max-width: 1200px;
 }
 
 .outgoing-memo-field {
     flex: 1;
+    min-width: 0;
 }
 
+.outgoing-memo-field .memo-input {
+    height: 38px;
+    padding: 0 14px;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.05);
+    box-sizing: border-box;
+}
+
+/* 架電者バッジ: 入力欄と同じ縦高さの pill 形 */
 .outgoing-memo-caller-fixed {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 8px 14px;
-    border-radius: 10px;
-    background: rgba(64, 169, 255, 0.08);
-    border: 1px dashed rgba(64, 169, 255, 0.35);
+    gap: 6px;
+    height: 38px;
+    box-sizing: border-box;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(64, 169, 255, 0.14);
+    border: 1px solid rgba(64, 169, 255, 0.45);
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     white-space: nowrap;
     line-height: 1;
 }
 
 .outgoing-memo-caller-fixed strong {
     color: white;
-    font-weight: 600;
-}
-
-.outgoing-memo-field .memo-input {
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.05);
+    font-weight: 700;
 }
 
 .outgoing-memo-save-button {
     background: var(--error);
     color: white;
     border: none;
-    padding: 10px 20px;
+    height: 38px;
+    padding: 0 18px;
     border-radius: 10px;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .outgoing-memo-save-button:hover:not(:disabled) {
@@ -755,12 +768,18 @@ body {
     background: rgba(255, 255, 255, 0.1);
     color: white;
     border: 1px solid var(--glass-border);
-    padding: 10px 16px;
+    height: 38px;
+    padding: 0 16px;
     border-radius: 10px;
     font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .outgoing-memo-history-button:hover {

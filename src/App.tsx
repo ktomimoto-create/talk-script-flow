@@ -615,7 +615,8 @@ const App: React.FC = () => {
                         <input
                             type="text"
                             className="memo-input"
-                            placeholder="現場/物件名（任意）"
+                            placeholder="現場/物件名"
+                            title="任意"
                             value={tempSite}
                             onChange={(e) => setTempSite(e.target.value)}
                         />
