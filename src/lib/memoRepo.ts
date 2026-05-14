@@ -16,17 +16,47 @@ export type CallMemo = {
     completed_by_email: string | null;
 };
 
-export const fetchCallMemos = async (): Promise<CallMemo[]> => {
+/**
+ * 完了済みのメモは「完了させた本人」だけに見える。
+ * さらに完了から 24 時間経過したものは誰にも見えなくなる（＝自動失効）。
+ *
+ * 失効済み完了メモは可視ではないので、ついでに DELETE で物理削除しておく。
+ */
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
+export const cleanupExpiredCompletedMemos = async (): Promise<void> => {
+    const cutoffIso = new Date(Date.now() - ONE_DAY_MS).toISOString();
+    const { error } = await supabase
+        .from('call_memos')
+        .delete()
+        .not('completed_at', 'is', null)
+        .lt('completed_at', cutoffIso);
+    if (error) {
+        console.warn('[memoRepo] cleanupExpiredCompletedMemos failed', error);
+    }
+};
+
+export const fetchCallMemos = async (ownerEmail: string): Promise<CallMemo[]> => {
+    // 失効済みの完了メモを掃除してから取得
+    await cleanupExpiredCompletedMemos();
+
     const { data, error } = await supabase
         .from('call_memos')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(200);
+        .limit(300);
     if (error) {
         console.warn('[memoRepo] fetchCallMemos failed', error);
         return [];
     }
-    return (data as CallMemo[]) ?? [];
+    const now = Date.now();
+    const email = ownerEmail.trim().toLowerCase();
+    return (data as CallMemo[]).filter(m => {
+        if (!m.completed_at) return true; // 未完了は誰でも見える
+        // 完了済み：本人にだけ、かつ24h以内のみ可視
+        if ((m.completed_by_email ?? '').trim().toLowerCase() !== email) return false;
+        return now - new Date(m.completed_at).getTime() < ONE_DAY_MS;
+    });
 };
 
 export const insertCallMemo = async (

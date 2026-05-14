@@ -187,13 +187,13 @@ const App: React.FC = () => {
 
     // 架電メモ（Supabase で全認証ユーザー間で共有）
     const [outgoingMemos, setOutgoingMemos] = useState<CallMemo[]>([]);
+    const reloadCallMemos = React.useCallback(() => {
+        if (!ownerEmail) return;
+        fetchCallMemos(ownerEmail).then(setOutgoingMemos);
+    }, [ownerEmail]);
     React.useEffect(() => {
-        let cancelled = false;
-        fetchCallMemos().then(list => {
-            if (!cancelled) setOutgoingMemos(list);
-        });
-        return () => { cancelled = true; };
-    }, []);
+        reloadCallMemos();
+    }, [reloadCallMemos]);
 
     // 架電メモ入力フォームの状態（架電者はログインユーザー固定）
     const [tempPhone, setTempPhone] = useState('');
@@ -630,9 +630,14 @@ const App: React.FC = () => {
                     >
                         不通
                     </button>
-                    <button 
+                    <button
                         className="outgoing-memo-history-button"
-                        onClick={() => setShowHistory(!showHistory)}
+                        onClick={() => {
+                            const next = !showHistory;
+                            setShowHistory(next);
+                            // 開くたびに最新化（他ユーザーが完了/追加した分を反映）
+                            if (next) reloadCallMemos();
+                        }}
                     >
                         履歴 {outgoingMemos.length > 0 && `(${outgoingMemos.length})`}
                     </button>
