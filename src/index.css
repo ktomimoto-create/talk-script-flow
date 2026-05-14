@@ -547,6 +547,26 @@ body {
     flex: 1;
 }
 
+.outgoing-memo-caller-fixed {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: rgba(64, 169, 255, 0.08);
+    border: 1px dashed rgba(64, 169, 255, 0.35);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.outgoing-memo-caller-fixed strong {
+    color: white;
+    font-weight: 600;
+}
+
 .outgoing-memo-field .memo-input {
     padding: 8px 16px;
     background: rgba(255, 255, 255, 0.05);
@@ -1029,15 +1049,75 @@ body {
     border-color: rgba(255, 255, 255, 0.1);
 }
 
+.history-item.is-done {
+    opacity: 0.55;
+}
+
+.history-item.is-done .history-phone,
+.history-item.is-done .history-name {
+    text-decoration: line-through;
+    text-decoration-color: rgba(255, 255, 255, 0.4);
+}
+
 .history-info {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    min-width: 0;
+    flex: 1;
 }
 
 .history-phone {
     font-weight: 700;
     font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.history-done-badge {
+    background: rgba(115, 209, 61, 0.18);
+    color: #95de64;
+    border: 1px solid rgba(115, 209, 61, 0.4);
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.history-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.history-item .complete-button {
+    background: rgba(115, 209, 61, 0.12);
+    color: #95de64;
+    border: 1px solid rgba(115, 209, 61, 0.3);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.history-item .complete-button:hover {
+    background: rgba(115, 209, 61, 0.28);
+    transform: translateY(1px);
+}
+
+.history-item .complete-button.undo {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+    border-color: var(--glass-border);
+}
+
+.history-item .complete-button.undo:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: white;
 }
 
 .history-name {

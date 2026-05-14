@@ -13,6 +13,8 @@ import {
     fetchCallMemos,
     insertCallMemo,
     deleteCallMemo,
+    completeCallMemo,
+    uncompleteCallMemo,
     PersonalMemo,
     fetchPersonalMemos,
     insertPersonalMemo,
@@ -193,10 +195,9 @@ const App: React.FC = () => {
         return () => { cancelled = true; };
     }, []);
 
-    // 架電メモ入力フォームの状態
+    // 架電メモ入力フォームの状態（架電者はログインユーザー固定）
     const [tempPhone, setTempPhone] = useState('');
     const [tempName, setTempName] = useState('');
-    const [tempCaller, setTempCaller] = useState('');
 
     // 履歴表示の状態
     const [showHistory, setShowHistory] = useState(false);
@@ -259,7 +260,7 @@ const App: React.FC = () => {
         const created = await insertCallMemo({
             phone: tempPhone,
             name: tempName,
-            caller: tempCaller,
+            caller: ownerDisplayName, // 架電者は自動でログインユーザー
             created_by_email: ownerEmail || null,
             created_by_name: ownerDisplayName || null,
         });
@@ -267,7 +268,6 @@ const App: React.FC = () => {
             setOutgoingMemos(prev => [created, ...prev]);
             setTempPhone('');
             setTempName('');
-            setTempCaller('');
         } else {
             alert('架電メモの保存に失敗しました');
         }
@@ -279,6 +279,17 @@ const App: React.FC = () => {
             setOutgoingMemos(prev => prev.filter(m => m.id !== id));
         } else {
             alert('削除に失敗しました');
+        }
+    };
+
+    const toggleCompleteMemo = async (memo: CallMemo) => {
+        const updated = memo.completed_at
+            ? await uncompleteCallMemo(memo.id)
+            : await completeCallMemo(memo.id, ownerEmail || null);
+        if (updated) {
+            setOutgoingMemos(prev => prev.map(m => (m.id === memo.id ? updated : m)));
+        } else {
+            alert('完了状態の更新に失敗しました');
         }
     };
 
@@ -597,14 +608,8 @@ const App: React.FC = () => {
                             onChange={(e) => setTempName(e.target.value)}
                         />
                     </div>
-                    <div className="outgoing-memo-field">
-                        <input 
-                            type="text" 
-                            className="memo-input" 
-                            placeholder="架電者" 
-                            value={tempCaller}
-                            onChange={(e) => setTempCaller(e.target.value)}
-                        />
+                    <div className="outgoing-memo-caller-fixed" title="ログインユーザーで自動設定">
+                        架電者: <strong>{ownerDisplayName || '(未取得)'}</strong>
                     </div>
                     <button 
                         className="outgoing-memo-save-button"
@@ -633,22 +638,41 @@ const App: React.FC = () => {
                             {outgoingMemos.length === 0 ? (
                                 <div className="history-empty">履歴はありません</div>
                             ) : (
-                                outgoingMemos.map((m) => (
-                                    <div key={m.id} className="history-item">
-                                        <div className="history-info">
-                                            <div className="history-phone">{m.phone}</div>
-                                            <div className="history-name">
-                                                {m.name || '(名前なし)'}
-                                                {m.caller && <span className="history-caller"> / 架電者: {m.caller}</span>}
+                                outgoingMemos.map((m) => {
+                                    const isMine = !!ownerEmail && m.created_by_email?.toLowerCase() === ownerEmail.toLowerCase();
+                                    const isDone = !!m.completed_at;
+                                    return (
+                                        <div key={m.id} className={`history-item ${isDone ? 'is-done' : ''}`}>
+                                            <div className="history-info">
+                                                <div className="history-phone">
+                                                    {m.phone}
+                                                    {isDone && <span className="history-done-badge">完了</span>}
+                                                </div>
+                                                <div className="history-name">
+                                                    {m.name || '(名前なし)'}
+                                                    {m.caller && <span className="history-caller"> / 架電者: {m.caller}</span>}
+                                                </div>
+                                                <div className="history-meta">
+                                                    {m.created_by_name && <span>投稿: {m.created_by_name}</span>}
+                                                    <span className="history-meta-time">{formatRelativeTime(m.created_at)}</span>
+                                                </div>
                                             </div>
-                                            <div className="history-meta">
-                                                {m.created_by_name && <span>投稿: {m.created_by_name}</span>}
-                                                <span className="history-meta-time">{formatRelativeTime(m.created_at)}</span>
+                                            <div className="history-actions">
+                                                {isMine && (
+                                                    <button
+                                                        className={`complete-button ${isDone ? 'undo' : ''}`}
+                                                        onClick={() => toggleCompleteMemo(m)}
+                                                    >
+                                                        {isDone ? '取消' : '完了'}
+                                                    </button>
+                                                )}
+                                                {isMine && (
+                                                    <button className="delete-button" onClick={() => deleteMemo(m.id)}>削除</button>
+                                                )}
                                             </div>
                                         </div>
-                                        <button className="delete-button" onClick={() => deleteMemo(m.id)}>削除</button>
-                                    </div>
-                                ))
+                                    );
+                                })
                             )}
                         </div>
                     </div>
