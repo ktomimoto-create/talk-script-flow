@@ -198,6 +198,7 @@ const App: React.FC = () => {
     // 架電メモ入力フォームの状態（架電者はログインユーザー固定）
     const [tempPhone, setTempPhone] = useState('');
     const [tempName, setTempName] = useState('');
+    const [tempSite, setTempSite] = useState('');
 
     // 履歴表示の状態
     const [showHistory, setShowHistory] = useState(false);
@@ -261,6 +262,7 @@ const App: React.FC = () => {
             phone: tempPhone,
             name: tempName,
             caller: ownerDisplayName, // 架電者は自動でログインユーザー
+            site_name: tempSite,
             created_by_email: ownerEmail || null,
             created_by_name: ownerDisplayName || null,
         });
@@ -268,6 +270,7 @@ const App: React.FC = () => {
             setOutgoingMemos(prev => [created, ...prev]);
             setTempPhone('');
             setTempName('');
+            setTempSite('');
         } else {
             alert('架電メモの保存に失敗しました');
         }
@@ -600,12 +603,21 @@ const App: React.FC = () => {
                         />
                     </div>
                     <div className="outgoing-memo-field">
-                        <input 
-                            type="text" 
-                            className="memo-input" 
-                            placeholder="名前（架電先）" 
+                        <input
+                            type="text"
+                            className="memo-input"
+                            placeholder="名前（架電先）"
                             value={tempName}
                             onChange={(e) => setTempName(e.target.value)}
+                        />
+                    </div>
+                    <div className="outgoing-memo-field">
+                        <input
+                            type="text"
+                            className="memo-input"
+                            placeholder="現場/物件名（任意）"
+                            value={tempSite}
+                            onChange={(e) => setTempSite(e.target.value)}
                         />
                     </div>
                     <div className="outgoing-memo-caller-fixed" title="ログインユーザーで自動設定">
@@ -652,6 +664,9 @@ const App: React.FC = () => {
                                                     {m.name || '(名前なし)'}
                                                     {m.caller && <span className="history-caller"> / 架電者: {m.caller}</span>}
                                                 </div>
+                                                {m.site_name && (
+                                                    <div className="history-site">現場/物件: {m.site_name}</div>
+                                                )}
                                                 <div className="history-meta">
                                                     {m.created_by_name && <span>投稿: {m.created_by_name}</span>}
                                                     <span className="history-meta-time">{formatRelativeTime(m.created_at)}</span>

@@ -8,6 +8,7 @@ export type CallMemo = {
     phone: string;
     name: string;
     caller: string;
+    site_name: string;
     created_by_email: string | null;
     created_by_name: string | null;
     created_at: string;
@@ -30,6 +31,7 @@ export const fetchCallMemos = async (): Promise<CallMemo[]> => {
 
 export const insertCallMemo = async (
     input: Pick<CallMemo, 'phone' | 'name' | 'caller'> & {
+        site_name?: string;
         created_by_email?: string | null;
         created_by_name?: string | null;
     },
@@ -40,6 +42,7 @@ export const insertCallMemo = async (
             phone: input.phone,
             name: input.name,
             caller: input.caller,
+            site_name: input.site_name ?? '',
             created_by_email: input.created_by_email ?? null,
             created_by_name: input.created_by_name ?? null,
         })
