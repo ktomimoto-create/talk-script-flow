@@ -416,9 +416,6 @@ const App: React.FC = () => {
                         <ArrowLeftIcon size={16} />
                         <span>戻る</span>
                     </button>
-                    <button className="node-sidebar-close" onClick={closeSidebar} aria-label="閉じる">
-                        <CloseIcon size={20} />
-                    </button>
                 </div>
                 <div className="node-sidebar-body" key={currentNodeId}>
                     {isSidebarOpen && renderSidebarBody(currentNode)}
