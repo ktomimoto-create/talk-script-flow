@@ -11,6 +11,8 @@ export type CallMemo = {
     created_by_email: string | null;
     created_by_name: string | null;
     created_at: string;
+    completed_at: string | null;
+    completed_by_email: string | null;
 };
 
 export const fetchCallMemos = async (): Promise<CallMemo[]> => {
@@ -57,6 +59,40 @@ export const deleteCallMemo = async (id: number): Promise<boolean> => {
         return false;
     }
     return true;
+};
+
+export const completeCallMemo = async (
+    id: number,
+    completedByEmail: string | null,
+): Promise<CallMemo | null> => {
+    const { data, error } = await supabase
+        .from('call_memos')
+        .update({
+            completed_at: new Date().toISOString(),
+            completed_by_email: completedByEmail,
+        })
+        .eq('id', id)
+        .select('*')
+        .single();
+    if (error) {
+        console.warn('[memoRepo] completeCallMemo failed', error);
+        return null;
+    }
+    return data as CallMemo;
+};
+
+export const uncompleteCallMemo = async (id: number): Promise<CallMemo | null> => {
+    const { data, error } = await supabase
+        .from('call_memos')
+        .update({ completed_at: null, completed_by_email: null })
+        .eq('id', id)
+        .select('*')
+        .single();
+    if (error) {
+        console.warn('[memoRepo] uncompleteCallMemo failed', error);
+        return null;
+    }
+    return data as CallMemo;
 };
 
 /* ====================================
