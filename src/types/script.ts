@@ -1,16 +1,10 @@
-export interface SubBranch {
-    label: string;
-    nextNodeId: string;
-    color?: string;
-}
-
 export interface Branch {
     label: string;
     subLabel?: string;
     nextNodeId: string;
     color?: string;
     middleBox?: { label: string; color?: string };
-    subBranches?: SubBranch[];
+    subBranches?: { label: string; nextNodeId: string; color?: string }[];
 }
 
 export interface ScriptNode {

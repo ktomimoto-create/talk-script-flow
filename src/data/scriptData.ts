@@ -34,10 +34,10 @@ export const scriptData: ScriptNode[] = [
             {
                 label: '保守管理',
                 nextNodeId: 'final-hoshu',
-                color: '#eb2f96',
+                color: '#40a9ff',
                 subBranches: [
-                    { label: 'メンテナンス日の確認', nextNodeId: 'bottom-kanri-hoshu-date', color: '#eb2f96' },
-                    { label: '報告書に関する問い合わせ', nextNodeId: 'bottom-kanri-hoshu-report', color: '#eb2f96' }
+                    { label: 'メンテナンス日の確認', nextNodeId: 'bottom-kanri-hoshu-date', color: '#40a9ff' },
+                    { label: '報告書に関する問い合わせ', nextNodeId: 'bottom-kanri-hoshu-report', color: '#40a9ff' }
                 ]
             },
             {
@@ -147,10 +147,10 @@ export const scriptData: ScriptNode[] = [
             {
                 label: '保守管理',
                 nextNodeId: 'final-hoshu',
-                color: '#eb2f96',
+                color: '#40a9ff',
                 subBranches: [
-                    { label: 'メンテナンス日の確認', nextNodeId: 'bottom-kanri-in-hoshu-date', color: '#eb2f96' },
-                    { label: '定期点検対応結果に関する問い合わせ', nextNodeId: 'bottom-kanri-in-hoshu-teiki', color: '#eb2f96' }
+                    { label: 'メンテナンス日の確認', nextNodeId: 'bottom-kanri-in-hoshu-date', color: '#40a9ff' },
+                    { label: '定期点検対応結果に関する問い合わせ', nextNodeId: 'bottom-kanri-in-hoshu-teiki', color: '#40a9ff' }
                 ]
             },
             {

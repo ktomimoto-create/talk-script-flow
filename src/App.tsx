@@ -183,6 +183,9 @@ const App: React.FC = () => {
     const [currentNodeId, setCurrentNodeId] = useState<string>('juden');
     const { profile, email: msalEmail } = useProfile();
     const ownerEmail = (profile?.email || msalEmail || '').trim();
+
+    // 詳細表示用個人メモステート
+    const [activeDetailMemo, setActiveDetailMemo] = useState<PersonalMemo | null>(null);
     const ownerDisplayName = profile?.display_name || msalEmail || '';
 
     // 架電メモ（Supabase で全認証ユーザー間で共有）
@@ -202,6 +205,8 @@ const App: React.FC = () => {
 
     // 履歴表示の状態
     const [showHistory, setShowHistory] = useState(false);
+    // 個人メモ履歴パネル（下部ポップアップ）表示の状態
+    const [showPersonalHistoryPanel, setShowPersonalHistoryPanel] = useState(false);
 
     // 受電メモ入力欄の状態（照合用）
     const [callbackPhone, setCallbackPhone] = useState('');
@@ -323,6 +328,13 @@ const App: React.FC = () => {
         return '#40a9ff';
     }, [currentNodeId]);
 
+    const displayedPersonalMemos = useMemo(() => {
+        if (currentNodeId === 'juden') {
+            return personalMemos;
+        }
+        return personalMemos.filter(pm => pm.node_id === currentNodeId);
+    }, [personalMemos, currentNodeId]);
+
     // 初期化：popstateリスナーの登録と初期ハッシュの処理
     React.useEffect(() => {
         const onPopState = (e: PopStateEvent) => {
@@ -352,12 +364,17 @@ const App: React.FC = () => {
     }, []);
 
     const handleNext = React.useCallback((nextNodeId: string) => {
-        window.history.pushState({ nodeId: nextNodeId }, '', `#${nextNodeId}`);
+        if (currentNodeId === 'juden') {
+            window.history.pushState({ nodeId: nextNodeId }, '', `#${nextNodeId}`);
+        } else {
+            window.history.replaceState({ nodeId: nextNodeId }, '', `#${nextNodeId}`);
+        }
         setCurrentNodeId(nextNodeId);
-    }, []);
+    }, [currentNodeId]);
 
     const handleBack = React.useCallback(() => {
-        window.history.back();
+        window.history.pushState({ nodeId: 'juden' }, '', '#juden');
+        setCurrentNodeId('juden');
     }, []);
 
     const jubenNode = scriptData.find(n => n.id === 'juden') as ScriptNode;
@@ -584,68 +601,93 @@ const App: React.FC = () => {
                 </div>
             </aside>
 
-            {/* 架電メモ入力フォーム（旧クイックアクションの場所） */}
+            {/* 架電メモおよび個人メモの一体型下部バー */}
             <div className="outgoing-memo-bar">
-                <div className="outgoing-memo-title">
-                    <span className="outgoing-memo-icon">
-                        <PhoneIcon size={18} />
-                    </span>
-                    <span className="outgoing-memo-title-text">架電メモ</span>
-                </div>
-                <div className="outgoing-memo-inputs">
-                    <div className="outgoing-memo-field">
+                {/* 左側のスペース（架電メモを中央にするためのダミー） */}
+                <div style={{ flex: 1 }}></div>
+
+                {/* 中央：架電メモセクション */}
+                <div className="outgoing-memo-left-section" style={{ flex: '0 1 auto', display: 'flex', justifyContent: 'center' }}>
+                    <div className="outgoing-memo-left-row">
+                        <span className="outgoing-memo-title">
+                            <span className="outgoing-memo-icon">
+                                <PhoneIcon size={16} />
+                            </span>
+                            <span className="outgoing-memo-title-text" style={{ fontSize: '0.85rem' }}>架電メモ</span>
+                        </span>
+                        <span className="outgoing-memo-caller-fixed" style={{ height: '26px', padding: '0 8px', fontSize: '0.7rem', display: 'flex', alignItems: 'center' }} title="ログインユーザーで自動設定">
+                            架電者: <strong>{ownerDisplayName || '(未取得)'}</strong>
+                        </span>
                         <input 
                             type="text" 
                             className="memo-input" 
+                            style={{ height: '32px', width: '120px', fontSize: '0.8rem', padding: '0 10px' }}
                             placeholder="電話番号" 
                             value={tempPhone}
                             onChange={(e) => setTempPhone(e.target.value)}
                         />
-                    </div>
-                    <div className="outgoing-memo-field">
                         <input
                             type="text"
                             className="memo-input"
-                            placeholder="名前（架電先）"
+                            style={{ height: '32px', width: '90px', fontSize: '0.8rem', padding: '0 10px' }}
+                            placeholder="架電先氏名"
                             value={tempName}
                             onChange={(e) => setTempName(e.target.value)}
                         />
-                    </div>
-                    <div className="outgoing-memo-field">
                         <input
                             type="text"
                             className="memo-input"
+                            style={{ height: '32px', width: '120px', fontSize: '0.8rem', padding: '0 10px' }}
                             placeholder="現場/物件名"
-                            title="任意"
                             value={tempSite}
                             onChange={(e) => setTempSite(e.target.value)}
                         />
+                        <button 
+                            className="outgoing-memo-save-button"
+                            style={{ height: '32px', padding: '0 12px', fontSize: '0.8rem' }}
+                            onClick={saveOutgoingMemo}
+                            disabled={!tempPhone}
+                        >
+                            不通
+                        </button>
+                        <button
+                            className="outgoing-memo-history-button"
+                            style={{ height: '32px', padding: '0 10px', fontSize: '0.8rem' }}
+                            onClick={() => {
+                                const next = !showHistory;
+                                setShowHistory(next);
+                                if (next) {
+                                    reloadCallMemos();
+                                    setShowPersonalHistoryPanel(false);
+                                }
+                            }}
+                        >
+                            履歴 {outgoingMemos.length > 0 && `(${outgoingMemos.length})`}
+                        </button>
                     </div>
-                    <div className="outgoing-memo-caller-fixed" title="ログインユーザーで自動設定">
-                        架電者: <strong>{ownerDisplayName || '(未取得)'}</strong>
-                    </div>
-                    <button 
-                        className="outgoing-memo-save-button"
-                        onClick={saveOutgoingMemo}
-                        disabled={!tempPhone}
-                    >
-                        不通
-                    </button>
+                </div>
+
+                {/* 右側：個人メモセクション（ボタンのみのコンパクト表示。右寄せ） */}
+                <div className="outgoing-memo-right-compact-section" style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
                     <button
-                        className="outgoing-memo-history-button"
+                        className="personal-memo-history-button"
+                        style={{ height: '32px', padding: '0 14px', fontSize: '0.8rem', fontWeight: 600 }}
                         onClick={() => {
-                            const next = !showHistory;
-                            setShowHistory(next);
-                            // 開くたびに最新化（他ユーザーが完了/追加した分を反映）
-                            if (next) reloadCallMemos();
+                            const next = !showPersonalHistoryPanel;
+                            setShowPersonalHistoryPanel(next);
+                            if (next) {
+                                reloadPersonalMemos();
+                                setShowHistory(false);
+                            }
                         }}
                     >
-                        履歴 {outgoingMemos.length > 0 && `(${outgoingMemos.length})`}
+                        個人メモ履歴 {personalMemos.length > 0 && `(${personalMemos.length})`}
                     </button>
                 </div>
 
+                {/* 不通履歴詳細モーダル表示（履歴クリック時に開くパネル。架電メモの上に中央寄せ表示） */}
                 {showHistory && (
-                    <div className="outgoing-memo-history-panel">
+                    <div className="outgoing-memo-history-panel" style={{ bottom: '80px', left: '50%', transform: 'translateX(-50%)', right: 'auto', width: '420px' }}>
                         <div className="history-header">
                             <span>不通履歴一覧</span>
                             <button className="close-button" aria-label="閉じる" onClick={() => setShowHistory(false)}>
@@ -698,7 +740,121 @@ const App: React.FC = () => {
                         </div>
                     </div>
                 )}
+
+                {/* 個人メモ履歴一覧パネル（下部バーの上にふわっと表示） */}
+                {showPersonalHistoryPanel && (
+                    <div className="outgoing-memo-history-panel" style={{ bottom: '80px', right: '32px', left: 'auto', width: '420px' }}>
+                        <div className="history-header">
+                            <span>
+                                {currentNodeId === 'juden' 
+                                    ? '個人メモ履歴一覧 (全件)' 
+                                    : `個人メモ履歴一覧: ${currentNode.text}`}
+                            </span>
+                            <button 
+                                className="close-button" 
+                                aria-label="閉じる" 
+                                onClick={() => setShowPersonalHistoryPanel(false)}
+                            >
+                                <CloseIcon size={18} />
+                            </button>
+                        </div>
+                        <div className="history-list" style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                            {displayedPersonalMemos.length === 0 ? (
+                                <div className="history-empty" style={{ padding: '20px', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                                    {currentNodeId === 'juden' 
+                                        ? '保存済みの個人メモはありません' 
+                                        : 'このボックスに保存されたメモはありません'}
+                                </div>
+                            ) : (
+                                displayedPersonalMemos.map((pm) => (
+                                    <div 
+                                        key={pm.id} 
+                                        className="memo-list-item" 
+                                        onClick={() => setActiveDetailMemo(pm)}
+                                    >
+                                        <div className="memo-item-left">
+                                            <span className="memo-item-node-badge" title={pm.node_label || pm.node_id}>
+                                                {pm.node_label || pm.node_id}
+                                            </span>
+                                            <span className="memo-item-title" title={pm.site_name || pm.company_name || pm.content || '(メモ内容なし)'}>
+                                                {pm.site_name || pm.company_name || pm.content || '(メモ内容なし)'}
+                                            </span>
+                                        </div>
+                                        <span className="memo-item-time">
+                                            {formatRelativeTime(pm.created_at)}
+                                        </span>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
+
+            {/* 個人メモ詳細ポップアップモーダル */}
+            {activeDetailMemo && (
+                <div className="memo-detail-modal-overlay" onClick={() => setActiveDetailMemo(null)}>
+                    <div className="memo-detail-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="memo-detail-header">
+                            <div>
+                                <h2 className="memo-detail-title">個人メモ詳細</h2>
+                                <div className="memo-detail-node-label">
+                                    対象ボックス: {activeDetailMemo.node_label || activeDetailMemo.node_id}
+                                </div>
+                            </div>
+                            <span className="memo-detail-time">
+                                保存日時: {new Date(activeDetailMemo.created_at).toLocaleString()}
+                            </span>
+                        </div>
+                        <div className="memo-detail-body">
+                            {(activeDetailMemo.site_name || activeDetailMemo.node_id.startsWith('bottom-kenchiku-') || activeDetailMemo.node_id.startsWith('bottom-tasha-')) && (
+                                <div className="memo-detail-field">
+                                    <span className="memo-detail-label">
+                                        {(activeDetailMemo.node_id.startsWith('bottom-kenchiku-') || activeDetailMemo.node_id.startsWith('bottom-tasha-')) ? '現場名' : '号機/物件名'}
+                                    </span>
+                                    <div className="memo-detail-value">{activeDetailMemo.site_name || '(未入力)'}</div>
+                                </div>
+                            )}
+                            <div className="memo-detail-field">
+                                <span className="memo-detail-label">会社名/氏名</span>
+                                <div className="memo-detail-value">{activeDetailMemo.company_name || '(未入力)'}</div>
+                            </div>
+                            <div className="memo-detail-field">
+                                <span className="memo-detail-label">内容</span>
+                                <div className="memo-detail-value textarea">{activeDetailMemo.content || '(未入力)'}</div>
+                            </div>
+                            <div className="memo-detail-field">
+                                <span className="memo-detail-label">折り返し先</span>
+                                <div className="memo-detail-value">{activeDetailMemo.callback_phone || '(未入力)'}</div>
+                            </div>
+                        </div>
+                        <div className="memo-detail-actions">
+                            <button 
+                                className="memo-detail-delete-btn"
+                                onClick={async () => {
+                                    if (confirm('この個人メモを削除しますか？')) {
+                                        const ok = await deletePersonalMemo(activeDetailMemo.id);
+                                        if (ok) {
+                                            setPersonalMemos(prev => prev.filter(m => m.id !== activeDetailMemo.id));
+                                            setActiveDetailMemo(null);
+                                        } else {
+                                            alert('削除に失敗しました');
+                                        }
+                                    }
+                                }}
+                            >
+                                削除
+                            </button>
+                            <button 
+                                className="memo-detail-close-btn"
+                                onClick={() => setActiveDetailMemo(null)}
+                            >
+                                閉じる
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </React.Fragment>
     );
 };

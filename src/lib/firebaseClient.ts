@@ -1,33 +1,31 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
-const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID,
-};
+const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
+const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+const appId = import.meta.env.VITE_FIREBASE_APP_ID;
 
-const isConfigured = !!(
-    firebaseConfig.apiKey &&
-    firebaseConfig.projectId &&
-    firebaseConfig.appId
-);
+const isConfigured = !!(apiKey && projectId && appId);
 
 if (!isConfigured) {
     // eslint-disable-next-line no-console
     console.warn(
-        '[firebase] Firebase環境変数が未設定です。データベース機能およびプロフィール取得は無効化されます。'
+        '[firebase] Firebase環境変数が未設定です。データベース機能およびプロフィール取得はダミー設定で動作します。'
     );
 }
 
-const app = isConfigured
-    ? (getApps().length > 0 ? getApp() : initializeApp(firebaseConfig))
-    : null;
+const firebaseConfig = {
+    apiKey: apiKey || 'dummy-api-key',
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'dummy.firebaseapp.com',
+    projectId: projectId || 'dummy-project',
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'dummy.appspot.com',
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '0000000000',
+    appId: appId || '1:0000000000:web:0000000000',
+};
 
-export const db = app ? getFirestore(app) : null;
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+
+export const db = getFirestore(app);
 
 export type Profile = {
     id: string;

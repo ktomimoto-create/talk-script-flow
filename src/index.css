@@ -1172,3 +1172,263 @@ body {
     background: #ff4d4d;
     color: white;
 }
+
+/* ===========================================
+   下部バーの分割と個人メモ表示スタイル
+   =========================================== */
+
+/* 下部バーを1行のフレックスボックスに戻し、高さを抑える */
+.outgoing-memo-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 68px; /* 高さを 104px から 68px に縮小 */
+    padding: 0 32px;
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+/* 左側：架電メモセクション（1行並び） */
+.outgoing-memo-left-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+}
+
+.outgoing-memo-left-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+}
+
+/* 右側：個人メモセクション（ボタンのみのコンパクト表示） */
+.outgoing-memo-right-compact-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.personal-memo-history-button {
+    background: rgba(64, 169, 255, 0.08);
+    color: var(--primary);
+    border: 1px solid rgba(64, 169, 255, 0.4);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.personal-memo-history-button:hover {
+    background: rgba(64, 169, 255, 0.18);
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(64, 169, 255, 0.25);
+}
+
+/* 個人メモ簡易リストアイテム（ポップアップパネル内で使用） */
+.memo-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    min-width: 0;
+    margin: 6px 16px;
+}
+
+.memo-list-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary);
+    transform: translateX(2px);
+}
+
+.memo-item-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
+.memo-item-node-badge {
+    color: var(--primary);
+    background: rgba(64, 169, 255, 0.12);
+    border: 1px solid rgba(64, 169, 255, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.memo-item-title {
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+.memo-item-time {
+    color: var(--text-secondary);
+    font-size: 0.72rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ===========================================
+   個人メモ詳細ポップアップモーダル
+   =========================================== */
+.memo-detail-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 10, 20, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeInModal 0.25s ease-out;
+}
+
+.memo-detail-modal {
+    background: rgba(26, 26, 46, 0.98);
+    border: 1px solid var(--glass-border);
+    border-top: 6px solid var(--primary);
+    border-radius: 20px;
+    width: min(500px, 90vw);
+    padding: 28px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+    position: relative;
+    animation: slideUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUpModal {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.memo-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 12px;
+}
+
+.memo-detail-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.memo-detail-node-label {
+    font-size: 0.75rem;
+    color: var(--primary);
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+.memo-detail-time {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.memo-detail-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.memo-detail-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.memo-detail-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.memo-detail-value {
+    font-size: 0.95rem;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 10px 14px;
+    line-height: 1.5;
+}
+
+.memo-detail-value.textarea {
+    white-space: pre-wrap;
+    min-height: 80px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.memo-detail-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.memo-detail-close-btn {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    border: 1px solid var(--glass-border);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.memo-detail-close-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.memo-detail-delete-btn {
+    background: var(--error);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.memo-detail-delete-btn:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(255, 77, 77, 0.25);
+}
+
+/* サイドバーの下部パディングを広げて重なりを防止 */
+.node-sidebar {
+    padding-bottom: 110px !important;
+}

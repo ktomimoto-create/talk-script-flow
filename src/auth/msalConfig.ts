@@ -1,57 +1,47 @@
-import { Configuration, LogLevel, PublicClientApplication } from '@azure/msal-browser';
+import { Configuration, LogLevel, PublicClientApplication } from "@azure/msal-browser";
 
 /**
- * Microsoft Entra ID (旧 Azure AD) の SSO 設定
- *
- * .env (もしくは .env.local) に以下を定義してください:
- *   VITE_AZURE_CLIENT_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
- *   VITE_AZURE_TENANT_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
- *   VITE_AZURE_REDIRECT_URI=http://localhost:5173
+ * MSAL Configuration
  */
-const clientId = import.meta.env.VITE_AZURE_CLIENT_ID as string | undefined;
-const tenantId = import.meta.env.VITE_AZURE_TENANT_ID as string | undefined;
-const redirectUri =
-    (import.meta.env.VITE_AZURE_REDIRECT_URI as string | undefined) ||
-    window.location.origin;
-
-if (!clientId || !tenantId) {
-    // 開発時に気付けるよう警告
-    // eslint-disable-next-line no-console
-    console.warn(
-        '[msalConfig] VITE_AZURE_CLIENT_ID / VITE_AZURE_TENANT_ID が未設定です。\n' +
-            '.env.local を作成して値を設定してください。'
-    );
-}
-
 export const msalConfig: Configuration = {
     auth: {
-        clientId: clientId ?? '',
-        authority: `https://login.microsoftonline.com/${tenantId ?? 'common'}`,
-        redirectUri,
-        postLogoutRedirectUri: redirectUri,
+        clientId: import.meta.env.VITE_AZURE_CLIENT_ID || "CLIENT_ID_MISSING",
+        authority: `https://login.microsoftonline.com/${import.meta.env.VITE_AZURE_TENANT_ID || "common"}`,
+        redirectUri: import.meta.env.VITE_AZURE_REDIRECT_URI || "http://localhost:5177",
+        navigateToLoginRequestUrl: true,
     },
     cache: {
-        cacheLocation: 'sessionStorage', // 社内利用前提なので sessionStorage で OK
+        cacheLocation: "sessionStorage", // 'localStorage' or 'sessionStorage'
+        storeAuthStateInCookie: false,
     },
     system: {
         loggerOptions: {
-            loggerCallback: (level, message) => {
-                if (level === LogLevel.Error) {
-                    // eslint-disable-next-line no-console
-                    console.error('[MSAL]', message);
+            loggerCallback: (level, message, containsPii) => {
+                if (containsPii) return;
+                switch (level) {
+                    case LogLevel.Error: console.error(message); return;
+                    case LogLevel.Info: console.info(message); return;
+                    case LogLevel.Verbose: console.debug(message); return;
+                    case LogLevel.Warning: console.warn(message); return;
+                    default: return;
                 }
-            },
-            logLevel: LogLevel.Warning,
-        },
-    },
+            }
+        }
+    }
 };
 
 /**
- * ログイン時に要求するスコープ。
- * openid / profile / email があれば、JWT に氏名・メール・oid が入ってくる。
+ * Scopes for Login
  */
 export const loginRequest = {
-    scopes: ['openid', 'profile', 'email', 'User.Read'],
+    scopes: ["User.Read"]
+};
+
+/**
+ * Graph Endpoints
+ */
+export const graphConfig = {
+    graphMeEndpoint: "https://graph.microsoft.com/v1.0/me"
 };
 
 export const msalInstance = new PublicClientApplication(msalConfig);

@@ -1,14 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useMsal } from '@azure/msal-react';
-import { db, Profile } from '../lib/firebaseClient';
-import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../lib/firebaseClient';
+import { collection, query, where, getDocs, limit } from 'firebase/firestore';
+
+export type Profile = {
+    id: string;
+    email: string | null;
+    display_name: string | null;
+    avatar_url: string | null;
+    department: string | null;
+    position: string | null;
+};
 
 /**
- * MSAL でサインイン中のユーザーのメールをキーに、Cloud Firestore profiles から
+ * MSAL でサインイン中のユーザーのメールをキーに、Firestore profiles から
  * プロフィール情報を 1 件取得するフック。
- *
- * - ドキュメントIDとして小文字のメールアドレスを使用します。
- * - 環境変数未設定時やFirestoreにプロフィールがない場合は、MSALアカウント情報からフォールバック値を生成します。
  */
 export const useProfile = () => {
     const { accounts } = useMsal();
@@ -24,58 +30,51 @@ export const useProfile = () => {
             setLoading(false);
             return;
         }
-
-        // MSALアカウント情報に基づくフォールバック用プロフィール
-        const fallbackProfile: Profile = {
-            id: email.toLowerCase(),
-            email: email,
-            display_name: account?.name || account?.username || null,
-            avatar_url: null,
-            department: null,
-            position: null,
-        };
-
-        if (!db) {
-            setProfile(fallbackProfile);
-            setLoading(false);
-            return;
-        }
-
         let cancelled = false;
         setLoading(true);
 
-        const docRef = doc(db, 'profiles', email.toLowerCase());
-        getDoc(docRef)
-            .then((docSnap) => {
+        const fetchProfile = async () => {
+            try {
+                const emailQuery = email.toLowerCase();
+                const q = query(
+                    collection(db, 'profiles'),
+                    where('email', '==', emailQuery),
+                    limit(1)
+                );
+                const snapshot = await getDocs(q);
                 if (cancelled) return;
-                if (docSnap.exists()) {
+
+                if (!snapshot.empty) {
+                    const docSnap = snapshot.docs[0];
                     const data = docSnap.data();
                     setProfile({
                         id: docSnap.id,
-                        email: data.email || null,
-                        display_name: data.display_name || null,
-                        avatar_url: data.avatar_url || null,
-                        department: data.department || null,
-                        position: data.position || null,
+                        email: data.email ?? null,
+                        display_name: data.display_name ?? null,
+                        avatar_url: data.avatar_url ?? null,
+                        department: data.department ?? null,
+                        position: data.position ?? null,
                     });
                 } else {
-                    // Firestore上にドキュメントがない場合はフォールバック
-                    setProfile(fallbackProfile);
+                    setProfile(null);
                 }
-                setLoading(false);
-            })
-            .catch((error) => {
-                if (cancelled) return;
+            } catch (error) {
                 // eslint-disable-next-line no-console
-                console.warn('[useProfile] failed to load profile from Firestore', error);
-                setProfile(fallbackProfile);
-                setLoading(false);
-            });
+                console.warn('[useProfile] failed to load profile', error);
+                setProfile(null);
+            } finally {
+                if (!cancelled) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchProfile();
 
         return () => {
             cancelled = true;
         };
-    }, [email, account]);
+    }, [email]);
 
     return { profile, loading, email };
 };
