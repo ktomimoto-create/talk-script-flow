@@ -251,7 +251,7 @@ const App: React.FC = () => {
         }
     };
 
-    const removePersonalMemo = async (id: number) => {
+    const removePersonalMemo = async (id: string) => {
         const ok = await deletePersonalMemo(id);
         if (ok) setPersonalMemos(prev => prev.filter(m => m.id !== id));
     };
@@ -276,7 +276,7 @@ const App: React.FC = () => {
         }
     };
 
-    const deleteMemo = async (id: number) => {
+    const deleteMemo = async (id: string) => {
         const ok = await deleteCallMemo(id);
         if (ok) {
             setOutgoingMemos(prev => prev.filter(m => m.id !== id));
