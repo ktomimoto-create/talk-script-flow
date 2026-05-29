@@ -283,3 +283,85 @@ export const deletePersonalMemo = async (id: string): Promise<boolean> => {
         return false;
     }
 };
+
+/* ====================================
+ * 受電統計ログ: ダッシュボード集計用
+ * ==================================== */
+export type CallLog = {
+    id?: string;
+    operator_name: string | null;
+    operator_email: string | null;
+    caller_category: string; // 受電相手（管理会社、管理員、協力会社、建築、連動相手、居住者）
+    destination: string; // どこ宛（ディスパッチャー、保守管理、施工管理、他部署、など）
+    node_id: string; // 用件のノードID
+    node_label: string; // 用件のラベル名
+    created_at: string; // ISO 8601
+};
+
+export const insertCallLog = async (
+    log: Omit<CallLog, 'id' | 'created_at'>
+): Promise<CallLog | null> => {
+    try {
+        const docData = {
+            operator_name: log.operator_name,
+            operator_email: log.operator_email ? log.operator_email.trim().toLowerCase() : null,
+            caller_category: log.caller_category,
+            destination: log.destination,
+            node_id: log.node_id,
+            node_label: log.node_label,
+            created_at: new Date().toISOString(),
+        };
+        const docRef = await addDoc(collection(db, 'call_logs'), docData);
+        return {
+            id: docRef.id,
+            ...docData,
+        };
+    } catch (error) {
+        console.warn('[memoRepo] insertCallLog failed', error);
+        return null;
+    }
+};
+
+export const fetchCallLogs = async (): Promise<CallLog[]> => {
+    try {
+        const snapshot = await getDocs(collection(db, 'call_logs'));
+        const logs: CallLog[] = [];
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            logs.push({
+                id: docSnap.id,
+                operator_name: data.operator_name ?? null,
+                operator_email: data.operator_email ?? null,
+                caller_category: data.caller_category ?? '',
+                destination: data.destination ?? '',
+                node_id: data.node_id ?? '',
+                node_label: data.node_label ?? '',
+                created_at: data.created_at ?? '',
+            });
+        });
+        return logs;
+    } catch (error) {
+        console.warn('[memoRepo] fetchCallLogs failed', error);
+        return [];
+    }
+};
+
+export const clearCallLogs = async (): Promise<boolean> => {
+    try {
+        const snapshot = await getDocs(collection(db, 'call_logs'));
+        const batch = writeBatch(db);
+        let count = 0;
+        snapshot.forEach(docSnap => {
+            batch.delete(docSnap.ref);
+            count++;
+        });
+        if (count > 0) {
+            await batch.commit();
+        }
+        return true;
+    } catch (error) {
+        console.warn('[memoRepo] clearCallLogs failed', error);
+        return false;
+    }
+};
+

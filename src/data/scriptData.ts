@@ -67,8 +67,8 @@ export const scriptData: ScriptNode[] = [
         text: '架電の折り返し',
         subText: '以下の内容を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
         points: [
-            '誰から連絡があったか（個人名が分かればそちらへ引き継ぎ）',
-            '何の案件に関する折り返しか（物件名等）'
+            '誰から連絡があったか\n→個人名が分かればそちらへ引き継ぎ',
+            '何の案件に関する折り返しか'
         ]
     },
     // ヒアリング項目：対応確認
@@ -170,8 +170,8 @@ export const scriptData: ScriptNode[] = [
         text: '架電の折り返し',
         subText: '以下の内容を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
         points: [
-            '誰から連絡があったか（個人名が分かればそちらへ引き継ぎ）',
-            '何の案件に関する折り返しか（物件名等）'
+            '誰から連絡があったか\n→個人名が分かればそちらへ引き継ぎ',
+            '何の案件に関する折り返しか'
         ]
     },
     {
@@ -266,9 +266,11 @@ export const scriptData: ScriptNode[] = [
         text: '現地作業に関する問い合わせ（AFC、BLP等）',
         subText: '以下の内容を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
         points: [
-            '定期点検or障害対応の確認',
+            '号機/物件名を確認。',
+            '定期点検/障害対応/部品交換の確認。',
             '定期点検\n→作業時の不具合の場合は現地対応するか見積にするかを確認。\nその後FC起票。',
-            '障害対応\n→該当FCを確認し対応報告受付を入力。\n作業中の不明点がある場合は内容を確認しディスパッチャーへ引き継ぐ。'
+            '障害対応\n→該当FCを確認し対応報告受付を入力。\n作業中の不明点がある場合は内容を確認しディスパッチャーへ引き継ぐ。',
+            '部品交換\n→内容を確認しディスパッチャーへ引き継ぐ。'
         ]
     },
 
@@ -277,9 +279,8 @@ export const scriptData: ScriptNode[] = [
         text: '現地作業に関する問い合わせ（FRESH ROOM、設置業者等）',
         subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
         points: [
-            '定期点検or障害対応の確認',
-            '定期点検\n→作業時の不具合の場合は現地対応するか見積にするかを確認。\nその後FC起票。',
-            '障害対応\n→該当FCを確認し対応報告受付を入力。\n作業中の不明点がある場合は内容を確認し施工管理へ引き継ぐ。'
+            '号機/現場名を確認。',
+            '誰宛の電話か確認。'
         ]
     },
     // 建築
@@ -292,6 +293,7 @@ export const scriptData: ScriptNode[] = [
                 nextNodeId: 'final-sekou',
                 color: '#73d13d',
                 subBranches: [
+                    { label: '架電の折り返し', nextNodeId: 'bottom-kenchiku-sekou-orikaeshi', color: '#73d13d' },
                     { label: '連動日の確認', nextNodeId: 'bottom-kenchiku-sekou-rendo', color: '#73d13d' },
                     { label: '設置日の確認', nextNodeId: 'bottom-kenchiku-sekou-setchi', color: '#73d13d' },
                     { label: '現場状況の確認', nextNodeId: 'bottom-kenchiku-sekou-genba', color: '#73d13d' }
@@ -301,22 +303,31 @@ export const scriptData: ScriptNode[] = [
     },
     // ヒアリング項目：建築
     {
+        id: 'bottom-kenchiku-sekou-orikaeshi',
+        text: '架電の折り返し',
+        subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
+        points: [
+            '誰から連絡があったか\n→個人名が分かればそちらへ引き継ぎ',
+            '何の案件に関する折り返しか'
+        ]
+    },
+    {
         id: 'bottom-kenchiku-sekou-rendo',
         text: '連動日の確認',
         subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
-        points: ['物件名', 'お問い合わせの具体的な内容']
+        points: ['現場名', 'お問い合わせの具体的な内容']
     },
     {
         id: 'bottom-kenchiku-sekou-setchi',
         text: '設置日の確認',
         subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
-        points: ['物件名', 'お問い合わせの具体的な内容']
+        points: ['現場名', 'お問い合わせの具体的な内容']
     },
     {
         id: 'bottom-kenchiku-sekou-genba',
         text: '現場状況の確認',
         subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
-        points: ['物件名', 'お問い合わせの具体的な内容']
+        points: ['現場名', 'お問い合わせの具体的な内容']
     },
     // 連動相手
     {
@@ -328,6 +339,7 @@ export const scriptData: ScriptNode[] = [
                 nextNodeId: 'final-sekou',
                 color: '#73d13d',
                 subBranches: [
+                    { label: '架電の折り返し', nextNodeId: 'bottom-tasha-sekou-orikaeshi', color: '#73d13d' },
                     { label: '連動日の確認', nextNodeId: 'bottom-tasha-sekou-rendo', color: '#73d13d' },
                     { label: '現場作業時の報告', nextNodeId: 'bottom-tasha-sekou-houkoku', color: '#73d13d' }
                 ]
@@ -336,16 +348,25 @@ export const scriptData: ScriptNode[] = [
     },
     // ヒアリング項目：連動相手
     {
+        id: 'bottom-tasha-sekou-orikaeshi',
+        text: '架電の折り返し',
+        subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
+        points: [
+            '誰から連絡があったか\n→個人名が分かればそちらへ引き継ぎ',
+            '何の案件に関する折り返しか'
+        ]
+    },
+    {
         id: 'bottom-tasha-sekou-rendo',
         text: '連動日の確認',
         subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
-        points: ['物件名', 'お問い合わせの具体的な内容']
+        points: ['現場名', 'お問い合わせの具体的な内容']
     },
     {
         id: 'bottom-tasha-sekou-houkoku',
         text: '現場作業時の報告',
         subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
-        points: ['物件名', '報告の具体的な内容']
+        points: ['現場名', '報告の具体的な内容']
     },
     // 居住者（その他）
     {
@@ -358,7 +379,7 @@ export const scriptData: ScriptNode[] = [
                 color: '#9254de',
                 subBranches: [
                     { label: '登録方法の問い合わせ', nextNodeId: 'bottom-other-tabusho-touroku', color: '#9254de' },
-                    { label: '利用方法の問い合わせ', nextNodeId: 'bottom-other-tabusho-riyou', color: '#9254de' }
+                    { label: '利用方法/不具合の問い合わせ', nextNodeId: 'bottom-other-tabusho-riyou', color: '#9254de' }
                 ]
             }
         ]
@@ -368,18 +389,24 @@ export const scriptData: ScriptNode[] = [
         id: 'bottom-other-tabusho-touroku',
         text: '登録方法の問い合わせ',
         subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
-        points: ['物件名・号室', 'お問い合わせの具体的な内容']
+        points: [
+            '物件名の確認',
+            '機種に沿った案内\n→オンラインの場合、フルタイムカスタマーサイトを案内。\n不明点等はコントロールセンターへ確認いただくよう案内。\n→オフラインの場合、ロッカー操作にて登録する旨を案内。\n不明点等はコントロールセンターへ確認いただくよう案内。'
+        ]
     },
     {
         id: 'bottom-other-tabusho-riyou',
-        text: '利用方法の問い合わせ',
+        text: '利用方法/不具合の問い合わせ',
         subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
-        points: ['物件名・号室', 'お問い合わせの具体的な内容']
+        points: [
+            '物件名を確認',
+            '該当するコントロールセンターへの連絡先を案内\n→FC左下連絡先一覧のサービス別連絡先一覧を参照'
+        ]
     },
 
     // 最終転送画面
-    { id: 'final-dis', text: 'ディスパッチャーへ転送中...', isFinal: true },
-    { id: 'final-hoshu', text: '保守管理へ転送中...', isFinal: true },
-    { id: 'final-sekou', text: '施工管理へ転送中...', isFinal: true },
-    { id: 'final-tabusho', text: '他部署へ転送中...', isFinal: true }
+    { id: 'final-dis', text: 'ディスパッチャーへの引き継ぎを記録しました', isFinal: true },
+    { id: 'final-hoshu', text: '保守管理への引き継ぎを記録しました', isFinal: true },
+    { id: 'final-sekou', text: '施工管理への引き継ぎを記録しました', isFinal: true },
+    { id: 'final-tabusho', text: '他部署への引き継ぎを記録しました', isFinal: true }
 ];

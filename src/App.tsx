@@ -19,6 +19,10 @@ import {
     fetchPersonalMemos,
     insertPersonalMemo,
     deletePersonalMemo,
+    CallLog,
+    insertCallLog,
+    fetchCallLogs,
+    clearCallLogs,
 } from './lib/memoRepo';
 import { useProfile } from './auth/useProfile';
 import './index.css';
@@ -68,6 +72,99 @@ const renderPoint = (pointText: string) => {
         }
     }
     return <div className="point-text" style={{ whiteSpace: 'pre-wrap' }}>{pointText}</div>;
+};
+
+export const getCallLogMetadata = (nodeId: string) => {
+    let callerCategory = 'その他';
+    let destination = 'その他';
+
+    // 誰から (caller_category) の判定
+    if (nodeId.includes('-kanri-in') || nodeId.includes('mid-kanri-in')) {
+        callerCategory = '管理員';
+    } else if (nodeId.includes('-kanri-') || nodeId.includes('mid-kanri-')) {
+        callerCategory = '管理会社';
+    } else if (nodeId.includes('-kyoryoku-') || nodeId.includes('mid-kyoryoku')) {
+        callerCategory = '協力会社';
+    } else if (nodeId.includes('-kenchiku-') || nodeId.includes('mid-kenchiku')) {
+        callerCategory = '建築';
+    } else if (nodeId.includes('-tasha-') || nodeId.includes('mid-tasha')) {
+        callerCategory = '連動相手';
+    } else if (nodeId.includes('-other-') || nodeId.includes('mid-other')) {
+        callerCategory = '居住者';
+    }
+
+    // どこ宛 (destination) の判定
+    if (nodeId.includes('-dis') || nodeId === 'final-dis') {
+        destination = 'ディスパッチャー';
+    } else if (nodeId.includes('-hoshu') || nodeId === 'final-hoshu') {
+        destination = '保守管理';
+    } else if (nodeId.includes('-sekou') || nodeId === 'final-sekou') {
+        destination = '施工管理';
+    } else if (nodeId.includes('-tabusho') || nodeId === 'final-tabusho') {
+        destination = '他部署';
+    }
+
+    return { callerCategory, destination };
+};
+
+// ログデータから統計を集計するヘルパー関数
+export type DashboardStats = {
+    totalCalls: number;
+    byCaller: { label: string; count: number; percentage: number }[];
+    byDestination: { label: string; count: number; percentage: number }[];
+    byOperator: { label: string; count: number }[];
+    byNode: { label: string; count: number }[];
+};
+
+export const calculateStats = (logs: CallLog[], period: 'today' | 'week' | 'month' | 'all'): DashboardStats => {
+    const now = new Date();
+    let filteredLogs = logs;
+
+    if (period === 'today') {
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        filteredLogs = logs.filter(l => new Date(l.created_at) >= startOfToday);
+    } else if (period === 'week') {
+        const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        filteredLogs = logs.filter(l => new Date(l.created_at) >= startOfWeek);
+    } else if (period === 'month') {
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        filteredLogs = logs.filter(l => new Date(l.created_at) >= startOfMonth);
+    }
+
+    const total = filteredLogs.length;
+
+    const callerMap: Record<string, number> = {};
+    const destMap: Record<string, number> = {};
+    const opMap: Record<string, number> = {};
+    const nodeMap: Record<string, number> = {};
+
+    filteredLogs.forEach(l => {
+        if (l.caller_category) callerMap[l.caller_category] = (callerMap[l.caller_category] || 0) + 1;
+        if (l.destination) destMap[l.destination] = (destMap[l.destination] || 0) + 1;
+        
+        const opKey = l.operator_name || l.operator_email || '不明なオペレーター';
+        opMap[opKey] = (opMap[opKey] || 0) + 1;
+
+        if (l.node_label) nodeMap[l.node_label] = (nodeMap[l.node_label] || 0) + 1;
+    });
+
+    const sortByCount = (map: Record<string, number>) => {
+        return Object.entries(map)
+            .map(([label, count]) => ({
+                label,
+                count,
+                percentage: total > 0 ? Math.round((count / total) * 100) : 0
+            }))
+            .sort((a, b) => b.count - a.count);
+    };
+
+    return {
+        totalCalls: total,
+        byCaller: sortByCount(callerMap),
+        byDestination: sortByCount(destMap),
+        byOperator: Object.entries(opMap).map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count),
+        byNode: Object.entries(nodeMap).map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count).slice(0, 10),
+    };
 };
 
 const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ onSelect }) => {
@@ -183,10 +280,26 @@ const App: React.FC = () => {
     const [currentNodeId, setCurrentNodeId] = useState<string>('juden');
     const { profile, email: msalEmail } = useProfile();
     const ownerEmail = (profile?.email || msalEmail || '').trim();
+    const ownerDisplayName = profile?.display_name || msalEmail || '';
+
+    // 管理者判定（「自分だけ」がリセットできるよう制限）
+    const isAdmin = React.useMemo(() => {
+        const email = ownerEmail.toLowerCase();
+        const displayName = ownerDisplayName.toLowerCase();
+        const adminEmailsEnv = (import.meta.env.VITE_ADMIN_EMAILS || '').toLowerCase();
+        const adminEmailsList = adminEmailsEnv.split(',').map((e: string) => e.trim());
+
+        return (
+            adminEmailsList.includes(email) ||
+            email.includes('tomimoto') ||
+            email.includes('000644') ||
+            displayName.includes('友本') ||
+            email === 'admin@fts-net.co.jp'
+        );
+    }, [ownerEmail, ownerDisplayName]);
 
     // 詳細表示用個人メモステート
     const [activeDetailMemo, setActiveDetailMemo] = useState<PersonalMemo | null>(null);
-    const ownerDisplayName = profile?.display_name || msalEmail || '';
 
     // 架電メモ（Supabase で全認証ユーザー間で共有）
     const [outgoingMemos, setOutgoingMemos] = useState<CallMemo[]>([]);
@@ -218,6 +331,51 @@ const App: React.FC = () => {
 
     // 個人メモ履歴
     const [personalMemos, setPersonalMemos] = useState<PersonalMemo[]>([]);
+
+    // 受電統計ダッシュボード用の状態
+    const [showDashboard, setShowDashboard] = useState(false);
+    const [dashboardLogs, setDashboardLogs] = useState<CallLog[]>([]);
+    const [dashboardPeriod, setDashboardPeriod] = useState<'today' | 'week' | 'month' | 'all'>('all');
+
+    const reloadCallLogs = React.useCallback(() => {
+        fetchCallLogs().then(setDashboardLogs);
+    }, []);
+
+    React.useEffect(() => {
+        reloadCallLogs();
+    }, [reloadCallLogs]);
+
+    const handleResetDashboard = async () => {
+        if (!isAdmin) {
+            alert('統計データをリセットする権限がありません。');
+            return;
+        }
+        if (window.confirm('これまでの受電統計データをすべて削除し、リセットしますか？\nこの操作は取り消せません。')) {
+            const success = await clearCallLogs();
+            if (success) {
+                alert('受電統計データをリセットしました。');
+                reloadCallLogs();
+            } else {
+                alert('統計データのリセットに失敗しました。');
+            }
+        }
+    };
+
+    const saveCallLog = async (callerCategory: string, destination: string, nodeId: string, nodeLabel: string) => {
+        try {
+            await insertCallLog({
+                operator_name: ownerDisplayName || '不明',
+                operator_email: ownerEmail || null,
+                caller_category: callerCategory,
+                destination: destination,
+                node_id: nodeId,
+                node_label: nodeLabel,
+            });
+            reloadCallLogs();
+        } catch (error) {
+            console.warn('[App] saveCallLog failed', error);
+        }
+    };
     const [showPersonalHistory, setShowPersonalHistory] = useState(false);
     const reloadPersonalMemos = React.useCallback(() => {
         if (!ownerEmail) return;
@@ -339,24 +497,38 @@ const App: React.FC = () => {
     React.useEffect(() => {
         const onPopState = (e: PopStateEvent) => {
             if (e.state && e.state.nodeId) {
-                setCurrentNodeId(e.state.nodeId);
+                if (e.state.nodeId === 'dashboard') {
+                    setShowDashboard(true);
+                } else {
+                    setShowDashboard(false);
+                    setCurrentNodeId(e.state.nodeId);
+                }
             } else {
-                // 初期状態（ハッシュなし）の場合はトップへ
                 const hashId = window.location.hash.replace('#', '');
-                setCurrentNodeId(hashId || 'juden');
+                if (hashId === 'dashboard') {
+                    setShowDashboard(true);
+                } else {
+                    setShowDashboard(false);
+                    setCurrentNodeId(hashId || 'juden');
+                }
             }
         };
 
         // 初回読み込み時のハッシュ処理
         // 最終ノード(isFinal)はURL復元の対象外。リロードした際にいきなり結果画面が出ないように。
         const initialHash = window.location.hash.replace('#', '');
-        const initialNode = initialHash ? scriptData.find(n => n.id === initialHash) : null;
-        if (initialNode && !initialNode.isFinal) {
-            setCurrentNodeId(initialHash);
-            window.history.replaceState({ nodeId: initialHash }, '', `#${initialHash}`);
-        } else {
+        if (initialHash === 'dashboard') {
+            setShowDashboard(true);
             setCurrentNodeId('juden');
-            window.history.replaceState({ nodeId: 'juden' }, '', '#juden');
+        } else {
+            const initialNode = initialHash ? scriptData.find(n => n.id === initialHash) : null;
+            if (initialNode && !initialNode.isFinal) {
+                setCurrentNodeId(initialHash);
+                window.history.replaceState({ nodeId: initialHash }, '', `#${initialHash}`);
+            } else {
+                setCurrentNodeId('juden');
+                window.history.replaceState({ nodeId: 'juden' }, '', '#juden');
+            }
         }
 
         window.addEventListener('popstate', onPopState);
@@ -364,6 +536,17 @@ const App: React.FC = () => {
     }, []);
 
     const handleNext = React.useCallback((nextNodeId: string) => {
+        const nextNode = scriptData.find(n => n.id === nextNodeId);
+        if (nextNode?.isFinal) {
+            // 直前の currentNodeId (現在表示中のノード) から受電相手 (callerCategory) を特定
+            const { callerCategory } = getCallLogMetadata(currentNodeId);
+            // 宛先は nextNodeId から特定
+            const { destination } = getCallLogMetadata(nextNodeId);
+            
+            // 自動的に受電統計ログを記録
+            saveCallLog(callerCategory, destination, nextNodeId, nextNode.text);
+        }
+
         if (currentNodeId === 'juden') {
             window.history.pushState({ nodeId: nextNodeId }, '', `#${nextNodeId}`);
         } else {
@@ -371,6 +554,25 @@ const App: React.FC = () => {
         }
         setCurrentNodeId(nextNodeId);
     }, [currentNodeId]);
+
+    const handleCallComplete = async (nodeId: string, nodeLabel: string) => {
+        const { callerCategory, destination } = getCallLogMetadata(nodeId);
+        await saveCallLog(callerCategory, destination, nodeId, nodeLabel);
+        
+        // メモ入力欄をクリア
+        setMemoSite('');
+        setMemoCompany('');
+        setMemoContent('');
+        setCallbackPhone('');
+        
+        closeSidebar();
+    };
+
+    const openDashboard = () => {
+        reloadCallLogs();
+        setShowDashboard(true);
+        window.history.pushState({ nodeId: 'dashboard' }, '', '#dashboard');
+    };
 
     const handleBack = React.useCallback(() => {
         window.history.pushState({ nodeId: 'juden' }, '', '#juden');
@@ -451,12 +653,12 @@ const App: React.FC = () => {
                         <div className="memo-grid">
                             <div className="memo-field">
                                 <label className="memo-label">
-                                    {(node.id.startsWith('bottom-kenchiku-') || node.id.startsWith('bottom-tasha-')) ? '現場名' : '号機/物件名'}
+                                    {(node.id.startsWith('bottom-kenchiku-') || node.id.startsWith('bottom-tasha-')) ? '現場名' : (node.id === 'bottom-kyoryoku-sekou-genchi' ? '号機/現場名' : '号機/物件名')}
                                 </label>
                                 <input
                                     type="text"
                                     className="memo-input"
-                                    placeholder={(node.id.startsWith('bottom-kenchiku-') || node.id.startsWith('bottom-tasha-')) ? "例：〇〇新築現場" : "例：FTSビル 101号室"}
+                                    placeholder=""
                                     value={memoSite}
                                     onChange={(e) => setMemoSite(e.target.value)}
                                 />
@@ -466,7 +668,7 @@ const App: React.FC = () => {
                                 <input
                                     type="text"
                                     className="memo-input"
-                                    placeholder="例：山田 太郎 様"
+                                    placeholder=""
                                     value={memoCompany}
                                     onChange={(e) => setMemoCompany(e.target.value)}
                                 />
@@ -492,7 +694,7 @@ const App: React.FC = () => {
                                 <input
                                     type="text"
                                     className="memo-input"
-                                    placeholder="例：03-xxxx-xxxx"
+                                    placeholder=""
                                     value={callbackPhone}
                                     onChange={(e) => setCallbackPhone(e.target.value)}
                                 />
@@ -553,6 +755,31 @@ const App: React.FC = () => {
                             <ArrowRightIcon size={18} />
                         </button>
                     ))}
+                </div>
+                <div className="call-complete-section" style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px dashed rgba(255,255,255,0.1)' }}>
+                    <button
+                        className="call-complete-button"
+                        onClick={() => handleCallComplete(node.id, node.text)}
+                        style={{
+                            width: '100%',
+                            padding: '12px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            backgroundColor: '#52c41a',
+                            color: '#ffffff',
+                            fontWeight: 'bold',
+                            fontSize: '0.95rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px',
+                            transition: 'all 0.2s',
+                            boxShadow: '0 4px 10px rgba(82, 196, 26, 0.3)'
+                        }}
+                    >
+                        対応完了として記録
+                    </button>
                 </div>
             </div>
         );
@@ -638,7 +865,7 @@ const App: React.FC = () => {
                             type="text"
                             className="memo-input"
                             style={{ height: '32px', width: '120px', fontSize: '0.8rem', padding: '0 10px' }}
-                            placeholder="現場/物件名"
+                            placeholder="号機/物件名"
                             value={tempSite}
                             onChange={(e) => setTempSite(e.target.value)}
                         />
@@ -667,8 +894,34 @@ const App: React.FC = () => {
                     </div>
                 </div>
 
-                {/* 右側：個人メモセクション（ボタンのみのコンパクト表示。右寄せ） */}
-                <div className="outgoing-memo-right-compact-section" style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                {/* 右側：個人メモ＆統計集計セクション（ボタンのみのコンパクト表示。右寄せ） */}
+                <div className="outgoing-memo-right-compact-section" style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                    <button
+                        className="dashboard-trigger-button"
+                        onClick={openDashboard}
+                        style={{
+                            height: '32px',
+                            padding: '0 14px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                            border: '1px solid rgba(255, 255, 255, 0.15)',
+                            borderRadius: '10px',
+                            color: '#ffffff',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            transition: 'all 0.2s',
+                        }}
+                    >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10" />
+                            <line x1="12" y1="20" x2="12" y2="4" />
+                            <line x1="6" y1="20" x2="6" y2="14" />
+                        </svg>
+                        集計ダッシュボード
+                    </button>
                     <button
                         className="personal-memo-history-button"
                         style={{ height: '32px', padding: '0 14px', fontSize: '0.8rem', fontWeight: 600 }}
@@ -810,7 +1063,7 @@ const App: React.FC = () => {
                             {(activeDetailMemo.site_name || activeDetailMemo.node_id.startsWith('bottom-kenchiku-') || activeDetailMemo.node_id.startsWith('bottom-tasha-')) && (
                                 <div className="memo-detail-field">
                                     <span className="memo-detail-label">
-                                        {(activeDetailMemo.node_id.startsWith('bottom-kenchiku-') || activeDetailMemo.node_id.startsWith('bottom-tasha-')) ? '現場名' : '号機/物件名'}
+                                        {(activeDetailMemo.node_id.startsWith('bottom-kenchiku-') || activeDetailMemo.node_id.startsWith('bottom-tasha-')) ? '現場名' : (activeDetailMemo.node_id === 'bottom-kyoryoku-sekou-genchi' ? '号機/現場名' : '号機/物件名')}
                                     </span>
                                     <div className="memo-detail-value">{activeDetailMemo.site_name || '(未入力)'}</div>
                                 </div>
@@ -852,6 +1105,168 @@ const App: React.FC = () => {
                                 閉じる
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* 受電統計ダッシュボードモーダル */}
+            {showDashboard && (
+                <div className="dashboard-overlay" onClick={() => {
+                    setShowDashboard(false);
+                    window.history.pushState({ nodeId: currentNodeId }, '', `#${currentNodeId}`);
+                }}>
+                    <div className="dashboard-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="dashboard-header">
+                            <h2>受電統計ダッシュボード</h2>
+                            <div className="dashboard-period-filter">
+                                {(['today', 'week', 'month', 'all'] as const).map(p => (
+                                    <button
+                                        key={p}
+                                        className={`period-btn ${dashboardPeriod === p ? 'active' : ''}`}
+                                        onClick={() => setDashboardPeriod(p)}
+                                    >
+                                        {p === 'today' ? '今日' : p === 'week' ? '今週' : p === 'month' ? '今月' : '全期間'}
+                                    </button>
+                                ))}
+                            </div>
+                            {isAdmin && (
+                                <button
+                                    className="dashboard-reset-button"
+                                    onClick={handleResetDashboard}
+                                    style={{
+                                        marginLeft: '12px',
+                                        padding: '6px 12px',
+                                        borderRadius: '8px',
+                                        border: '1px solid rgba(255, 77, 77, 0.4)',
+                                        backgroundColor: 'rgba(255, 77, 77, 0.1)',
+                                        color: '#ff4d4d',
+                                        fontSize: '0.8rem',
+                                        fontWeight: 600,
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '4px'
+                                    }}
+                                    onMouseOver={(e) => {
+                                        e.currentTarget.style.backgroundColor = 'rgba(255, 77, 77, 0.2)';
+                                        e.currentTarget.style.borderColor = 'rgba(255, 77, 77, 0.6)';
+                                    }}
+                                    onMouseOut={(e) => {
+                                        e.currentTarget.style.backgroundColor = 'rgba(255, 77, 77, 0.1)';
+                                        e.currentTarget.style.borderColor = 'rgba(255, 77, 77, 0.4)';
+                                    }}
+                                >
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                    </svg>
+                                    統計リセット
+                                </button>
+                            )}
+                            <button className="close-button" aria-label="閉じる" onClick={() => {
+                                setShowDashboard(false);
+                                window.history.pushState({ nodeId: currentNodeId }, '', `#${currentNodeId}`);
+                            }}>
+                                <CloseIcon size={24} />
+                            </button>
+                        </div>
+                        
+                        {(() => {
+                            const stats = calculateStats(dashboardLogs, dashboardPeriod);
+                            return (
+                                <div className="dashboard-body">
+                                    <div className="stats-summary-card">
+                                        <div className="summary-val">{stats.totalCalls}</div>
+                                        <div className="summary-label">総受電件数</div>
+                                    </div>
+                                    
+                                    <div className="dashboard-grid">
+                                        {/* 誰から */}
+                                        <div className="dashboard-card">
+                                            <h3>誰からの電話が多いか (受電相手割合)</h3>
+                                            <div className="stats-list">
+                                                {stats.byCaller.length === 0 ? (
+                                                    <div className="empty-stats">データがありません</div>
+                                                ) : (
+                                                    stats.byCaller.map(item => (
+                                                        <div key={item.label} className="stats-row-item">
+                                                            <div className="row-info">
+                                                                <span className="row-label">{item.label}</span>
+                                                                <span className="row-val">{item.count}件 ({item.percentage}%)</span>
+                                                            </div>
+                                                            <div className="progress-bar-bg">
+                                                                <div className="progress-bar-fill" style={{ width: `${item.percentage}%`, backgroundColor: '#40a9ff' }}></div>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </div>
+                                        </div>
+                                        
+                                        {/* どこ宛 */}
+                                        <div className="dashboard-card">
+                                            <h3>どこ宛の電話が多いか (引き継ぎ先割合)</h3>
+                                            <div className="stats-list">
+                                                {stats.byDestination.length === 0 ? (
+                                                    <div className="empty-stats">データがありません</div>
+                                                ) : (
+                                                    stats.byDestination.map(item => (
+                                                        <div key={item.label} className="stats-row-item">
+                                                            <div className="row-info">
+                                                                <span className="row-label">{item.label}</span>
+                                                                <span className="row-val">{item.count}件 ({item.percentage}%)</span>
+                                                            </div>
+                                                            <div className="progress-bar-bg">
+                                                                <div className="progress-bar-fill" style={{ width: `${item.percentage}%`, backgroundColor: '#52c41a' }}></div>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </div>
+                                        </div>
+                                        
+                                        {/* 受電したのは誰 */}
+                                        <div className="dashboard-card">
+                                            <h3>受電したのは誰が多いか (オペレーターランキング)</h3>
+                                            <div className="stats-list text-list">
+                                                {stats.byOperator.length === 0 ? (
+                                                    <div className="empty-stats">データがありません</div>
+                                                ) : (
+                                                    stats.byOperator.map((item, idx) => (
+                                                        <div key={item.label} className="stats-rank-item">
+                                                            <span className="rank-num">{idx + 1}</span>
+                                                            <span className="rank-label">{item.label}</span>
+                                                            <span className="rank-val">{item.count}件</span>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </div>
+                                        </div>
+                                        
+                                        {/* よくある問い合わせ */}
+                                        <div className="dashboard-card">
+                                            <h3>よくある問い合わせ (用件ランキング)</h3>
+                                            <div className="stats-list text-list">
+                                                {stats.byNode.length === 0 ? (
+                                                    <div className="empty-stats">データがありません</div>
+                                                ) : (
+                                                    stats.byNode.map((item, idx) => (
+                                                        <div key={item.label} className="stats-rank-item">
+                                                            <span className="rank-num">{idx + 1}</span>
+                                                            <span className="rank-label">{item.label}</span>
+                                                            <span className="rank-val">{item.count}件</span>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })()}
                     </div>
                 </div>
             )}
