@@ -1186,7 +1186,7 @@ const App: React.FC = () => {
                                     <div className="dashboard-grid">
                                         {/* 誰から */}
                                         <div className="dashboard-card">
-                                            <h3>発信元グループの内訳 (受電相手の割合)</h3>
+                                            <h3>発信元の内訳</h3>
                                             <div className="stats-list">
                                                 {stats.byCaller.length === 0 ? (
                                                     <div className="empty-stats">データがありません</div>
@@ -1208,7 +1208,7 @@ const App: React.FC = () => {
                                         
                                         {/* どこ宛 */}
                                         <div className="dashboard-card">
-                                            <h3>引き継ぎ先グループの内訳 (引き継ぎ先割合)</h3>
+                                            <h3>引き継ぎ先の内訳</h3>
                                             <div className="stats-list">
                                                 {stats.byDestination.length === 0 ? (
                                                     <div className="empty-stats">データがありません</div>
