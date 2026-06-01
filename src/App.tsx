@@ -1186,7 +1186,7 @@ const App: React.FC = () => {
                                     <div className="dashboard-grid">
                                         {/* 誰から */}
                                         <div className="dashboard-card">
-                                            <h3>誰からの電話が多いか (受電相手割合)</h3>
+                                            <h3>発信元グループの内訳 (受電相手の割合)</h3>
                                             <div className="stats-list">
                                                 {stats.byCaller.length === 0 ? (
                                                     <div className="empty-stats">データがありません</div>
@@ -1208,7 +1208,7 @@ const App: React.FC = () => {
                                         
                                         {/* どこ宛 */}
                                         <div className="dashboard-card">
-                                            <h3>どこ宛の電話が多いか (引き継ぎ先割合)</h3>
+                                            <h3>引き継ぎ先グループの内訳 (引き継ぎ先割合)</h3>
                                             <div className="stats-list">
                                                 {stats.byDestination.length === 0 ? (
                                                     <div className="empty-stats">データがありません</div>
@@ -1230,14 +1230,14 @@ const App: React.FC = () => {
                                         
                                         {/* 受電したのは誰 */}
                                         <div className="dashboard-card">
-                                            <h3>受電したのは誰が多いか (オペレーターランキング)</h3>
+                                            <h3>オペレーター別の対応件数</h3>
                                             <div className="stats-list text-list">
                                                 {stats.byOperator.length === 0 ? (
                                                     <div className="empty-stats">データがありません</div>
                                                 ) : (
                                                     stats.byOperator.map((item, idx) => (
                                                         <div key={item.label} className="stats-rank-item">
-                                                            <span className="rank-num">{idx + 1}</span>
+                                                            <span className="rank-num"></span>
                                                             <span className="rank-label">{item.label}</span>
                                                             <span className="rank-val">{item.count}件</span>
                                                         </div>
@@ -1248,14 +1248,14 @@ const App: React.FC = () => {
                                         
                                         {/* よくある問い合わせ */}
                                         <div className="dashboard-card">
-                                            <h3>よくある問い合わせ (用件ランキング)</h3>
+                                            <h3>用件別の受電件数</h3>
                                             <div className="stats-list text-list">
                                                 {stats.byNode.length === 0 ? (
                                                     <div className="empty-stats">データがありません</div>
                                                 ) : (
                                                     stats.byNode.map((item, idx) => (
                                                         <div key={item.label} className="stats-rank-item">
-                                                            <span className="rank-num">{idx + 1}</span>
+                                                            <span className="rank-num"></span>
                                                             <span className="rank-label">{item.label}</span>
                                                             <span className="rank-val">{item.count}件</span>
                                                         </div>

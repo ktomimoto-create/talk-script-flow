@@ -1664,29 +1664,12 @@ body {
 }
 
 .rank-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    background: rgba(64, 169, 255, 0.15);
-    color: var(--primary);
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--primary);
     border-radius: 50%;
-    font-size: 0.75rem;
-    font-weight: 700;
-}
-
-.stats-rank-item:nth-child(1) .rank-num {
-    background: #ffd700;
-    color: #000;
-}
-.stats-rank-item:nth-child(2) .rank-num {
-    background: #c0c0c0;
-    color: #000;
-}
-.stats-rank-item:nth-child(3) .rank-num {
-    background: #cd7f32;
-    color: #000;
+    flex-shrink: 0;
 }
 
 .rank-label {
