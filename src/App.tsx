@@ -232,7 +232,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                             } as React.CSSProperties}
                                             onClick={() => !b.subBranches && onSelect(b.nextNodeId)}
                                         >
-                                            <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? '#ffffff' : (b.color || '#ffffff') }}>{b.label}</div>
+                                            <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? 'var(--text)' : (b.color || 'var(--text)') }}>{b.label}</div>
                                             {b.middleBox && (
                                                 <div style={{
                                                     fontSize: '0.75rem',
@@ -277,6 +277,16 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
 });
 
 const App: React.FC = () => {
+    const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+        const saved = localStorage.getItem('theme');
+        return (saved === 'light' || saved === 'dark') ? saved : 'dark';
+    });
+
+    React.useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
     const [currentNodeId, setCurrentNodeId] = useState<string>('juden');
     const { profile, email: msalEmail } = useProfile();
     const ownerEmail = (profile?.email || msalEmail || '').trim();
@@ -470,12 +480,12 @@ const App: React.FC = () => {
         [currentNodeId]);
 
     const themeColor = useMemo(() => {
-        if (currentNodeId === 'juden') return '#40a9ff';
+        if (currentNodeId === 'juden') return 'var(--primary)';
         // 主分岐から先に検索
         for (const n of scriptData) {
             const direct = n.branches?.find(b => b.nextNodeId === currentNodeId);
             if (direct?.color) return direct.color;
-            // 同階層の subBranches も検索（管理会社→他部署→登録方法 のような深い枝対応）
+            // 同階層 of subBranches も検索（管理会社→他部署→登録方法 のような深い枝対応）
             for (const b of n.branches || []) {
                 const sub = b.subBranches?.find(sb => sb.nextNodeId === currentNodeId);
                 if (sub?.color) return sub.color;
@@ -483,7 +493,7 @@ const App: React.FC = () => {
                 if (b.subBranches?.some(sb => sb.nextNodeId === currentNodeId) && b.color) return b.color;
             }
         }
-        return '#40a9ff';
+        return 'var(--primary)';
     }, [currentNodeId]);
 
     const displayedPersonalMemos = useMemo(() => {
@@ -748,7 +758,11 @@ const App: React.FC = () => {
                         <button
                             key={branch.nextNodeId}
                             className="branch-button"
-                            style={{ backgroundColor: branch.color || '#40a9ff' }}
+                            style={{
+                                backgroundColor: branch.color || 'var(--branch-default-bg)',
+                                color: branch.color ? '#ffffff' : 'var(--branch-default-text)',
+                                border: branch.color ? 'none' : 'var(--branch-default-border)'
+                            }}
                             onClick={() => handleNext(branch.nextNodeId)}
                         >
                             {branch.label}
@@ -756,27 +770,10 @@ const App: React.FC = () => {
                         </button>
                     ))}
                 </div>
-                <div className="call-complete-section" style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px dashed rgba(255,255,255,0.1)' }}>
+                <div className="call-complete-section">
                     <button
                         className="call-complete-button"
                         onClick={() => handleCallComplete(node.id, node.text)}
-                        style={{
-                            width: '100%',
-                            padding: '12px',
-                            borderRadius: '8px',
-                            border: 'none',
-                            backgroundColor: '#52c41a',
-                            color: '#ffffff',
-                            fontWeight: 'bold',
-                            fontSize: '0.95rem',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '8px',
-                            transition: 'all 0.2s',
-                            boxShadow: '0 4px 10px rgba(82, 196, 26, 0.3)'
-                        }}
                     >
                         対応完了として記録
                     </button>
@@ -788,10 +785,10 @@ const App: React.FC = () => {
     return (
         <React.Fragment>
             <div className={`app-container ${isSidebarOpen ? 'with-sidebar' : ''}`} style={{ width: '100%', maxWidth: '1550px', transform: 'scale(0.85)', transformOrigin: 'top center' }}>
-                <div className="card" key="juden" style={{ borderTop: '6px solid #40a9ff', width: '100%', maxWidth: '1500px' }}>
+                <div className="card" key="juden" style={{ borderTop: `6px solid ${themeColor}`, width: '100%', maxWidth: '1500px' }}>
                     <h1 className="script-text">{jubenNode.text}</h1>
                     {jubenNode.subText && (
-                        <p className="sub-text" style={{ borderLeftColor: '#40a9ff' }}>{jubenNode.subText}</p>
+                        <p className="sub-text" style={{ borderLeftColor: themeColor }}>{jubenNode.subText}</p>
                     )}
                     <div style={{ marginTop: '20px' }}>
                         <VisualFlow onSelect={handleNext} />
@@ -804,7 +801,11 @@ const App: React.FC = () => {
                             <button
                                 key={branch.nextNodeId}
                                 className="branch-button"
-                                style={{ backgroundColor: branch.color || '#40a9ff' }}
+                                style={{
+                                    backgroundColor: branch.color || 'var(--branch-default-bg)',
+                                    color: branch.color ? '#ffffff' : 'var(--branch-default-text)',
+                                    border: branch.color ? 'none' : 'var(--branch-default-border)'
+                                }}
                                 onClick={() => handleNext(branch.nextNodeId)}
                             >
                                 {branch.label}
@@ -842,7 +843,7 @@ const App: React.FC = () => {
                             </span>
                             <span className="outgoing-memo-title-text" style={{ fontSize: '0.85rem' }}>架電メモ</span>
                         </span>
-                        <span className="outgoing-memo-caller-fixed" style={{ height: '26px', padding: '0 8px', fontSize: '0.7rem', display: 'flex', alignItems: 'center' }} title="ログインユーザーで自動設定">
+                        <span className="outgoing-memo-caller-fixed" style={{ height: '32px', padding: '0 12px', display: 'flex', alignItems: 'center' }} title="ログインユーザーで自動設定">
                             架電者: <strong>{ownerDisplayName || '(未取得)'}</strong>
                         </span>
                         <input 
@@ -895,7 +896,44 @@ const App: React.FC = () => {
                 </div>
 
                 {/* 右側：個人メモ＆統計集計セクション（ボタンのみのコンパクト表示。右寄せ） */}
-                <div className="outgoing-memo-right-compact-section" style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                <div className="outgoing-memo-right-compact-section" style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: '8px', alignItems: 'center' }}>
+                    <button
+                        className="theme-toggle-button"
+                        onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
+                        style={{
+                            height: '32px',
+                            width: '32px',
+                            padding: 0,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: 'var(--dashboard-trigger-bg)',
+                            border: '1px solid var(--dashboard-trigger-border)',
+                            borderRadius: '10px',
+                            color: 'var(--text)',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                        }}
+                        title={theme === 'light' ? 'ダークモードへ' : 'ライトモードへ'}
+                    >
+                        {theme === 'light' ? (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                            </svg>
+                        ) : (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="5" />
+                                <line x1="12" y1="1" x2="12" y2="3" />
+                                <line x1="12" y1="21" x2="12" y2="23" />
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                                <line x1="1" y1="12" x2="3" y2="12" />
+                                <line x1="21" y1="12" x2="23" y2="12" />
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                            </svg>
+                        )}
+                    </button>
                     <button
                         className="dashboard-trigger-button"
                         onClick={openDashboard}
@@ -904,10 +942,10 @@ const App: React.FC = () => {
                             padding: '0 14px',
                             fontSize: '0.8rem',
                             fontWeight: 600,
-                            backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                            border: '1px solid rgba(255, 255, 255, 0.15)',
+                            backgroundColor: 'var(--dashboard-trigger-bg)',
+                            border: '1px solid var(--dashboard-trigger-border)',
                             borderRadius: '10px',
-                            color: '#ffffff',
+                            color: 'var(--text)',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',

@@ -17,11 +17,115 @@
             --success: #73d13d;
             --warning: #faad14;
             --error: #ff4d4d;
-            --bg-gradient: radial-gradient(circle at top left, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --bg-gradient: radial-gradient(circle at top left, #121224 0%, #0d1527 50%, #051c38 100%);
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.18);
             --text: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-secondary: #c5d1e8;
+
+            /* 追加テーマ変数（ダークモード） */
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --input-bg: rgba(0, 0, 0, 0.35);
+            --input-text: #ffffff;
+            --input-placeholder: rgba(255, 255, 255, 0.45);
+            --panel-bg: rgba(255, 255, 255, 0.05);
+            --panel-border: rgba(255, 255, 255, 0.12);
+            --node-bg: rgba(255, 255, 255, 0.15);
+            --node-text: #ffffff;
+            --sub-link-bg: rgba(255, 255, 255, 0.08);
+            --sub-link-text: #ffffff;
+            --sub-link-hover-bg: rgba(64, 169, 255, 0.22);
+            --sub-link-hover-border: rgba(64, 169, 255, 0.45);
+            --bar-bg: rgba(13, 21, 39, 0.98);
+            --dashboard-bg: rgba(13, 21, 39, 0.99);
+            --dashboard-overlay: rgba(0, 0, 0, 0.8);
+            --dashboard-trigger-bg: rgba(255, 255, 255, 0.1);
+            --dashboard-trigger-border: rgba(255, 255, 255, 0.2);
+            --dashboard-trigger-text: #ffffff;
+            --dashboard-card-bg: rgba(255, 255, 255, 0.04);
+            --dashboard-card-border: rgba(255, 255, 255, 0.08);
+            --caller-match-badge-bg: rgba(64, 169, 255, 0.24);
+            --caller-match-badge-border: rgba(64, 169, 255, 0.6);
+            --caller-match-badge-text: #ffffff;
+            --caller-match-badge-strong: #ffffff;
+            --history-item-bg: rgba(255, 255, 255, 0.05);
+            --history-item-hover-bg: rgba(255, 255, 255, 0.1);
+            --history-item-hover-border: rgba(255, 255, 255, 0.2);
+            --personal-memo-item-bg: rgba(255, 255, 255, 0.06);
+            --personal-memo-delete-hover: rgba(255, 77, 77, 0.25);
+            --personal-memo-delete-hover-text: #ff9c9c;
+            --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+            --scrollbar-track: rgba(0, 0, 0, 0.2);
+            --flow-hint-text: #a2b4d6;
+            --divider: rgba(255, 255, 255, 0.15);
+            --branch-default-bg: #1890ff;
+            --branch-default-text: #ffffff;
+            --branch-default-border: none;
+            --node-active-bg: #1890ff;
+            --node-active-text: #ffffff;
+            --node-active-border: 1px solid #ffffff;
+            --success-bg: rgba(115, 209, 61, 0.12);
+            --success-border: rgba(115, 209, 61, 0.35);
+            --success-text: #95de64;
+            --success-hover-bg: rgba(115, 209, 61, 0.24);
+        }
+
+        html[data-theme="light"] {
+            --primary: #1890ff;
+            --success: #52c41a;
+            --warning: #faad14;
+            --error: #f5222d;
+            --bg-gradient: radial-gradient(circle at top left, #f4f6f9 0%, #eef1f6 50%, #e4e8f0 100%);
+            --glass: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 0, 0, 0.12);
+            --text: #111112;
+            --text-secondary: #4b4b4d;
+
+            /* 追加テーマ変数（ライトモード） */
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            --input-bg: #ffffff;
+            --input-text: #111112;
+            --input-placeholder: #7c7c80;
+            --panel-bg: rgba(0, 0, 0, 0.03);
+            --panel-border: rgba(0, 0, 0, 0.08);
+            --node-bg: rgba(255, 255, 255, 0.85);
+            --node-text: #111112;
+            --sub-link-bg: rgba(0, 0, 0, 0.05);
+            --sub-link-text: #111112;
+            --sub-link-hover-bg: rgba(24, 144, 255, 0.12);
+            --sub-link-hover-border: rgba(24, 144, 255, 0.4);
+            --bar-bg: rgba(255, 255, 255, 0.98);
+            --dashboard-bg: rgba(255, 255, 255, 0.99);
+            --dashboard-overlay: rgba(0, 0, 0, 0.5);
+            --dashboard-trigger-bg: rgba(0, 0, 0, 0.06);
+            --dashboard-trigger-border: rgba(0, 0, 0, 0.12);
+            --dashboard-trigger-text: #111112;
+            --dashboard-card-bg: rgba(0, 0, 0, 0.02);
+            --dashboard-card-border: rgba(0, 0, 0, 0.05);
+            --caller-match-badge-bg: rgba(24, 144, 255, 0.15);
+            --caller-match-badge-border: rgba(24, 144, 255, 0.45);
+            --caller-match-badge-text: #1890ff;
+            --caller-match-badge-strong: #0050b3;
+            --history-item-bg: rgba(24, 144, 255, 0.05);
+            --history-item-hover-bg: rgba(24, 144, 255, 0.09);
+            --history-item-hover-border: rgba(24, 144, 255, 0.2);
+            --personal-memo-item-bg: rgba(24, 144, 255, 0.06);
+            --personal-memo-delete-hover: rgba(245, 34, 45, 0.15);
+            --personal-memo-delete-hover-text: #cf1322;
+            --scrollbar-thumb: rgba(0, 0, 0, 0.2);
+            --scrollbar-track: rgba(0, 0, 0, 0.04);
+            --flow-hint-text: #59595c;
+            --divider: rgba(0, 0, 0, 0.1);
+            --branch-default-bg: #e6f7ff;
+            --branch-default-text: #1890ff;
+            --branch-default-border: 1px solid #91d5ff;
+            --node-active-bg: #e6f7ff;
+            --node-active-text: #1890ff;
+            --node-active-border: 1px solid #91d5ff;
+            --success-bg: rgba(82, 196, 26, 0.08);
+            --success-border: rgba(82, 196, 26, 0.35);
+            --success-text: #52c41a;
+            --success-hover-bg: rgba(82, 196, 26, 0.18);
         }
 
         * {
@@ -58,7 +162,7 @@
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 40px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            box-shadow: var(--card-shadow);
             animation: fadeIn 0.4s ease-out;
             width: 100%;
             position: relative;
@@ -85,7 +189,7 @@
             flex-direction: column;
             gap: 60px;
             padding: 40px;
-            background: rgba(0, 0, 0, 0.2);
+            background: var(--panel-bg);
             border-radius: 20px;
             overflow-x: auto;
             min-height: 550px;
@@ -103,7 +207,7 @@
         }
 
         .visual-flow-node {
-            background: rgba(255, 255, 255, 0.12);
+            background: var(--node-bg);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             padding: 16px 20px;
@@ -114,7 +218,7 @@
             position: relative;
             cursor: pointer;
             transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-            color: white;
+            color: var(--node-text);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -130,8 +234,9 @@
         }
 
         .visual-flow-node.active {
-            background: var(--primary);
-            border-color: #fff;
+            background: var(--node-active-bg);
+            border-color: var(--node-active-border);
+            color: var(--node-active-text);
         }
 
         .visual-flow-connector {
@@ -200,22 +305,22 @@
 
         .visual-flow-sub-link {
             font-size: 0.75rem;
-            background: rgba(255,255,255,0.1);
+            background: var(--sub-link-bg);
             padding: 6px;
             border-radius: 6px;
             cursor: pointer;
             text-align: center;
             width: 100%;
             transition: all 0.2s ease;
-            color: #ffffff;
+            color: var(--sub-link-text);
             border: 1px solid transparent;
         }
 
         .visual-flow-sub-link:hover {
-            background: rgba(255, 255, 255, 0.25);
+            background: var(--sub-link-hover-bg);
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
+            border-color: var(--sub-link-hover-border);
             font-weight: 600;
         }
 
@@ -254,7 +359,7 @@
         }
 
         .points-section {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--panel-bg);
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 32px;
@@ -266,7 +371,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(26, 26, 46, 0.95);
+            background: var(--bar-bg);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border-top: 1px solid var(--glass-border);
@@ -303,7 +408,7 @@
 
         .outgoing-memo-field .memo-input {
             padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--input-bg);
         }
 
         .outgoing-memo-save-button {
@@ -340,9 +445,9 @@
         }
 
         .outgoing-memo-history-button {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid var(--glass-border);
+            background: var(--dashboard-trigger-bg);
+            color: var(--dashboard-trigger-text);
+            border: 1px solid var(--dashboard-trigger-border);
             padding: 10px 16px;
             border-radius: 10px;
             font-weight: 600;
@@ -352,7 +457,8 @@
         }
 
         .outgoing-memo-history-button:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: color-mix(in srgb, var(--primary) 15%, var(--dashboard-trigger-bg));
+            border-color: var(--primary);
         }
 
         .outgoing-memo-history-panel {
@@ -361,14 +467,15 @@
             right: 40px;
             width: 350px;
             max-height: 400px;
-            background: rgba(26, 26, 46, 0.98);
+            background: var(--dashboard-bg);
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
+            border-top: 6px solid var(--primary);
             border-bottom: none;
             border-radius: 16px 16px 0 0;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: var(--card-shadow);
             animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-align: left;
         }
@@ -376,6 +483,44 @@
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 対応完了として記録ボタン (グラスモーフィズム調に馴染むデザイン) */
+        .call-complete-button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success-text);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: none;
+        }
+
+        .call-complete-button:hover {
+            background: var(--success-hover-bg);
+            border-color: var(--success-text);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px color-mix(in srgb, var(--success-text) 18%, transparent);
+        }
+
+        .call-complete-button:active {
+            transform: translateY(1px);
+            filter: brightness(0.95);
+        }
+
+        /* 対応完了セクション区切り線 */
+        .call-complete-section {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--divider) !important;
         }
 
         .history-header {
@@ -415,16 +560,16 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px;
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--history-item-bg);
             border-radius: 10px;
             margin-bottom: 8px;
-            border: 1px solid transparent;
+            border: 1px solid var(--glass-border);
             transition: all 0.2s;
         }
 
         .history-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.1);
+            background: var(--history-item-hover-bg);
+            border-color: var(--history-item-hover-border);
         }
 
         .history-info {
@@ -468,7 +613,7 @@
         .memo-section {
             margin: 24px 0;
             padding: 24px;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--panel-bg);
             border-radius: 20px;
             border: 1px solid var(--glass-border);
             text-align: left;
@@ -491,11 +636,11 @@
         }
 
         .memo-input {
-            background: rgba(0, 0, 0, 0.25);
+            background: var(--input-bg);
             border: 1px solid var(--glass-border);
             border-radius: 10px;
             padding: 12px 14px;
-            color: white;
+            color: var(--input-text);
             font-size: 1rem;
             font-family: inherit;
             outline: none;
@@ -521,7 +666,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(10, 10, 20, 0.75);
+            background: var(--dashboard-overlay);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             display: flex;
@@ -532,7 +677,7 @@
         }
 
         .dashboard-modal {
-            background: rgba(26, 26, 46, 0.98);
+            background: var(--dashboard-bg);
             border: 1px solid var(--glass-border);
             border-top: 6px solid var(--primary);
             border-radius: 20px;
@@ -560,17 +705,17 @@
         .dashboard-header h2 {
             font-size: 1.4rem;
             font-weight: 700;
-            color: #ffffff;
+            color: var(--text);
             margin: 0;
         }
 
         .dashboard-period-filter {
             display: flex;
             gap: 8px;
-            background: rgba(0, 0, 0, 0.25);
+            background: var(--input-bg);
             padding: 4px;
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--panel-border);
         }
 
         .dashboard-period-filter .period-btn {
@@ -603,8 +748,8 @@
         }
 
         .dashboard-header .close-button:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
+            background: var(--panel-bg);
+            color: var(--text);
         }
 
         .dashboard-body {
@@ -621,15 +766,15 @@
             width: 6px;
         }
         .dashboard-body::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
+            background: var(--scrollbar-track);
         }
         .dashboard-body::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--scrollbar-thumb);
             border-radius: 3px;
         }
 
         .stats-summary-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--history-item-bg);
             border: 1px solid var(--glass-border);
             border-radius: 14px;
             padding: 20px;
@@ -661,8 +806,8 @@
         }
 
         .dashboard-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: var(--dashboard-card-bg);
+            border: 1px solid var(--dashboard-card-border);
             border-radius: 16px;
             padding: 20px;
             display: flex;
@@ -673,7 +818,7 @@
         .dashboard-card h3 {
             font-size: 0.95rem;
             font-weight: 700;
-            color: #ffffff;
+            color: var(--text);
             margin: 0;
             border-left: 4px solid var(--primary);
             padding-left: 10px;
@@ -705,7 +850,7 @@
         }
 
         .row-label {
-            color: #ffffff;
+            color: var(--text);
             font-weight: 500;
         }
 
@@ -715,7 +860,7 @@
 
         .progress-bar-bg {
             height: 8px;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--panel-bg);
             border-radius: 4px;
             overflow: hidden;
         }
@@ -770,7 +915,7 @@
 
         .rank-label {
             flex: 1;
-            color: #ffffff;
+            color: var(--text);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -783,8 +928,8 @@
 
         /* ダッシュボードボタンホバー効果 */
         .dashboard-trigger-button:hover {
-            background: rgba(255, 255, 255, 0.16) !important;
-            border-color: rgba(255, 255, 255, 0.3) !important;
+            background: var(--dashboard-card-bg);
+            border: 1px solid var(--dashboard-card-border);
             box-shadow: 0 4px 18px rgba(255, 255, 255, 0.1) !important;
             transform: translateY(-1px);
         }
@@ -1203,7 +1348,7 @@
                                                     }}
                                                     onClick={() => !b.subBranches && onSelect(b.nextNodeId)}
                                                 >
-                                                    <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? '#ffffff' : (b.color || '#ffffff') }}>{b.label}</div>
+                                                    <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? 'var(--text)' : (b.color || 'var(--text)') }}>{b.label}</div>
                                                     {b.middleBox && (
                                                         <div style={{
                                                             fontSize: '0.85rem',
@@ -1320,6 +1465,16 @@
         };
 
         const App = () => {
+            const [theme, setTheme] = useState(() => {
+                const saved = localStorage.getItem('theme');
+                return (saved === 'light' || saved === 'dark') ? saved : 'dark';
+            });
+
+            useEffect(() => {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+            }, [theme]);
+
             const [currentNodeId, setCurrentNodeId] = useState(() => {
                 const hash = window.location.hash.replace('#', '');
                 return hash && scriptData.some(n => n.id === hash) && hash !== 'dashboard' ? hash : 'juden';
@@ -1454,10 +1609,10 @@
             const currentNode = useMemo(() => scriptData.find(n => n.id === currentNodeId) || scriptData[0], [currentNodeId]);
             
             const themeColor = useMemo(() => {
-                if (currentNodeId === 'juden') return '#40a9ff';
+                if (currentNodeId === 'juden') return 'var(--primary)';
                 const parent = scriptData.find(n => n.branches?.some(b => b.nextNodeId === currentNodeId || b.subBranches?.some(sb => sb.nextNodeId === currentNodeId)));
                 const branch = parent?.branches?.find(b => b.nextNodeId === currentNodeId || b.subBranches?.some(sb => sb.nextNodeId === currentNodeId));
-                return branch?.color || '#40a9ff';
+                return branch?.color || 'var(--primary)';
             }, [currentNodeId]);
 
             const handleNext = useCallback((id) => {
@@ -1555,7 +1710,7 @@
                                             const parts = p.split('→');
                                             content = (
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                                    <div style={{ fontWeight: '500', color: '#fff', whiteSpace: 'pre-wrap' }}>{parts[0].trim()}</div>
+                                                    <div style={{ fontWeight: '500', color: 'var(--text)', whiteSpace: 'pre-wrap' }}>{parts[0].trim()}</div>
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                                                         {parts.slice(1).map((part, idx) => (
                                                             <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', color: 'var(--text-secondary)', paddingLeft: '12px', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
@@ -1570,7 +1725,7 @@
                                             const parts = p.split(/　{2,}/);
                                             content = (
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                                    <div style={{ fontWeight: '500', color: '#fff', whiteSpace: 'pre-wrap' }}>{parts[0].trim()}</div>
+                                                    <div style={{ fontWeight: '500', color: 'var(--text)', whiteSpace: 'pre-wrap' }}>{parts[0].trim()}</div>
                                                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', color: 'var(--text-secondary)', paddingLeft: '12px', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
                                                         <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>→</span>
                                                         <div style={{ flex: 1 }}>{parts.slice(1).join(' ').trim()}</div>
@@ -1578,10 +1733,10 @@
                                                 </div>
                                             );
                                         } else {
-                                            content = <div style={{ color: '#fff', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>{p}</div>;
+                                            content = <div style={{ color: 'var(--text)', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>{p}</div>;
                                         }
                                         return (
-                                            <div key={i} style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '16px 20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                            <div key={i} style={{ background: 'var(--panel-bg)', padding: '16px 20px', borderRadius: '12px', border: '1px solid var(--panel-border)' }}>
                                                 {content}
                                             </div>
                                         );
@@ -1598,7 +1753,11 @@
                                     <button 
                                         key={b.nextNodeId} 
                                         className="branch-button" 
-                                        style={{ backgroundColor: b.color || '#40a9ff' }}
+                                        style={{
+                                            backgroundColor: b.color || 'var(--branch-default-bg)',
+                                            color: b.color ? '#ffffff' : 'var(--branch-default-text)',
+                                            border: b.color ? 'none' : 'var(--branch-default-border)'
+                                        }}
                                         onClick={() => handleNext(b.nextNodeId)}
                                     >
                                         {b.label}
@@ -1608,27 +1767,10 @@
                             </div>
                         )}
                         {currentNodeId !== 'juden' && (
-                            <div className="call-complete-section" style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px dashed rgba(255,255,255,0.1)' }}>
+                            <div className="call-complete-section">
                                 <button
                                     className="call-complete-button"
                                     onClick={() => handleCallComplete(currentNode.id, currentNode.text)}
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        backgroundColor: '#52c41a',
-                                        color: '#ffffff',
-                                        fontWeight: 'bold',
-                                        fontSize: '0.95rem',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '8px',
-                                        transition: 'all 0.2s',
-                                        boxShadow: '0 4px 10px rgba(82, 196, 26, 0.3)'
-                                    }}
                                 >
                                     対応完了として記録
                                 </button>
@@ -1683,6 +1825,44 @@
                                 履歴 {outgoingMemos.length > 0 && `(${outgoingMemos.length})`}
                             </button>
                             <button
+                                className="theme-toggle-button"
+                                onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
+                                style={{
+                                    height: '32px',
+                                    width: '32px',
+                                    padding: 0,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    backgroundColor: 'var(--dashboard-trigger-bg)',
+                                    border: '1px solid var(--dashboard-trigger-border)',
+                                    borderRadius: '10px',
+                                    color: 'var(--text)',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    marginLeft: '8px'
+                                }}
+                                title={theme === 'light' ? 'ダークモードへ' : 'ライトモードへ'}
+                            >
+                                {theme === 'light' ? (
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                                    </svg>
+                                ) : (
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="5" />
+                                        <line x1="12" y1="1" x2="12" y2="3" />
+                                        <line x1="12" y1="21" x2="12" y2="23" />
+                                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                                        <line x1="1" y1="12" x2="3" y2="12" />
+                                        <line x1="21" y1="12" x2="23" y2="12" />
+                                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                                    </svg>
+                                )}
+                            </button>
+                            <button
                                 className="dashboard-trigger-button"
                                 onClick={openDashboard}
                                 style={{
@@ -1690,10 +1870,10 @@
                                     padding: '0 14px',
                                     fontSize: '0.8rem',
                                     fontWeight: 600,
-                                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                                    backgroundColor: 'var(--dashboard-trigger-bg)',
+                                    border: '1px solid var(--dashboard-trigger-border)',
                                     borderRadius: '10px',
-                                    color: '#ffffff',
+                                    color: 'var(--text)',
                                     cursor: 'pointer',
                                     display: 'flex',
                                     alignItems: 'center',

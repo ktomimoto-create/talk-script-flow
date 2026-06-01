@@ -3,11 +3,115 @@
   --success: #73d13d;
   --warning: #faad14;
   --error: #ff4d4d;
-  --bg-gradient: radial-gradient(circle at top left, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-  --glass: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
+  --bg-gradient: radial-gradient(circle at top left, #121224 0%, #0d1527 50%, #051c38 100%);
+  --glass: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.18);
   --text: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-secondary: #c5d1e8;
+
+  /* 追加テーマ変数（ダークモード） */
+  --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  --input-bg: rgba(0, 0, 0, 0.35);
+  --input-text: #ffffff;
+  --input-placeholder: rgba(255, 255, 255, 0.45);
+  --panel-bg: rgba(255, 255, 255, 0.05);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --node-bg: rgba(255, 255, 255, 0.15);
+  --node-text: #ffffff;
+  --sub-link-bg: rgba(255, 255, 255, 0.08);
+  --sub-link-text: #ffffff;
+  --sub-link-hover-bg: rgba(64, 169, 255, 0.22);
+  --sub-link-hover-border: rgba(64, 169, 255, 0.45);
+  --bar-bg: rgba(13, 21, 39, 0.98);
+  --dashboard-bg: rgba(13, 21, 39, 0.99);
+  --dashboard-overlay: rgba(0, 0, 0, 0.8);
+  --dashboard-trigger-bg: rgba(255, 255, 255, 0.1);
+  --dashboard-trigger-border: rgba(255, 255, 255, 0.2);
+  --dashboard-trigger-text: #ffffff;
+  --dashboard-card-bg: rgba(255, 255, 255, 0.04);
+  --dashboard-card-border: rgba(255, 255, 255, 0.08);
+  --caller-match-badge-bg: rgba(64, 169, 255, 0.24);
+  --caller-match-badge-border: rgba(64, 169, 255, 0.6);
+  --caller-match-badge-text: #ffffff;
+  --caller-match-badge-strong: #ffffff;
+  --history-item-bg: rgba(255, 255, 255, 0.05);
+  --history-item-hover-bg: rgba(255, 255, 255, 0.1);
+  --history-item-hover-border: rgba(255, 255, 255, 0.2);
+  --personal-memo-item-bg: rgba(255, 255, 255, 0.06);
+  --personal-memo-delete-hover: rgba(255, 77, 77, 0.25);
+  --personal-memo-delete-hover-text: #ff9c9c;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+  --scrollbar-track: rgba(0, 0, 0, 0.2);
+  --flow-hint-text: #a2b4d6;
+  --divider: rgba(255, 255, 255, 0.15);
+  --branch-default-bg: #1890ff;
+  --branch-default-text: #ffffff;
+  --branch-default-border: none;
+  --node-active-bg: #1890ff;
+  --node-active-text: #ffffff;
+  --node-active-border: 1px solid #ffffff;
+  --success-bg: rgba(115, 209, 61, 0.12);
+  --success-border: rgba(115, 209, 61, 0.35);
+  --success-text: #95de64;
+  --success-hover-bg: rgba(115, 209, 61, 0.24);
+}
+
+html[data-theme="light"] {
+  --primary: #1890ff;
+  --success: #52c41a;
+  --warning: #faad14;
+  --error: #f5222d;
+  --bg-gradient: radial-gradient(circle at top left, #f4f6f9 0%, #eef1f6 50%, #e4e8f0 100%);
+  --glass: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.12);
+  --text: #111112;
+  --text-secondary: #4b4b4d;
+
+  /* 追加テーマ変数（ライトモード） */
+  --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  --input-bg: #ffffff;
+  --input-text: #111112;
+  --input-placeholder: #7c7c80;
+  --panel-bg: rgba(0, 0, 0, 0.03);
+  --panel-border: rgba(0, 0, 0, 0.08);
+  --node-bg: rgba(255, 255, 255, 0.85);
+  --node-text: #111112;
+  --sub-link-bg: rgba(0, 0, 0, 0.05);
+  --sub-link-text: #111112;
+  --sub-link-hover-bg: rgba(24, 144, 255, 0.12);
+  --sub-link-hover-border: rgba(24, 144, 255, 0.4);
+  --bar-bg: rgba(255, 255, 255, 0.98);
+  --dashboard-bg: rgba(255, 255, 255, 0.99);
+  --dashboard-overlay: rgba(0, 0, 0, 0.5);
+  --dashboard-trigger-bg: rgba(0, 0, 0, 0.06);
+  --dashboard-trigger-border: rgba(0, 0, 0, 0.12);
+  --dashboard-trigger-text: #111112;
+  --dashboard-card-bg: rgba(0, 0, 0, 0.02);
+  --dashboard-card-border: rgba(0, 0, 0, 0.05);
+  --caller-match-badge-bg: rgba(24, 144, 255, 0.15);
+  --caller-match-badge-border: rgba(24, 144, 255, 0.45);
+  --caller-match-badge-text: #1890ff;
+  --caller-match-badge-strong: #0050b3;
+  --history-item-bg: rgba(24, 144, 255, 0.05);
+  --history-item-hover-bg: rgba(24, 144, 255, 0.09);
+  --history-item-hover-border: rgba(24, 144, 255, 0.2);
+  --personal-memo-item-bg: rgba(24, 144, 255, 0.06);
+  --personal-memo-delete-hover: rgba(245, 34, 45, 0.15);
+  --personal-memo-delete-hover-text: #cf1322;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.2);
+  --scrollbar-track: rgba(0, 0, 0, 0.04);
+  --flow-hint-text: #59595c;
+  --divider: rgba(0, 0, 0, 0.1);
+  --branch-default-bg: #e6f7ff;
+  --branch-default-text: #1890ff;
+  --branch-default-border: 1px solid #91d5ff;
+  --node-active-bg: #e6f7ff;
+  --node-active-text: #1890ff;
+  --node-active-border: 1px solid #91d5ff;
+  --success-bg: rgba(82, 196, 26, 0.08);
+  --success-border: rgba(82, 196, 26, 0.35);
+  --success-text: #52c41a;
+  --success-hover-bg: rgba(82, 196, 26, 0.18);
 }
 
 * {
@@ -44,7 +148,7 @@ body {
   border: 1px solid var(--glass-border);
   border-radius: 24px;
   padding: 40px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: var(--card-shadow);
   animation: fadeIn 0.4s ease-out;
   will-change: transform, opacity;
 }
@@ -83,11 +187,11 @@ body {
 }
 
 .point-item {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--panel-bg);
   padding: 16px 20px;
   border-radius: 12px;
   font-size: 0.95rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--panel-border);
   line-height: 1.5;
 }
 
@@ -99,7 +203,7 @@ body {
 
 .point-question {
   font-weight: 500;
-  color: #ffffff;
+  color: var(--text);
 }
 
 .point-answer {
@@ -120,7 +224,7 @@ body {
 }
 
 .point-text {
-  color: #ffffff;
+  color: var(--text);
   line-height: 1.5;
 }
 
@@ -234,7 +338,7 @@ body {
   flex-direction: column;
   gap: 48px;
   padding: 28px 20px;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--panel-bg);
   border-radius: 20px;
   overflow-x: auto;
   min-height: 460px;
@@ -253,7 +357,7 @@ body {
 }
 
 .visual-flow-node {
-  background: rgba(255, 255, 255, 0.12); /* ぼかしを外す代わりに少し不透明度を上げる */
+  background: var(--node-bg); /* ぼかしを外す代わりに少し不透明度を上げる */
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   padding: 12px 14px;
@@ -264,7 +368,7 @@ body {
   position: relative;
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  color: white;
+  color: var(--node-text);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -294,26 +398,27 @@ body {
 }
 
 .visual-flow-node.active {
-  background: var(--primary);
-  border-color: #fff;
+  background: var(--node-active-bg);
+  border-color: var(--node-active-border);
+  color: var(--node-active-text);
 }
 
 .visual-flow-sub-link {
   font-size: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--sub-link-bg);
   padding: 6px;
   border-radius: 6px;
   cursor: pointer;
   text-align: center;
   width: 100%;
   transition: all 0.2s ease;
-  color: #ffffff;
+  color: var(--sub-link-text);
   border: 1px solid transparent;
   white-space: nowrap;
 }
 
 .visual-flow-sub-link:hover {
-  background: color-mix(in srgb, var(--hover-color, var(--primary)) 18%, rgba(255, 255, 255, 0.15));
+  background: color-mix(in srgb, var(--hover-color, var(--primary)) 18%, var(--sub-link-bg));
   transform: translateY(1px);
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--hover-color, var(--primary)) 45%, transparent),
@@ -461,11 +566,11 @@ body {
 .memo-input {
     width: 100%;
     box-sizing: border-box;
-    background: rgba(0, 0, 0, 0.25);
+    background: var(--input-bg);
     border: 1px solid var(--glass-border);
     border-radius: 10px;
     padding: 12px 14px;
-    color: white;
+    color: var(--input-text);
     font-size: 1rem;
     font-family: inherit;
     outline: none;
@@ -474,12 +579,12 @@ body {
 
 .memo-input:focus {
     border-color: var(--primary);
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--input-bg);
     box-shadow: 0 0 0 4px rgba(64, 169, 255, 0.1);
 }
 
 .memo-input::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--input-placeholder);
 }
 
 .memo-textarea {
@@ -493,7 +598,7 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(26, 26, 46, 0.95);
+    background: var(--bar-bg);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-top: 1px solid var(--glass-border);
@@ -553,7 +658,7 @@ body {
     height: 38px;
     padding: 0 14px;
     font-size: 0.9rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--input-bg);
     box-sizing: border-box;
 }
 
@@ -567,17 +672,18 @@ body {
     box-sizing: border-box;
     padding: 0 14px;
     border-radius: 999px;
-    background: rgba(64, 169, 255, 0.14);
-    border: 1px solid rgba(64, 169, 255, 0.45);
-    color: var(--text-secondary);
-    font-size: 0.8rem;
+    background: var(--caller-match-badge-bg);
+    border: 1px solid var(--caller-match-badge-border);
+    color: var(--caller-match-badge-text);
+    font-size: 0.82rem;
+    font-weight: 600;
     white-space: nowrap;
     line-height: 1;
 }
 
 .outgoing-memo-caller-fixed strong {
-    color: white;
-    font-weight: 700;
+    color: var(--caller-match-badge-strong);
+    font-weight: 800;
 }
 
 .outgoing-memo-save-button {
@@ -647,8 +753,8 @@ body {
 }
 
 .memo-history-toggle {
-    background: rgba(255, 255, 255, 0.08);
-    color: white;
+    background: var(--sub-link-bg);
+    color: var(--text);
     border: 1px solid var(--glass-border);
     padding: 10px 16px;
     border-radius: 10px;
@@ -658,7 +764,8 @@ body {
 }
 
 .memo-history-toggle:hover {
-    background: rgba(255, 255, 255, 0.18);
+    background: var(--sub-link-hover-bg);
+    border-color: var(--sub-link-hover-border);
     transform: translateY(1px);
 }
 
@@ -685,7 +792,7 @@ body {
 
 .personal-memo-item {
     position: relative;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--personal-memo-item-bg);
     border: 1px solid var(--glass-border);
     border-radius: 10px;
     padding: 12px 14px;
@@ -716,7 +823,7 @@ body {
 .personal-memo-content {
     white-space: pre-wrap;
     margin-top: 4px;
-    color: white;
+    color: var(--text);
 }
 
 .personal-memo-delete {
@@ -736,8 +843,8 @@ body {
 }
 
 .personal-memo-delete:hover {
-    background: rgba(255, 77, 77, 0.15);
-    color: #ff8080;
+    background: var(--personal-memo-delete-hover);
+    color: var(--personal-memo-delete-hover-text);
 }
 
 /* ========================
@@ -766,9 +873,9 @@ body {
     animation: fadeIn 0.3s ease-out;
 }
 .outgoing-memo-history-button {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid var(--glass-border);
+    background: var(--dashboard-trigger-bg);
+    color: var(--dashboard-trigger-text);
+    border: 1px solid var(--dashboard-trigger-border);
     height: 38px;
     padding: 0 16px;
     border-radius: 10px;
@@ -784,14 +891,15 @@ body {
 }
 
 .outgoing-memo-history-button:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: color-mix(in srgb, var(--primary) 15%, var(--dashboard-trigger-bg));
+    border-color: var(--primary);
     transform: translateY(1px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .outgoing-memo-history-button:active {
     transform: translateY(2px);
-    background: rgba(255, 255, 255, 0.15);
+    background: color-mix(in srgb, var(--primary) 25%, var(--dashboard-trigger-bg));
 }
 
 /* ===========================================
@@ -804,7 +912,7 @@ body {
     bottom: 0;
     width: min(480px, 36vw);
     font-size: 0.9rem;
-    background: rgba(15, 18, 38, 0.98);
+    background: var(--dashboard-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-left: 1px solid var(--glass-border);
@@ -828,7 +936,7 @@ body {
     justify-content: space-between;
     padding: 12px 16px;
     border-bottom: 1px solid var(--glass-border);
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--panel-bg);
 }
 
 .node-sidebar-header .back-button {
@@ -858,7 +966,7 @@ body {
 
 .node-sidebar-close:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: white;
+    color: var(--text);
     border-color: rgba(255, 255, 255, 0.3);
     transform: translateY(1px);
 }
@@ -987,15 +1095,16 @@ body {
     bottom: 96px;
     width: min(380px, calc(100vw - 48px));
     max-height: calc(100vh - 180px);
-    background: rgba(26, 26, 46, 0.98);
+    background: var(--dashboard-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(64, 169, 255, 0.35);
+    border: 1px solid var(--glass-border);
+    border-top: 6px solid var(--primary);
     border-radius: 16px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(64, 169, 255, 0.12);
+    box-shadow: var(--card-shadow);
     animation: slideInRight 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1100;
 }
@@ -1057,16 +1166,16 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--history-item-bg);
     border-radius: 10px;
     margin-bottom: 8px;
-    border: 1px solid transparent;
+    border: 1px solid var(--glass-border);
     transition: all 0.2s;
 }
 
 .history-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
 }
 
 .history-item.is-done {
@@ -1234,7 +1343,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--history-item-bg);
     border: 1px solid var(--glass-border);
     border-radius: 6px;
     padding: 10px 14px;
@@ -1271,7 +1380,7 @@ body {
 }
 
 .memo-item-title {
-    color: #ffffff;
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1305,7 +1414,7 @@ body {
 }
 
 .memo-detail-modal {
-    background: rgba(26, 26, 46, 0.98);
+    background: var(--dashboard-bg);
     border: 1px solid var(--glass-border);
     border-top: 6px solid var(--primary);
     border-radius: 20px;
@@ -1338,7 +1447,7 @@ body {
 .memo-detail-title {
     font-size: 1.15rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text);
 }
 
 .memo-detail-node-label {
@@ -1374,9 +1483,9 @@ body {
 
 .memo-detail-value {
     font-size: 0.95rem;
-    color: #ffffff;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--input-text);
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
     border-radius: 8px;
     padding: 10px 14px;
     line-height: 1.5;
@@ -1453,7 +1562,7 @@ body {
 }
 
 .dashboard-modal {
-    background: rgba(26, 26, 46, 0.98);
+    background: var(--dashboard-bg);
     border: 1px solid var(--glass-border);
     border-top: 6px solid var(--primary);
     border-radius: 20px;
@@ -1481,17 +1590,17 @@ body {
 .dashboard-header h2 {
     font-size: 1.4rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text);
     margin: 0;
 }
 
 .dashboard-period-filter {
     display: flex;
     gap: 8px;
-    background: rgba(0, 0, 0, 0.25);
+    background: var(--input-bg);
     padding: 4px;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--panel-border);
 }
 
 .dashboard-period-filter .period-btn {
@@ -1525,7 +1634,7 @@ body {
 
 .dashboard-header .close-button:hover {
     background: rgba(255, 255, 255, 0.08);
-    color: white;
+    color: var(--text);
 }
 
 .dashboard-body {
@@ -1542,15 +1651,15 @@ body {
     width: 6px;
 }
 .dashboard-body::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--scrollbar-track);
 }
 .dashboard-body::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--scrollbar-thumb);
     border-radius: 3px;
 }
 
 .stats-summary-card {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--history-item-bg);
     border: 1px solid var(--glass-border);
     border-radius: 14px;
     padding: 20px;
@@ -1582,8 +1691,8 @@ body {
 }
 
 .dashboard-card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
     border-radius: 16px;
     padding: 20px;
     display: flex;
@@ -1594,7 +1703,7 @@ body {
 .dashboard-card h3 {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text);
     margin: 0;
     border-left: 4px solid var(--primary);
     padding-left: 10px;
@@ -1626,7 +1735,7 @@ body {
 }
 
 .row-label {
-    color: #ffffff;
+    color: var(--text);
     font-weight: 500;
 }
 
@@ -1636,7 +1745,7 @@ body {
 
 .progress-bar-bg {
     height: 8px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--panel-bg);
     border-radius: 4px;
     overflow: hidden;
 }
@@ -1657,9 +1766,9 @@ body {
     align-items: center;
     gap: 12px;
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--dashboard-card-bg);
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--dashboard-card-border);
     font-size: 0.85rem;
 }
 
@@ -1674,7 +1783,7 @@ body {
 
 .rank-label {
     flex: 1;
-    color: #ffffff;
+    color: var(--text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1691,5 +1800,43 @@ body {
     border-color: rgba(255, 255, 255, 0.3) !important;
     box-shadow: 0 4px 18px rgba(255, 255, 255, 0.1) !important;
     transform: translateY(-1px);
+}
+
+/* 対応完了として記録ボタン (グラスモーフィズム調に馴染むデザイン) */
+.call-complete-button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    color: var(--success-text);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+}
+
+.call-complete-button:hover {
+    background: var(--success-hover-bg);
+    border-color: var(--success-text);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--success-text) 18%, transparent);
+}
+
+.call-complete-button:active {
+    transform: translateY(1px);
+    filter: brightness(0.95);
+}
+
+/* 対応完了セクション区切り線 */
+.call-complete-section {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--divider) !important;
 }
 
