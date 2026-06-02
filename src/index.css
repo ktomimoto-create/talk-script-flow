@@ -1840,3 +1840,35 @@ body {
     border-top: 1px dashed var(--divider) !important;
 }
 
+/* 下部バー用ログインプロフィールおよびログアウトボタン */
+.bar-profile-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.8rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+html[data-theme="light"] .bar-profile-avatar {
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.bar-logout-button:hover {
+  background: rgba(255, 77, 77, 0.15) !important;
+  border-color: rgba(255, 77, 77, 0.35) !important;
+  color: #ff7875 !important;
+  transform: translateY(-1px);
+}
+
+.bar-logout-button:active {
+  transform: scale(0.95);
+}
+

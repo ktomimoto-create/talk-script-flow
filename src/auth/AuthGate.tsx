@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useIsAuthenticated, AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from "@azure/msal-react";
 import { loginRequest } from "./msalConfig";
 import "./authGate.css";
@@ -10,6 +10,12 @@ interface AuthGateProps {
 export const AuthGate: React.FC<AuthGateProps> = ({ children }) => {
   const { instance } = useMsal();
   const isAuthenticated = useIsAuthenticated();
+
+  useEffect(() => {
+    const saved = localStorage.getItem('theme');
+    const theme = saved === 'light' || saved === 'dark' ? saved : 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+  }, []);
 
   const handleLogin = () => {
     instance.loginRedirect(loginRequest).catch((e) => {

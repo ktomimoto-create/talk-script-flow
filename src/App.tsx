@@ -25,6 +25,7 @@ import {
     clearCallLogs,
 } from './lib/memoRepo';
 import { useProfile } from './auth/useProfile';
+import { useMsal } from "@azure/msal-react";
 import './index.css';
 
 const formatRelativeTime = (iso: string): string => {
@@ -288,9 +289,16 @@ const App: React.FC = () => {
     }, [theme]);
 
     const [currentNodeId, setCurrentNodeId] = useState<string>('juden');
+    const { instance } = useMsal();
     const { profile, email: msalEmail } = useProfile();
     const ownerEmail = (profile?.email || msalEmail || '').trim();
     const ownerDisplayName = profile?.display_name || msalEmail || '';
+
+    const handleLogout = () => {
+        instance.logoutRedirect().catch((e) => {
+            console.error(e);
+        });
+    };
 
     // 管理者判定（「自分だけ」がリセットできるよう制限）
     const isAdmin = React.useMemo(() => {
@@ -480,7 +488,7 @@ const App: React.FC = () => {
         [currentNodeId]);
 
     const themeColor = useMemo(() => {
-        if (currentNodeId === 'juden') return 'var(--primary)';
+        if (currentNodeId === 'juden') return 'var(--divider)';
         // 主分岐から先に検索
         for (const n of scriptData) {
             const direct = n.branches?.find(b => b.nextNodeId === currentNodeId);
@@ -493,7 +501,7 @@ const App: React.FC = () => {
                 if (b.subBranches?.some(sb => sb.nextNodeId === currentNodeId) && b.color) return b.color;
             }
         }
-        return 'var(--primary)';
+        return 'var(--divider)';
     }, [currentNodeId]);
 
     const displayedPersonalMemos = useMemo(() => {
@@ -831,8 +839,77 @@ const App: React.FC = () => {
 
             {/* 架電メモおよび個人メモの一体型下部バー */}
             <div className="outgoing-memo-bar">
-                {/* 左側のスペース（架電メモを中央にするためのダミー） */}
-                <div style={{ flex: 1 }}></div>
+                {/* 左側：ログインプロフィール情報（左寄せ） */}
+                <div className="outgoing-memo-left-profile-section" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '10px', paddingLeft: '8px' }}>
+                    <div className="bar-profile-avatar" title={ownerEmail}>
+                        {ownerDisplayName ? ownerDisplayName.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                    <span className="bar-profile-name" style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)' }}>
+                        {ownerDisplayName}
+                    </span>
+                    <button 
+                        className="bar-logout-button" 
+                        onClick={handleLogout} 
+                        title="ログアウト"
+                        style={{
+                            height: '28px',
+                            width: '28px',
+                            padding: 0,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: 'transparent',
+                            border: '1px solid var(--glass-border)',
+                            borderRadius: '8px',
+                            color: 'var(--text)',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                        }}
+                    >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                    </button>
+                    <button
+                        className="theme-toggle-button"
+                        onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
+                        style={{
+                            height: '28px',
+                            width: '28px',
+                            padding: 0,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: 'transparent',
+                            border: '1px solid var(--glass-border)',
+                            borderRadius: '8px',
+                            color: 'var(--text)',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                        }}
+                        title={theme === 'light' ? 'ダークモードへ' : 'ライトモードへ'}
+                    >
+                        {theme === 'light' ? (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                            </svg>
+                        ) : (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="5" />
+                                <line x1="12" y1="1" x2="12" y2="3" />
+                                <line x1="12" y1="21" x2="12" y2="23" />
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                                <line x1="1" y1="12" x2="3" y2="12" />
+                                <line x1="21" y1="12" x2="23" y2="12" />
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                            </svg>
+                        )}
+                    </button>
+                </div>
 
                 {/* 中央：架電メモセクション */}
                 <div className="outgoing-memo-left-section" style={{ flex: '0 1 auto', display: 'flex', justifyContent: 'center' }}>
@@ -843,9 +920,7 @@ const App: React.FC = () => {
                             </span>
                             <span className="outgoing-memo-title-text" style={{ fontSize: '0.85rem' }}>架電メモ</span>
                         </span>
-                        <span className="outgoing-memo-caller-fixed" style={{ height: '32px', padding: '0 12px', display: 'flex', alignItems: 'center' }} title="ログインユーザーで自動設定">
-                            架電者: <strong>{ownerDisplayName || '(未取得)'}</strong>
-                        </span>
+
                         <input 
                             type="text" 
                             className="memo-input" 
@@ -897,43 +972,6 @@ const App: React.FC = () => {
 
                 {/* 右側：個人メモ＆統計集計セクション（ボタンのみのコンパクト表示。右寄せ） */}
                 <div className="outgoing-memo-right-compact-section" style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: '8px', alignItems: 'center' }}>
-                    <button
-                        className="theme-toggle-button"
-                        onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
-                        style={{
-                            height: '32px',
-                            width: '32px',
-                            padding: 0,
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: 'var(--dashboard-trigger-bg)',
-                            border: '1px solid var(--dashboard-trigger-border)',
-                            borderRadius: '10px',
-                            color: 'var(--text)',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                        }}
-                        title={theme === 'light' ? 'ダークモードへ' : 'ライトモードへ'}
-                    >
-                        {theme === 'light' ? (
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                            </svg>
-                        ) : (
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                                <circle cx="12" cy="12" r="5" />
-                                <line x1="12" y1="1" x2="12" y2="3" />
-                                <line x1="12" y1="21" x2="12" y2="23" />
-                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                                <line x1="1" y1="12" x2="3" y2="12" />
-                                <line x1="21" y1="12" x2="23" y2="12" />
-                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                            </svg>
-                        )}
-                    </button>
                     <button
                         className="dashboard-trigger-button"
                         onClick={openDashboard}
