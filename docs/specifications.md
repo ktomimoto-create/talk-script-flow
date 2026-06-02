@@ -10,6 +10,7 @@
 - **Database / Backend**: Firebase (Cloud Firestore)
 - **SSO Authentication**: Microsoft Entra ID (Azure AD)
 - **Development Port**: 5177 (Vite 開発サーバー)
+- **Production Deployment**: Vercel (GitHub連携による自動デプロイ、本番URL: `https://talk-script-flow.vercel.app/`)
 
 ## アプリケーション構成
 

@@ -1,5 +1,13 @@
 # 変更履歴
 
+## [2026-06-02]
+- **Vercelへの本番デプロイおよびSSOログイン環境構築の完了**
+  - アプリケーションを Vercel（GitHub連携）へインポートし、本番環境への自動デプロイワークフローを確立しました（本番URL: `https://talk-script-flow.vercel.app/`）。
+  - **環境変数の設定**:
+    - Firebase 設定および Microsoft Entra ID (Azure AD) 認証用の環境変数（`VITE_AZURE_CLIENT_ID`、`VITE_FIREBASE_API_KEY` 等）を Vercel プロジェクトへ登録しました。
+  - **SSOログインの許可設定**:
+    - Microsoft Entra ID (Azure AD) のアプリ登録（`Teams Task Manager`）において、リダイレクトURIに本番URLを追加登録し、本番環境から安全にSSOログインが行える環境を構築しました。
+
 ## [2026-06-01]
 - **ライトモードにおける協力会社ノード文字色および履歴カード視認性の改善**
   - **協力会社ノード個別テキストのテーマ変数化**:
