@@ -28,7 +28,7 @@ export const scriptData: ScriptNode[] = [
                 color: '#ff4d4f',
                 subBranches: [
                     { label: '架電の折り返し', nextNodeId: 'bottom-kanri-dis-orikaeshi', color: '#ff4d4f' },
-                    { label: '対応結果に関する問い合わせ', nextNodeId: 'bottom-kanri-dis-confirm', color: '#ff4d4f' }
+                    { label: '対応結果', nextNodeId: 'bottom-kanri-dis-confirm', color: '#ff4d4f' }
                 ]
             },
             {
@@ -37,7 +37,7 @@ export const scriptData: ScriptNode[] = [
                 color: '#40a9ff',
                 subBranches: [
                     { label: 'メンテナンス日の確認', nextNodeId: 'bottom-kanri-hoshu-date', color: '#40a9ff' },
-                    { label: '報告書に関する問い合わせ', nextNodeId: 'bottom-kanri-hoshu-report', color: '#40a9ff' }
+                    { label: '報告書', nextNodeId: 'bottom-kanri-hoshu-report', color: '#40a9ff' }
                 ]
             },
             {
@@ -47,7 +47,7 @@ export const scriptData: ScriptNode[] = [
                 subBranches: [
                     { label: '不具合の通報', nextNodeId: 'bottom-kanri-tabusho-bug', color: '#9254de' },
                     { label: '登録方法', nextNodeId: 'bottom-kanri-tabusho-register', color: '#9254de' },
-                    { label: '契約内容に関する問い合わせ', nextNodeId: 'bottom-kanri-tabusho-contract', color: '#9254de' }
+                    { label: '契約内容', nextNodeId: 'bottom-kanri-tabusho-contract', color: '#9254de' }
                 ]
             }
         ]
@@ -58,7 +58,7 @@ export const scriptData: ScriptNode[] = [
         text: '【管理会社 → ディスパッチャー】詳細を選択',
         branches: [
             { label: 'ディスパッチャー架電の折り返し', nextNodeId: 'bottom-kanri-dis-orikaeshi', color: '#ff4d4f' },
-            { label: '対応内容に関する問い合わせ', nextNodeId: 'bottom-kanri-dis-confirm', color: '#ff4d4f' }
+            { label: '対応内容', nextNodeId: 'bottom-kanri-dis-confirm', color: '#ff4d4f' }
         ]
     },
     // ヒアリング項目：折り返し
@@ -74,7 +74,7 @@ export const scriptData: ScriptNode[] = [
     // ヒアリング項目：対応確認
     {
         id: 'bottom-kanri-dis-confirm',
-        text: '対応結果に関する問い合わせ',
+        text: '対応結果',
         subText: '以下の状況を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
         points: [
             '該当FCの確認',
@@ -93,7 +93,7 @@ export const scriptData: ScriptNode[] = [
     },
     {
         id: 'bottom-kanri-hoshu-report',
-        text: '報告書に関する問い合わせ',
+        text: '報告書',
         subText: '以下の内容を確認のうえ、保守管理へ引き継ぎしてください。',
         points: [
             '定期メンテナンス報告書が送られてきていない\n→2026年4月で報告書の原紙送付が廃止されたためFリポート　アカウント作成申請を行うよう推進。\n→データでの送付を要望された場合、メールアドレスを伺い保守管理へ引き継ぐ。',
@@ -113,7 +113,7 @@ export const scriptData: ScriptNode[] = [
     },
     {
         id: 'bottom-kanri-tabusho-register',
-        text: '登録方法に関する問い合わせ',
+        text: '登録方法',
         subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
         points: [
             '号機・物件名を確認',
@@ -122,7 +122,7 @@ export const scriptData: ScriptNode[] = [
     },
     {
         id: 'bottom-kanri-tabusho-contract',
-        text: '契約内容に関する問い合わせ',
+        text: '契約内容',
         subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
         points: [
             '号機・物件名を確認',
@@ -141,7 +141,7 @@ export const scriptData: ScriptNode[] = [
                 color: '#ff4d4f',
                 subBranches: [
                     { label: '架電の折り返し', nextNodeId: 'bottom-kanri-in-dis-orikaeshi', color: '#ff4d4f' },
-                    { label: '障害対応結果に関する問い合わせ', nextNodeId: 'bottom-kanri-in-dis-shogai', color: '#ff4d4f' }
+                    { label: '障害対応結果', nextNodeId: 'bottom-kanri-in-dis-shogai', color: '#ff4d4f' }
                 ]
             },
             {
@@ -150,7 +150,7 @@ export const scriptData: ScriptNode[] = [
                 color: '#40a9ff',
                 subBranches: [
                     { label: 'メンテナンス日の確認', nextNodeId: 'bottom-kanri-in-hoshu-date', color: '#40a9ff' },
-                    { label: '定期点検対応結果に関する問い合わせ', nextNodeId: 'bottom-kanri-in-hoshu-teiki', color: '#40a9ff' }
+                    { label: '定期点検対応結果', nextNodeId: 'bottom-kanri-in-hoshu-teiki', color: '#40a9ff' }
                 ]
             },
             {
@@ -176,7 +176,7 @@ export const scriptData: ScriptNode[] = [
     },
     {
         id: 'bottom-kanri-in-dis-shogai',
-        text: '障害対応結果に関する問い合わせ',
+        text: '障害対応結果',
         subText: '以下の状況を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
         points: [
             '該当FCの確認',
@@ -194,7 +194,7 @@ export const scriptData: ScriptNode[] = [
     },
     {
         id: 'bottom-kanri-in-hoshu-teiki',
-        text: '定期点検対応結果に関する問い合わせ',
+        text: '定期点検対応結果',
         subText: '以下の内容を確認のうえ、保守管理へ引き継ぎしてください。',
         points: [
             '問い合わせの具体的な内容\n→該当FCが起票されているか確認',
@@ -213,7 +213,7 @@ export const scriptData: ScriptNode[] = [
     },
     {
         id: 'bottom-kanri-in-tabusho-register',
-        text: '登録方法に関する問い合わせ',
+        text: '登録方法',
         subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
         points: [
             '号機・物件名を確認',
@@ -231,7 +231,7 @@ export const scriptData: ScriptNode[] = [
                 color: '#ff4d4f',
                 middleBox: { label: 'ディスパッチャー', color: '#ff4d4f' },
                 subBranches: [
-                    { label: '現地作業に関する問い合わせ', nextNodeId: 'bottom-kyoryoku-dis-genchi', color: '#ff4d4f' }
+                    { label: '現地作業', nextNodeId: 'bottom-kyoryoku-dis-genchi', color: '#ff4d4f' }
                 ]
             },
             {
@@ -240,7 +240,7 @@ export const scriptData: ScriptNode[] = [
                 color: '#73d13d',
                 middleBox: { label: '施工管理', color: '#73d13d' },
                 subBranches: [
-                    { label: '現地作業に関する問い合わせ', nextNodeId: 'bottom-kyoryoku-sekou-genchi', color: '#73d13d' }
+                    { label: '現地作業', nextNodeId: 'bottom-kyoryoku-sekou-genchi', color: '#73d13d' }
                 ]
             }
         ]
@@ -250,20 +250,20 @@ export const scriptData: ScriptNode[] = [
         id: 'mid-kyoryoku-afc',
         text: '【協力会社】AFC、BLP等：内容を選択',
         branches: [
-            { label: '現地作業に関する問い合わせ', nextNodeId: 'bottom-kyoryoku-dis-genchi', color: '#ff4d4f' }
+            { label: '現地作業', nextNodeId: 'bottom-kyoryoku-dis-genchi', color: '#ff4d4f' }
         ]
     },
     {
         id: 'mid-kyoryoku-fresh',
         text: '【協力会社】FRESH ROOM、設置業者等：内容を選択',
         branches: [
-            { label: '現地作業に関する問い合わせ', nextNodeId: 'bottom-kyoryoku-sekou-genchi', color: '#73d13d' }
+            { label: '現地作業', nextNodeId: 'bottom-kyoryoku-sekou-genchi', color: '#73d13d' }
         ]
     },
     // ヒアリング項目：協力会社
     {
         id: 'bottom-kyoryoku-dis-genchi',
-        text: '現地作業に関する問い合わせ（AFC、BLP等）',
+        text: '現地作業（AFC、BLP等）',
         subText: '以下の内容を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
         points: [
             '号機/物件名を確認。',
@@ -276,7 +276,7 @@ export const scriptData: ScriptNode[] = [
 
     {
         id: 'bottom-kyoryoku-sekou-genchi',
-        text: '現地作業に関する問い合わせ（FRESH ROOM、設置業者等）',
+        text: '現地作業（FRESH ROOM、設置業者等）',
         subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
         points: [
             '号機/現場名を確認。',
@@ -378,8 +378,8 @@ export const scriptData: ScriptNode[] = [
                 nextNodeId: 'final-tabusho',
                 color: '#9254de',
                 subBranches: [
-                    { label: '登録方法の問い合わせ', nextNodeId: 'bottom-other-tabusho-touroku', color: '#9254de' },
-                    { label: '利用方法/不具合の問い合わせ', nextNodeId: 'bottom-other-tabusho-riyou', color: '#9254de' }
+                    { label: '登録方法', nextNodeId: 'bottom-other-tabusho-touroku', color: '#9254de' },
+                    { label: '利用方法/不具合', nextNodeId: 'bottom-other-tabusho-riyou', color: '#9254de' }
                 ]
             }
         ]
@@ -387,7 +387,7 @@ export const scriptData: ScriptNode[] = [
     // ヒアリング項目：居住者
     {
         id: 'bottom-other-tabusho-touroku',
-        text: '登録方法の問い合わせ',
+        text: '登録方法',
         subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
         points: [
             '物件名の確認',
@@ -396,7 +396,7 @@ export const scriptData: ScriptNode[] = [
     },
     {
         id: 'bottom-other-tabusho-riyou',
-        text: '利用方法/不具合の問い合わせ',
+        text: '利用方法/不具合',
         subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
         points: [
             '物件名を確認',
