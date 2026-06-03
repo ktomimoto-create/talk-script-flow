@@ -393,6 +393,20 @@ const App: React.FC = () => {
     const [showDashboard, setShowDashboard] = useState(false);
     const [dashboardLogs, setDashboardLogs] = useState<CallLog[]>([]);
     const [dashboardPeriod, setDashboardPeriod] = useState<'today' | 'week' | 'month' | 'all'>('all');
+    // ダッシュボードの集計対象（all: 全体 / mine: マイデータ）
+    const [dashboardScope, setDashboardScope] = useState<'all' | 'mine'>('all');
+
+    // 表示対象（全体 / マイデータ）で絞り込んだ統計ログ
+    const visibleCallLogs = React.useMemo(() => {
+        if (dashboardScope === 'mine') {
+            const email = (ownerEmail || '').trim().toLowerCase();
+            return dashboardLogs.filter(log => 
+                (log.operator_email && log.operator_email.trim().toLowerCase() === email) ||
+                (log.operator_name && log.operator_name === ownerDisplayName)
+            );
+        }
+        return dashboardLogs;
+    }, [dashboardLogs, dashboardScope, ownerEmail, ownerDisplayName]);
 
     const reloadCallLogs = React.useCallback(() => {
         fetchCallLogs().then(setDashboardLogs);
@@ -1280,16 +1294,29 @@ const App: React.FC = () => {
                     <div className="dashboard-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="dashboard-header">
                             <h2>受電統計ダッシュボード</h2>
-                            <div className="dashboard-period-filter">
-                                {(['today', 'week', 'month', 'all'] as const).map(p => (
-                                    <button
-                                        key={p}
-                                        className={`period-btn ${dashboardPeriod === p ? 'active' : ''}`}
-                                        onClick={() => setDashboardPeriod(p)}
-                                    >
-                                        {p === 'today' ? '今日' : p === 'week' ? '今週' : p === 'month' ? '今月' : '全期間'}
-                                    </button>
-                                ))}
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <div className="dashboard-period-filter">
+                                    {(['today', 'week', 'month', 'all'] as const).map(p => (
+                                        <button
+                                            key={p}
+                                            className={`period-btn ${dashboardPeriod === p ? 'active' : ''}`}
+                                            onClick={() => setDashboardPeriod(p)}
+                                        >
+                                            {p === 'today' ? '今日' : p === 'week' ? '今週' : p === 'month' ? '今月' : '全期間'}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="dashboard-period-filter">
+                                    {(['all', 'mine'] as const).map(s => (
+                                        <button
+                                            key={s}
+                                            className={`period-btn ${dashboardScope === s ? 'active' : ''}`}
+                                            onClick={() => setDashboardScope(s)}
+                                        >
+                                            {s === 'all' ? '全体' : 'マイデータ'}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                             {isManager && (
                                 <button
@@ -1337,7 +1364,7 @@ const App: React.FC = () => {
                         </div>
                         
                         {(() => {
-                            const stats = calculateStats(dashboardLogs, dashboardPeriod);
+                            const stats = calculateStats(visibleCallLogs, dashboardPeriod);
                             return (
                                 <div className="dashboard-body">
                                     <div className="stats-summary-card">
