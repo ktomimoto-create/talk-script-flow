@@ -978,7 +978,7 @@
                         color: '#ff4d4f',
                         subBranches: [
                             { label: '架電の折り返し', nextNodeId: 'bottom-kanri-dis-orikaeshi', color: '#ff4d4f' },
-                            { label: '対応結果に関する問い合わせ', nextNodeId: 'bottom-kanri-dis-confirm', color: '#ff4d4f' }
+                            { label: '対応結果', nextNodeId: 'bottom-kanri-dis-confirm', color: '#ff4d4f' }
                         ]
                     },
                     {
@@ -987,17 +987,24 @@
                         color: '#40a9ff',
                         subBranches: [
                             { label: 'メンテナンス日の確認', nextNodeId: 'bottom-kanri-hoshu-date', color: '#40a9ff' },
-                            { label: '報告書に関する問い合わせ', nextNodeId: 'bottom-kanri-hoshu-report', color: '#40a9ff' }
+                            { label: '報告書', nextNodeId: 'bottom-kanri-hoshu-report', color: '#40a9ff' }
                         ]
                     },
                     {
-                        label: '他部署',
+                        label: '管理センター',
                         nextNodeId: 'final-tabusho',
                         color: '#9254de',
                         subBranches: [
-                            { label: '不具合の通報', nextNodeId: 'bottom-kanri-tabusho-bug', color: '#9254de' },
-                            { label: '登録方法', nextNodeId: 'bottom-kanri-tabusho-register', color: '#9254de' },
-                            { label: '契約内容に関する問い合わせ', nextNodeId: 'bottom-kanri-tabusho-contract', color: '#9254de' }
+                            { label: '不具合通報', nextNodeId: 'bottom-kanri-tabusho-bug', color: '#9254de' },
+                            { label: '登録方法', nextNodeId: 'bottom-kanri-tabusho-register', color: '#9254de' }
+                        ]
+                    },
+                    {
+                        label: '管理部',
+                        nextNodeId: 'final-kanribu',
+                        color: '#ffa940',
+                        subBranches: [
+                            { label: '契約内容', nextNodeId: 'bottom-kanri-tabusho-contract', color: '#ffa940' }
                         ]
                     }
                 ]
@@ -1010,7 +1017,7 @@
             },
             {
                 id: 'bottom-kanri-dis-confirm',
-                text: '対応結果に関する問い合わせ',
+                text: '対応結果',
                 subText: '以下の状況を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
                 points: ['該当FCの確認', '対応結果を確認し回答可能であれば説明']
             },
@@ -1022,7 +1029,7 @@
             },
             {
                 id: 'bottom-kanri-hoshu-report',
-                text: '報告書に関する問い合わせ',
+                text: '報告書',
                 subText: '以下の内容を確認のうえ、保守管理へ引き継ぎしてください。',
                 points: [
                     '定期メンテナンス報告書が送られてきていない\n→2026年4月で報告書の原紙送付が廃止されたためFリポート　アカウント作成申請を行うよう推進。\n→データでの送付を要望された場合、メールアドレスを伺い保守管理へ引き継ぐ。',
@@ -1032,8 +1039,8 @@
             },
             {
                 id: 'bottom-kanri-tabusho-bug',
-                text: '不具合の通報',
-                subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+                text: '不具合通報',
+                subText: '以下の内容を確認のうえ、管理センターへ引き継ぎしてください。',
                 points: [
                     '号機・物件名を確認',
                     '該当するコントロールセンターへの連絡先を案内\n→FC左下連絡先一覧のサービス別連絡先一覧を参照'
@@ -1041,8 +1048,8 @@
             },
             {
                 id: 'bottom-kanri-tabusho-register',
-                text: '登録方法に関する問い合わせ',
-                subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+                text: '登録方法',
+                subText: '以下の内容を確認のうえ、管理センターへ引き継ぎしてください。',
                 points: [
                     '号機・物件名を確認',
                     '機種に沿った案内\n→オンラインの場合、フルタイムカスタマーサイトを案内。\n不明点等はコントロールセンターへ確認いただくよう案内。\n→オフラインの場合、ロッカー操作にて登録する旨を案内。\n不明点等はコントロールセンターへ確認いただくよう案内。'
@@ -1050,8 +1057,8 @@
             },
             {
                 id: 'bottom-kanri-tabusho-contract',
-                text: '契約内容に関する問い合わせ',
-                subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+                text: '契約内容',
+                subText: '以下の内容を確認のうえ、管理部へ引き継ぎしてください。',
                 points: [
                     '号機・物件名を確認',
                     '問い合わせ内容を確認',
@@ -1069,7 +1076,7 @@
                         color: '#ff4d4f',
                         subBranches: [
                             { label: '架電の折り返し', nextNodeId: 'bottom-kanri-in-dis-orikaeshi', color: '#ff4d4f' },
-                            { label: '障害対応結果に関する問い合わせ', nextNodeId: 'bottom-kanri-in-dis-shogai', color: '#ff4d4f' }
+                            { label: '障害対応結果', nextNodeId: 'bottom-kanri-in-dis-shogai', color: '#ff4d4f' }
                         ]
                     },
                     {
@@ -1078,15 +1085,15 @@
                         color: '#40a9ff',
                         subBranches: [
                             { label: 'メンテナンス日の確認', nextNodeId: 'bottom-kanri-in-hoshu-date', color: '#40a9ff' },
-                            { label: '定期点検対応結果に関する問い合わせ', nextNodeId: 'bottom-kanri-in-hoshu-teiki', color: '#40a9ff' }
+                            { label: '定期点検対応結果', nextNodeId: 'bottom-kanri-in-hoshu-teiki', color: '#40a9ff' }
                         ]
                     },
                     {
-                        label: '他部署',
+                        label: '管理センター',
                         nextNodeId: 'final-tabusho',
                         color: '#9254de',
                         subBranches: [
-                            { label: '不具合の通報', nextNodeId: 'bottom-kanri-in-tabusho-bug', color: '#9254de' },
+                            { label: '不具合通報', nextNodeId: 'bottom-kanri-in-tabusho-bug', color: '#9254de' },
                             { label: '登録方法', nextNodeId: 'bottom-kanri-in-tabusho-register', color: '#9254de' }
                         ]
                     }
@@ -1148,7 +1155,7 @@
                         color: '#ff4d4f',
                         middleBox: { label: 'ディスパッチャー', color: '#ff4d4f' },
                         subBranches: [
-                            { label: '現地作業に関する問い合わせ', nextNodeId: 'bottom-kyoryoku-dis-genchi', color: '#ff4d4f' }
+                            { label: '現地作業', nextNodeId: 'bottom-kyoryoku-dis-genchi', color: '#ff4d4f' }
                         ]
                     },
                     {
@@ -1157,14 +1164,14 @@
                         color: '#73d13d',
                         middleBox: { label: '施工管理', color: '#73d13d' },
                         subBranches: [
-                            { label: '現地作業に関する問い合わせ', nextNodeId: 'bottom-kyoryoku-sekou-genchi', color: '#73d13d' }
+                            { label: '現地作業', nextNodeId: 'bottom-kyoryoku-sekou-genchi', color: '#73d13d' }
                         ]
                     }
                 ]
             },
             {
                 id: 'bottom-kyoryoku-dis-genchi',
-                text: '現地作業に関する問い合わせ（AFC、BLP等）',
+                text: '現地作業（AFC、BLP等）',
                 subText: '以下の内容を確認のうえ、ディスパッチャーへ引き継ぎしてください。',
                 points: [
                     '号機/物件名を確認。',
@@ -1177,7 +1184,7 @@
 
             {
                 id: 'bottom-kyoryoku-sekou-genchi',
-                text: '現地作業に関する問い合わせ（FRESH ROOM、設置業者等）',
+                text: '現地作業（FRESH ROOM、設置業者等）',
                 subText: '以下の内容を確認のうえ、施工管理へ引き継ぎしてください。',
                 points: [
                     '号機/現場名を確認。',
@@ -1273,20 +1280,20 @@
                 text: '【居住者】内容を選択',
                 branches: [
                     {
-                        label: '他部署',
+                        label: '管理センター',
                         nextNodeId: 'final-tabusho',
                         color: '#9254de',
                         subBranches: [
-                            { label: '登録方法の問い合わせ', nextNodeId: 'bottom-other-tabusho-touroku', color: '#9254de' },
-                            { label: '利用方法/不具合の問い合わせ', nextNodeId: 'bottom-other-tabusho-riyou', color: '#9254de' }
+                            { label: '登録方法', nextNodeId: 'bottom-other-tabusho-touroku', color: '#9254de' },
+                            { label: '利用方法/不具合通報', nextNodeId: 'bottom-other-tabusho-riyou', color: '#9254de' }
                         ]
                     }
                 ]
             },
             {
                 id: 'bottom-other-tabusho-touroku',
-                text: '登録方法の問い合わせ',
-                subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+                text: '登録方法',
+                subText: '以下の内容を確認のうえ、管理センターへ引き継ぎしてください。',
                 points: [
                     '物件名の確認',
                     '機種に沿った案内\n→オンラインの場合、フルタイムカスタマーサイトを案内。\n不明点等はコントロールセンターへ確認いただくよう案内。\n→オフラインの場合、ロッカー操作にて登録する旨を案内。\n不明点等はコントロールセンターへ確認いただくよう案内。'
@@ -1294,8 +1301,8 @@
             },
             {
                 id: 'bottom-other-tabusho-riyou',
-                text: '利用方法/不具合の問い合わせ',
-                subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+                text: '利用方法/不具合通報',
+                subText: '以下の内容を確認のうえ、管理センターへ引き継ぎしてください。',
                 points: [
                     '物件名を確認',
                     '該当するコントロールセンターへの連絡先を案内\n→FC左下連絡先一覧のサービス別連絡先一覧を参照'
@@ -1305,7 +1312,8 @@
             { id: 'final-dis', text: 'ディスパッチャーへの引き継ぎを記録しました', isFinal: true },
             { id: 'final-hoshu', text: '保守管理への引き継ぎを記録しました', isFinal: true },
             { id: 'final-sekou', text: '施工管理への引き継ぎを記録しました', isFinal: true },
-            { id: 'final-tabusho', text: '他部署への引き継ぎを記録しました', isFinal: true }
+            { id: 'final-tabusho', text: '管理センターへの引き継ぎを記録しました', isFinal: true },
+            { id: 'final-kanribu', text: '管理部への引き継ぎを記録しました', isFinal: true }
         ];
 
         const VisualFlow = React.memo(({ onSelect }) => {
@@ -1348,7 +1356,6 @@
                                                     }}
                                                     onClick={() => !b.subBranches && onSelect(b.nextNodeId)}
                                                 >
-                                                    <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? 'var(--text)' : (b.color || 'var(--text)') }}>{b.label}</div>
                                                     {b.middleBox && (
                                                         <div style={{
                                                             fontSize: '0.85rem',
@@ -1357,6 +1364,7 @@
                                                             marginTop: '6px'
                                                         }}>{b.middleBox.label}</div>
                                                     )}
+                                                    <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? 'var(--text)' : (b.color || 'var(--text)') }}>{b.label}</div>
                                                     {b.subBranches && (
                                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', marginTop: '8px' }}>
                                                             {b.subBranches.map(sb => (
@@ -1406,8 +1414,10 @@
                 destination = '保守管理';
             } else if (nodeId.includes('-sekou') || nodeId === 'final-sekou') {
                 destination = '施工管理';
+            } else if (nodeId.includes('-contract') || nodeId === 'final-kanribu') {
+                destination = '管理部';
             } else if (nodeId.includes('-tabusho') || nodeId === 'final-tabusho') {
-                destination = '他部署';
+                destination = '管理センター';
             }
 
             return { callerCategory, destination };

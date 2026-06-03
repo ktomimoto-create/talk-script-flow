@@ -101,8 +101,10 @@ export const getCallLogMetadata = (nodeId: string) => {
         destination = '保守管理';
     } else if (nodeId.includes('-sekou') || nodeId === 'final-sekou') {
         destination = '施工管理';
+    } else if (nodeId.includes('-contract') || nodeId === 'final-kanribu') {
+        destination = '管理部';
     } else if (nodeId.includes('-tabusho') || nodeId === 'final-tabusho') {
-        destination = '他部署';
+        destination = '管理センター';
     }
 
     return { callerCategory, destination };
@@ -234,16 +236,18 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                             } as React.CSSProperties}
                                             onClick={() => !b.subBranches && onSelect(b.nextNodeId)}
                                         >
-                                            <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? 'var(--text)' : (b.color || 'var(--text)') }}>{b.label}</div>
-                                            {b.middleBox && (
-                                                <div style={{
-                                                    fontSize: '0.75rem',
-                                                    fontWeight: 'bold',
-                                                    color: b.middleBox.color || '#ffffff',
-                                                    marginTop: '4px',
-                                                    marginBottom: '4px'
-                                                }}>
-                                                    {b.middleBox.label}
+                                            {b.middleBox ? (
+                                                <React.Fragment>
+                                                    <div style={{ fontWeight: 'bold', color: b.middleBox.color || 'var(--text)' }}>
+                                                        {b.middleBox.label}
+                                                    </div>
+                                                    <div style={{ fontSize: '0.75rem', opacity: 0.85, marginTop: '2px', marginBottom: '4px' }}>
+                                                        {b.label}
+                                                    </div>
+                                                </React.Fragment>
+                                            ) : (
+                                                <div style={{ fontWeight: 'bold', color: branch.nextNodeId === 'mid-kyoryoku' ? 'var(--text)' : (b.color || 'var(--text)') }}>
+                                                    {b.label}
                                                 </div>
                                             )}
                                             {b.subBranches ? (

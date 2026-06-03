@@ -58,7 +58,7 @@ export const LogoutIcon: React.FC<IconProps> = ({ size, strokeWidth, className }
     </svg>
 );
 
-/** 受電の最終結果画面（他部署転送中など）向けのトランスファー / アンテナ系アイコン */
+/** 受電の最終結果画面（管理センター/管理部転送中など）向けのトランスファー / アンテナ系アイコン */
 export const TransferIcon: React.FC<IconProps> = ({ size, strokeWidth, className }) => (
     <svg {...baseProps(size, strokeWidth)} className={className}>
         <path d="M3 7h13l-3-3" />

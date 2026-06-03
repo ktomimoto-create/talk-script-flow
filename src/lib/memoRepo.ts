@@ -292,7 +292,7 @@ export type CallLog = {
     operator_name: string | null;
     operator_email: string | null;
     caller_category: string; // 受電相手（管理会社、管理員、協力会社、建築、連動相手、居住者）
-    destination: string; // どこ宛（ディスパッチャー、保守管理、施工管理、他部署、など）
+    destination: string; // どこ宛（ディスパッチャー、保守管理、施工管理、管理センター、管理部、など）
     node_id: string; // 用件のノードID
     node_label: string; // 用件のラベル名
     created_at: string; // ISO 8601

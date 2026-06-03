@@ -41,13 +41,20 @@ export const scriptData: ScriptNode[] = [
                 ]
             },
             {
-                label: '他部署',
+                label: '管理センター',
                 nextNodeId: 'final-tabusho',
                 color: '#9254de',
                 subBranches: [
-                    { label: '不具合の通報', nextNodeId: 'bottom-kanri-tabusho-bug', color: '#9254de' },
-                    { label: '登録方法', nextNodeId: 'bottom-kanri-tabusho-register', color: '#9254de' },
-                    { label: '契約内容', nextNodeId: 'bottom-kanri-tabusho-contract', color: '#9254de' }
+                    { label: '不具合通報', nextNodeId: 'bottom-kanri-tabusho-bug', color: '#9254de' },
+                    { label: '登録方法', nextNodeId: 'bottom-kanri-tabusho-register', color: '#9254de' }
+                ]
+            },
+            {
+                label: '管理部',
+                nextNodeId: 'final-kanribu',
+                color: '#ffa940',
+                subBranches: [
+                    { label: '契約内容', nextNodeId: 'bottom-kanri-tabusho-contract', color: '#ffa940' }
                 ]
             }
         ]
@@ -101,11 +108,11 @@ export const scriptData: ScriptNode[] = [
             'メンテナンス作業の対応時間を確認\n→FC[ｱﾗｰﾑ一覧]　の保守開始・終了ログの時間を伝える。'
         ]
     },
-    // ヒアリング項目：他部署（管理会社）
+    // ヒアリング項目：管理センター（管理会社）
     {
         id: 'bottom-kanri-tabusho-bug',
-        text: '不具合の通報',
-        subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+        text: '不具合通報',
+        subText: '以下の内容を確認のうえ、管理センターへ引き継ぎしてください。',
         points: [
             '号機・物件名を確認',
             '該当するコントロールセンターへの連絡先を案内\n→FC左下連絡先一覧のサービス別連絡先一覧を参照'
@@ -114,7 +121,7 @@ export const scriptData: ScriptNode[] = [
     {
         id: 'bottom-kanri-tabusho-register',
         text: '登録方法',
-        subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+        subText: '以下の内容を確認のうえ、管理センターへ引き継ぎしてください。',
         points: [
             '号機・物件名を確認',
             '機種に沿った案内\n→オンラインの場合、フルタイムカスタマーサイトを案内。\n不明点等はコントロールセンターへ確認いただくよう案内。\n→オフラインの場合、ロッカー操作にて登録する旨を案内。\n不明点等はコントロールセンターへ確認いただくよう案内。'
@@ -123,7 +130,7 @@ export const scriptData: ScriptNode[] = [
     {
         id: 'bottom-kanri-tabusho-contract',
         text: '契約内容',
-        subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+        subText: '以下の内容を確認のうえ、管理部へ引き継ぎしてください。',
         points: [
             '号機・物件名を確認',
             '問い合わせ内容を確認',
@@ -154,11 +161,11 @@ export const scriptData: ScriptNode[] = [
                 ]
             },
             {
-                label: '他部署',
+                label: '管理センター',
                 nextNodeId: 'final-tabusho',
                 color: '#9254de',
                 subBranches: [
-                    { label: '不具合の通報', nextNodeId: 'bottom-kanri-in-tabusho-bug', color: '#9254de' },
+                    { label: '不具合通報', nextNodeId: 'bottom-kanri-in-tabusho-bug', color: '#9254de' },
                     { label: '登録方法', nextNodeId: 'bottom-kanri-in-tabusho-register', color: '#9254de' }
                 ]
             }
@@ -201,11 +208,11 @@ export const scriptData: ScriptNode[] = [
             '記載内容について\n→FC・報告書を参照して内容を伝える。\nFC右上のﾒﾝﾃﾅﾝｽ報告書一覧からPDFファイルの閲覧ができる'
         ]
     },
-    // ヒアリング項目：他部署（管理員）
+    // ヒアリング項目：管理センター（管理員）
     {
         id: 'bottom-kanri-in-tabusho-bug',
-        text: '不具合の通報',
-        subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+        text: '不具合通報',
+        subText: '以下の内容を確認のうえ、管理センターへ引き継ぎしてください。',
         points: [
             '号機・物件名を確認',
             '該当するコントロールセンターへの連絡先を案内\n→FC左下連絡先一覧のサービス別連絡先一覧を参照'
@@ -214,7 +221,7 @@ export const scriptData: ScriptNode[] = [
     {
         id: 'bottom-kanri-in-tabusho-register',
         text: '登録方法',
-        subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+        subText: '以下の内容を確認のうえ、管理センターへ引き継ぎしてください。',
         points: [
             '号機・物件名を確認',
             '機種に沿った案内\n→オンラインの場合、フルタイムカスタマーサイトを案内。\n不明点等はコントロールセンターへ確認いただくよう案内。\n→オフラインの場合、ロッカー操作にて登録する旨を案内。\n不明点等はコントロールセンターへ確認いただくよう案内。'
@@ -374,12 +381,12 @@ export const scriptData: ScriptNode[] = [
         text: '【居住者】内容を選択',
         branches: [
             {
-                label: '他部署',
+                label: '管理センター',
                 nextNodeId: 'final-tabusho',
                 color: '#9254de',
                 subBranches: [
                     { label: '登録方法', nextNodeId: 'bottom-other-tabusho-touroku', color: '#9254de' },
-                    { label: '利用方法/不具合', nextNodeId: 'bottom-other-tabusho-riyou', color: '#9254de' }
+                    { label: '利用方法/不具合通報', nextNodeId: 'bottom-other-tabusho-riyou', color: '#9254de' }
                 ]
             }
         ]
@@ -388,7 +395,7 @@ export const scriptData: ScriptNode[] = [
     {
         id: 'bottom-other-tabusho-touroku',
         text: '登録方法',
-        subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+        subText: '以下の内容を確認のうえ、管理センターへ引き継ぎしてください。',
         points: [
             '物件名の確認',
             '機種に沿った案内\n→オンラインの場合、フルタイムカスタマーサイトを案内。\n不明点等はコントロールセンターへ確認いただくよう案内。\n→オフラインの場合、ロッカー操作にて登録する旨を案内。\n不明点等はコントロールセンターへ確認いただくよう案内。'
@@ -396,8 +403,8 @@ export const scriptData: ScriptNode[] = [
     },
     {
         id: 'bottom-other-tabusho-riyou',
-        text: '利用方法/不具合',
-        subText: '以下の内容を確認のうえ、他部署へ引き継ぎしてください。',
+        text: '利用方法/不具合通報',
+        subText: '以下の内容を確認のうえ、管理センターへ引き継ぎしてください。',
         points: [
             '物件名を確認',
             '該当するコントロールセンターへの連絡先を案内\n→FC左下連絡先一覧のサービス別連絡先一覧を参照'
@@ -408,5 +415,6 @@ export const scriptData: ScriptNode[] = [
     { id: 'final-dis', text: 'ディスパッチャーへの引き継ぎを記録しました', isFinal: true },
     { id: 'final-hoshu', text: '保守管理への引き継ぎを記録しました', isFinal: true },
     { id: 'final-sekou', text: '施工管理への引き継ぎを記録しました', isFinal: true },
-    { id: 'final-tabusho', text: '他部署への引き継ぎを記録しました', isFinal: true }
+    { id: 'final-tabusho', text: '管理センターへの引き継ぎを記録しました', isFinal: true },
+    { id: 'final-kanribu', text: '管理部への引き継ぎを記録しました', isFinal: true }
 ];

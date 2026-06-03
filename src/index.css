@@ -14,6 +14,7 @@
   --node-blue: #69c0ff;
   --node-purple: #b37feb;
   --node-green: #95de64;
+  --node-orange: #ffa940;
 
   --card-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(56, 189, 248, 0.04);
   --input-bg: rgba(5, 8, 16, 0.45);
@@ -77,6 +78,7 @@ html[data-theme="light"] {
   --node-blue: #096dd9;
   --node-purple: #531dab;
   --node-green: #2b8c00;
+  --node-orange: #d46b08;
 
   --card-shadow: 0 20px 48px -12px rgba(15, 23, 42, 0.08), 0 0 1px rgba(15, 23, 42, 0.1);
   --input-bg: #ffffff;
@@ -2082,6 +2084,28 @@ html[data-theme="light"] .bar-profile-avatar {
 .branch-button[style*="background-color: rgb(115, 209, 61)"]:hover,
 .branch-button[style*="background-color:#73d13d" i]:hover {
   box-shadow: 0 0 16px rgba(115, 209, 61, 0.5) !important;
+  filter: brightness(1.15) !important;
+}
+
+/* Orange Override */
+.visual-flow-node div[style*="color: #ffa940" i],
+.visual-flow-node div[style*="color: rgb(255, 169, 64)"],
+.visual-flow-node div[style*="color:#ffa940" i],
+.visual-flow-node [style*="--hover-color: #ffa940" i],
+.visual-flow-node [style*="--hover-color:#ffa940" i] {
+  color: var(--node-orange) !important;
+  --hover-color: var(--node-orange) !important;
+}
+
+.branch-button[style*="background-color: #ffa940" i],
+.branch-button[style*="background-color: rgb(255, 169, 64)"],
+.branch-button[style*="background-color:#ffa940" i] {
+  background-color: var(--node-orange) !important;
+}
+.branch-button[style*="background-color: #ffa940" i]:hover,
+.branch-button[style*="background-color: rgb(255, 169, 64)"]:hover,
+.branch-button[style*="background-color:#ffa940" i]:hover {
+  box-shadow: 0 0 16px rgba(255, 169, 64, 0.5) !important;
   filter: brightness(1.15) !important;
 }
 
