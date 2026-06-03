@@ -868,9 +868,9 @@ const App: React.FC = () => {
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor: 'transparent',
-                            border: '1px solid var(--glass-border)',
+                            border: '1px solid var(--error)',
                             borderRadius: '8px',
-                            color: 'var(--text)',
+                            color: 'var(--error)',
                             cursor: 'pointer',
                             transition: 'all 0.2s',
                         }}
