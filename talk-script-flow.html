@@ -304,7 +304,7 @@
         }
 
         .visual-flow-sub-link {
-            font-size: 0.75rem;
+            font-size: 0.82rem;
             background: var(--sub-link-bg);
             padding: 6px;
             border-radius: 6px;
@@ -1338,7 +1338,7 @@
                                     {branch.nextNodeId === 'mid-other' && (
                                         <div className="visual-flow-column spacer" style={{ width: '100px', minWidth: '100px' }}></div>
                                     )}
-                                    <div className="visual-flow-column" style={{ minWidth: '180px' }}>
+                                    <div className="visual-flow-column" style={{ minWidth: '200px' }}>
                                         <div className="visual-flow-node" style={{ width: '100%', cursor: 'default' }}>
                                             <span className="visual-flow-node-label">{branch.label}</span>
                                             <div className="visual-flow-connector"></div>
@@ -1349,8 +1349,8 @@
                                                     key={b.nextNodeId}
                                                     className="visual-flow-node"
                                                     style={{
-                                                        fontSize: '0.9rem',
-                                                        padding: '12px',
+                                                        fontSize: '0.96rem',
+                                                        padding: '14px 12px',
                                                         width: '100%',
                                                         '--hover-color': b.color || '#40a9ff'
                                                     }}
@@ -1358,7 +1358,7 @@
                                                 >
                                                     {b.middleBox && (
                                                         <div style={{
-                                                            fontSize: '0.85rem',
+                                                            fontSize: '0.88rem',
                                                             fontWeight: 'bold',
                                                             color: b.middleBox.color || '#fff',
                                                             marginTop: '6px'

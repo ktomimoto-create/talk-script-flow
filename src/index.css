@@ -418,9 +418,9 @@ html[data-theme="light"] .card {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 12px 14px;
-  min-width: 120px;
+  min-width: 140px;
   text-align: center;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 500;
   position: relative;
   transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
@@ -497,7 +497,7 @@ html[data-theme="light"] .visual-flow-node.active {
 }
 
 .visual-flow-sub-link {
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   background: var(--sub-link-bg);
   padding: 6px;
   border-radius: 6px;
@@ -583,14 +583,14 @@ html[data-theme="light"] .visual-flow-sub-link:hover {
   position: absolute;
   top: -30px;
   left: 0;
-  width: calc(100% + 10px);
+  width: calc(100% + 20px);
   height: 2px;
   background: var(--glass-border);
 }
 
 .visual-flow-column:first-child::after {
   left: 50%;
-  width: calc(50% + 10px);
+  width: calc(50% + 20px);
 }
 
 .visual-flow-column:last-child::after {
@@ -1910,7 +1910,8 @@ html[data-theme="light"] .dashboard-header .close-button:hover {
 }
 
 /* ダッシュボードボタンホバー効果 */
-.dashboard-trigger-button:hover {
+.dashboard-trigger-button:hover,
+.manual-trigger-button:hover {
     background: rgba(255, 255, 255, 0.16) !important;
     border-color: rgba(255, 255, 255, 0.3) !important;
     box-shadow: 0 4px 18px rgba(255, 255, 255, 0.1) !important;

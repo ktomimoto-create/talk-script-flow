@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>操作マニュアル - トークスクリプトフロー</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #020617 100%);
+            --glass: rgba(30, 41, 59, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --accent: #ffa940;
+            --error: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text);
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        header {
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-title-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            color: var(--primary);
+            filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5));
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 8px;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        h3 {
+            font-size: 1.05rem;
+            color: var(--primary);
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+            color: #cbd5e1;
+        }
+
+        ul, ol {
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-left: 24px;
+            color: #cbd5e1;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* GitHub-style Alerts */
+        .alert {
+            padding: 16px;
+            border-radius: 12px;
+            margin: 24px 0;
+            border: 1px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .alert-title {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .alert-note {
+            background: rgba(56, 189, 248, 0.08);
+            border-color: rgba(56, 189, 248, 0.2);
+            color: #e0f2fe;
+        }
+        .alert-note .alert-title { color: #38bdf8; }
+
+        .alert-important {
+            background: rgba(129, 140, 248, 0.08);
+            border-color: rgba(129, 140, 248, 0.2);
+            color: #e0e7ff;
+        }
+        .alert-important .alert-title { color: #818cf8; }
+
+        .alert-caution {
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #fee2e2;
+        }
+        .alert-caution .alert-title { color: #ef4444; }
+
+        /* Mermaid Box */
+        .mermaid-box {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 24px 0;
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+        }
+
+        .mermaid-box svg {
+            min-width: 600px;
+            width: 100%;
+            height: auto;
+        }
+
+        .mermaid-box .node text {
+            font-size: 13.5px !important;
+            font-weight: 600 !important;
+            font-family: 'Inter', 'Noto Sans JP', sans-serif !important;
+        }
+
+        /* Close window button */
+        .close-tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .close-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* FAQ Q&A Style */
+        .faq-item {
+            margin-bottom: 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .faq-question {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .faq-answer {
+            color: #cbd5e1;
+        }
+
+        /* Steps */
+        .step-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .step-item {
+            position: relative;
+            padding-left: 36px;
+            margin-bottom: 20px;
+        }
+
+        .step-num {
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: #0f172a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <div class="header-title-area">
+                    <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <h1>操作マニュアル</h1>
+                </div>
+                <div class="subtitle">トークスクリプトフロー対応版</div>
+            </div>
+            <button class="close-tab-btn" onclick="window.close()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                閉じる
+            </button>
+        </header>
+
+        <p>本システムは、電話対応におけるヒアリング項目の確認、メモの作成、不通履歴の共有、および受電データの統計集計を行うためのアプリケーションです。</p>
+
+        <h2>1. ログイン（サインイン）方法</h2>
+
+        <ul class="step-list">
+            <li class="step-item">
+                <span class="step-num">1</span>
+                <strong>[Microsoft アカウントでサインイン]</strong> ボタンをクリックします。
+            </li>
+            <li class="step-item">
+                <span class="step-num">2</span>
+                Microsoftのログイン画面に遷移しますので、サインインを行います。認証完了後、トークスクリプトの初期画面へ自動的に戻ります。
+            </li>
+        </ul>
+
+        <h2>2. ユーザー機能</h2>
+
+        <h3>2.1 トークスクリプトフローの利用方法</h3>
+        <p>電話がかかってきた際、相手に応じた適切なヒアリング項目（確認事項）を提示します。</p>
+
+        <div class="mermaid-box">
+            <pre class="mermaid">
+graph TD
+    A[受電開始] --> B{受電相手の選択}
+    B -->|管理会社| C[【管理会社】内容の選択]
+    B -->|管理員| D[【管理員】内容の選択]
+    B -->|その他カテゴリー| E[各カテゴリー画面へ]
+    C --> F{引き継ぎ先/用件の選択}
+    F -->|ディスパッチャー| G[確認事項の確認]
+    F -->|保守管理| H[確認事項の確認]
+    F -->|他部署| I[確認事項の確認]
+            </pre>
+        </div>
+
+        <ol>
+            <li><strong>初期画面で受電相手を選択</strong>: 画面中央の「受電相手を選択してください」から該当するカテゴリ（例：管理会社、管理員 など）をクリックします。</li>
+            <li><strong>引き継ぎ先・用件の選択</strong>: 選択したカテゴリの下に紐づく引き継ぎ先（ディスパッチャー、保守管理、施工管理、他部署）および用件が表示されますので、相手の用件に合わせてクリックします。</li>
+            <li><strong>確認事項（ヒアリング）とメモ入力</strong>: 画面右側に「確認ポイント（ヒアリング事項）」カードが表示されます。内容を確認しながらヒアリングを行ってください。確認事項の下部のメモ入力欄に用件をメモし、<strong>[個人メモとして保存]</strong> ボタンを押すと、自分専用の履歴としてメモが一時保存されます。</li>
+        </ol>
+
+        <h3>2.2 不通履歴（架電メモ）の登録と検索</h3>
+        <p>折り返し電話をかけたが繋がらなかった（不通）場合、その情報を部署全体で共有し、二重対応を防ぎます。</p>
+
+        <div class="alert alert-note">
+            <div class="alert-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                不通データの保持期間
+            </div>
+            保存から <strong>24時間が経過した不通履歴は、一覧から自動的に削除</strong> されます。常に最新の「本日対応すべき不通情報」のみが蓄積される仕様です。
+        </div>
+
+        <ul>
+            <li><strong>不通の登録</strong>: 画面最下部の「架電メモバー」の中央入力欄に、<strong>[電話番号]</strong>（必須）、<strong>[架電先氏名]</strong>、<strong>[号機/物件名]** を入力し、右側の **[不通]** ボタンをクリックします。</li>
+            <li><strong>不通履歴の確認・検索</strong>: 下部バーの **[履歴 (N)]** ボタン（Nは現在の未対応件数）をクリックすると、不通履歴一覧がポップアップ表示されます。
+                <ul>
+                    <li><strong>高速検索窓</strong>: 一覧の上部にある検索窓に「物件名」「電話番号」「架電者（登録した人）」の一部を入力すると、即座にリストが絞り込まれます。</li>
+                    <li><strong>ハイフン有無無視機能</strong>: 電話番号のハイフン（`-`）の有無は無視されるため、`090-1234-5678` と登録された履歴に対して `09012345678` と入力しても正しく検索にヒットします。</li>
+                </ul>
+            </li>
+            <li><strong>対応完了（消し込み）処理</strong>: 不通となっていた相手への折り返し対応等が完了した場合は、履歴一覧からチェックボックスまたは「完了」アクションを押します。完了処理を行うと、<strong>その履歴は自動的に一覧および件数カウントから除外（非表示化）** されます。</li>
+        </ul>
+
+        <h2>3. トラブルシューティング</h2>
+        <div class="faq-item">
+            <div class="faq-question">Q. ログイン画面で「Microsoft アカウントでサインイン」を押しても進まない</div>
+            <div class="faq-answer">A. ブラウザのポップアップブロックが有効になっている、またはサインインセッションが切れている可能性があります。ブラウザを一度完全に閉じ、キャッシュをクリアして再試行してください。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Q. 登録した不通履歴が消えてしまった</div>
+            <div class="faq-answer">A. 登録から24時間が経過した履歴、または誰かが「対応完了」にチェックを入れた履歴は、一覧から自動的に除外・非表示になる仕様です。</div>
+        </div>
+    </div>
+
+    <!-- Load Mermaid.js for drawing workflow diagrams dynamically -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                background: '#1e1b4b',
+                primaryColor: '#38bdf8',
+                primaryTextColor: '#f8fafc',
+                lineColor: '#94a3b8',
+                arrowheadColor: '#94a3b8'
+            }
+        });
+    </script>
+</body>
+</html>

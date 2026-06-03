@@ -180,7 +180,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
         <div className="visual-flow-map">
             {/* 第1層 */}
             <div className="visual-flow-layer">
-                <div className="visual-flow-node active static" style={{ minWidth: '220px', width: 'auto', fontSize: '1.25rem', padding: '18px 28px' }}>
+                <div className="visual-flow-node active static" style={{ minWidth: '260px', width: 'auto', fontSize: '1.35rem', padding: '20px 32px' }}>
                     <span className="visual-flow-node-label">受電</span>
                     <div className="visual-flow-connector"></div>
                 </div>
@@ -188,7 +188,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
 
             {/* 第2層および第3層 */}
             {/* 第2層および第3層 */}
-            <div className="visual-flow-layer" style={{ alignItems: 'flex-start', gap: '10px' }}>
+            <div className="visual-flow-layer" style={{ alignItems: 'flex-start', gap: '20px' }}>
                 {topLayerBranches.map((branch) => {
                     const midNode = scriptData.find(n => n.id === branch.nextNodeId);
                     return (
@@ -205,13 +205,13 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                 alignItems: 'center',
                                 gap: '48px',
                                 flex: '1 1 0',
-                                minWidth: '140px'
+                                minWidth: '170px'
                             }}>
 
                                 {/* Layer 2 Node */}
                                 <div
                                     className="visual-flow-node"
-                                    style={{ width: '100%', padding: '14px 12px', fontSize: '1rem', cursor: 'pointer' }}
+                                    style={{ width: '100%', padding: '16px 14px', fontSize: '1.08rem', cursor: 'pointer' }}
                                     onClick={() => onSelect(branch.nextNodeId)}
                                 >
                                     <span className="visual-flow-node-label">{branch.label}</span>
@@ -224,8 +224,8 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                             key={b.nextNodeId}
                                             className={`visual-flow-node ${b.subBranches ? 'static' : ''}`}
                                             style={{
-                                                fontSize: '0.85rem',
-                                                padding: b.subBranches ? '10px 8px' : '10px',
+                                                fontSize: '0.92rem',
+                                                padding: b.subBranches ? '12px 10px' : '12px',
                                                 width: '100%',
                                                 display: 'flex',
                                                 flexDirection: 'column',
@@ -241,7 +241,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                                     <div style={{ fontWeight: 'bold', color: b.middleBox.color || 'var(--text)' }}>
                                                         {b.middleBox.label}
                                                     </div>
-                                                    <div style={{ fontSize: '0.75rem', opacity: 0.85, marginTop: '2px', marginBottom: '4px' }}>
+                                                    <div style={{ fontSize: '0.82rem', opacity: 0.85, marginTop: '2px', marginBottom: '4px' }}>
                                                         {b.label}
                                                     </div>
                                                 </React.Fragment>
@@ -266,7 +266,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                                     ))}
                                                 </div>
                                             ) : b.subLabel ? (
-                                                <div style={{ fontSize: '0.72rem', opacity: 0.8 }}>
+                                                <div style={{ fontSize: '0.78rem', opacity: 0.8 }}>
                                                     {b.subLabel}
                                                 </div>
                                             ) : null}
@@ -845,7 +845,7 @@ const App: React.FC = () => {
 
     return (
         <React.Fragment>
-            <div className={`app-container ${isSidebarOpen ? 'with-sidebar' : ''}`} style={{ width: '100%', maxWidth: '1550px', transform: 'scale(0.85)', transformOrigin: 'top center' }}>
+            <div className={`app-container ${isSidebarOpen ? 'with-sidebar' : ''}`} style={{ width: '100%', maxWidth: '1550px', transform: 'scale(0.92)', transformOrigin: 'top center' }}>
                 <div className="card" key="juden" style={{ borderTop: `6px solid ${themeColor}`, width: '100%', maxWidth: '1500px' }}>
                     <h1 className="script-text">{jubenNode.text}</h1>
                     {jubenNode.subText && (
@@ -1046,6 +1046,20 @@ const App: React.FC = () => {
                 {/* 右側：個人メモ＆統計集計セクション（ボタンのみのコンパクト表示。右寄せ） */}
                 <div className="outgoing-memo-right-compact-section" style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: '8px', alignItems: 'center' }}>
                     <button
+                        className="personal-memo-history-button"
+                        style={{ height: '32px', padding: '0 14px', fontSize: '0.8rem', fontWeight: 600 }}
+                        onClick={() => {
+                            const next = !showPersonalHistoryPanel;
+                            setShowPersonalHistoryPanel(next);
+                            if (next) {
+                                reloadPersonalMemos();
+                                setShowHistory(false);
+                            }
+                        }}
+                    >
+                        個人メモ履歴 {personalMemos.length > 0 && `(${personalMemos.length})`}
+                    </button>
+                    <button
                         className="dashboard-trigger-button"
                         onClick={openDashboard}
                         style={{
@@ -1072,18 +1086,29 @@ const App: React.FC = () => {
                         集計ダッシュボード
                     </button>
                     <button
-                        className="personal-memo-history-button"
-                        style={{ height: '32px', padding: '0 14px', fontSize: '0.8rem', fontWeight: 600 }}
-                        onClick={() => {
-                            const next = !showPersonalHistoryPanel;
-                            setShowPersonalHistoryPanel(next);
-                            if (next) {
-                                reloadPersonalMemos();
-                                setShowHistory(false);
-                            }
+                        className="manual-trigger-button"
+                        onClick={() => window.open('/user_manual.html', '_blank')}
+                        style={{
+                            height: '32px',
+                            padding: '0 14px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                            backgroundColor: 'var(--dashboard-trigger-bg)',
+                            border: '1px solid var(--dashboard-trigger-border)',
+                            borderRadius: '10px',
+                            color: 'var(--text)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            transition: 'all 0.2s',
                         }}
                     >
-                        個人メモ履歴 {personalMemos.length > 0 && `(${personalMemos.length})`}
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        操作マニュアル
                     </button>
                 </div>
 
