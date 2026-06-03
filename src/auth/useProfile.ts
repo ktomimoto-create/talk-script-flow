@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMsal } from '@azure/msal-react';
-import { db } from '../lib/firebaseClient';
-import { collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { supabase } from '../lib/supabaseClient';
 
 export type Profile = {
     id: string;
@@ -13,7 +12,7 @@ export type Profile = {
 };
 
 /**
- * MSAL でサインイン中のユーザーのメールをキーに、Firestore profiles から
+ * MSAL でサインイン中のユーザーのメールをキーに、Supabase profiles から
  * プロフィール情報を 1 件取得するフック。
  */
 export const useProfile = () => {
@@ -36,19 +35,20 @@ export const useProfile = () => {
         const fetchProfile = async () => {
             try {
                 const emailQuery = email.toLowerCase();
-                const q = query(
-                    collection(db, 'profiles'),
-                    where('email', '==', emailQuery),
-                    limit(1)
-                );
-                const snapshot = await getDocs(q);
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('id, email, display_name, avatar_url, department, position')
+                    .eq('email', emailQuery)
+                    .maybeSingle();
+
                 if (cancelled) return;
 
-                if (!snapshot.empty) {
-                    const docSnap = snapshot.docs[0];
-                    const data = docSnap.data();
+                if (error) {
+                    console.warn('[useProfile] Supabase query error', error);
+                    setProfile(null);
+                } else if (data) {
                     setProfile({
-                        id: docSnap.id,
+                        id: String(data.id),
                         email: data.email ?? null,
                         display_name: data.display_name ?? null,
                         avatar_url: data.avatar_url ?? null,
@@ -59,7 +59,6 @@ export const useProfile = () => {
                     setProfile(null);
                 }
             } catch (error) {
-                // eslint-disable-next-line no-console
                 console.warn('[useProfile] failed to load profile', error);
                 setProfile(null);
             } finally {
@@ -78,3 +77,4 @@ export const useProfile = () => {
 
     return { profile, loading, email };
 };
+

@@ -847,7 +847,11 @@ const App: React.FC = () => {
                 {/* 左側：ログインプロフィール情報（左寄せ） */}
                 <div className="outgoing-memo-left-profile-section" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '10px', paddingLeft: '8px' }}>
                     <div className="bar-profile-avatar" title={ownerEmail}>
-                        {ownerDisplayName ? ownerDisplayName.charAt(0).toUpperCase() : 'U'}
+                        {profile?.avatar_url ? (
+                            <img src={profile.avatar_url} alt={ownerDisplayName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                            ownerDisplayName ? ownerDisplayName.charAt(0).toUpperCase() : 'U'
+                        )}
                     </div>
                     <span className="bar-profile-name" style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)' }}>
                         {ownerDisplayName}
