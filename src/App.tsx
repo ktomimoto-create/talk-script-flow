@@ -305,21 +305,25 @@ const App: React.FC = () => {
         });
     };
 
-    // 管理者判定（「自分だけ」がリセットできるよう制限）
-    const isAdmin = React.useMemo(() => {
+    // アカウントのロール判定（MANAGER / USER）
+    const userRole = React.useMemo<'MANAGER' | 'USER'>(() => {
         const email = ownerEmail.toLowerCase();
         const displayName = ownerDisplayName.toLowerCase();
-        const adminEmailsEnv = (import.meta.env.VITE_ADMIN_EMAILS || '').toLowerCase();
-        const adminEmailsList = adminEmailsEnv.split(',').map((e: string) => e.trim());
+        // MANAGER権限のリスト（VITE_MANAGER_EMAILS または 既存の VITE_ADMIN_EMAILS から取得）
+        const managerEmailsEnv = (import.meta.env.VITE_MANAGER_EMAILS || import.meta.env.VITE_ADMIN_EMAILS || '').toLowerCase();
+        const managerEmailsList = managerEmailsEnv.split(',').map((e: string) => e.trim());
 
-        return (
-            adminEmailsList.includes(email) ||
+        const isManager = (
+            managerEmailsList.includes(email) ||
             email.includes('tomimoto') ||
             email.includes('000644') ||
             displayName.includes('友本') ||
             email === 'admin@fts-net.co.jp'
         );
+        return isManager ? 'MANAGER' : 'USER';
     }, [ownerEmail, ownerDisplayName]);
+
+    const isManager = userRole === 'MANAGER';
 
     // 詳細表示用個人メモステート
     const [activeDetailMemo, setActiveDetailMemo] = useState<PersonalMemo | null>(null);
@@ -338,6 +342,31 @@ const App: React.FC = () => {
     const [tempPhone, setTempPhone] = useState('');
     const [tempName, setTempName] = useState('');
     const [tempSite, setTempSite] = useState('');
+
+    // 不通履歴の検索ワード
+    const [historySearchQuery, setHistorySearchQuery] = useState('');
+
+    // 不通履歴のフィルタリング（ハイフン有無無視機能付き）
+    const filteredOutgoingMemos = React.useMemo(() => {
+        if (!historySearchQuery.trim()) return outgoingMemos;
+        const query = historySearchQuery.toLowerCase().trim();
+        const cleanQuery = query.replace(/-/g, '');
+
+        return outgoingMemos.filter(m => {
+            const cleanPhone = (m.phone || '').replace(/-/g, '');
+            const phoneMatched = (
+                (m.phone || '').toLowerCase().includes(query) ||
+                cleanPhone.includes(cleanQuery)
+            );
+
+            return (
+                phoneMatched ||
+                (m.name || '').toLowerCase().includes(query) ||
+                (m.site_name || '').toLowerCase().includes(query) ||
+                (m.created_by_name || '').toLowerCase().includes(query)
+            );
+        });
+    }, [outgoingMemos, historySearchQuery]);
 
     // 履歴表示の状態
     const [showHistory, setShowHistory] = useState(false);
@@ -369,7 +398,7 @@ const App: React.FC = () => {
     }, [reloadCallLogs]);
 
     const handleResetDashboard = async () => {
-        if (!isAdmin) {
+        if (!isManager) {
             alert('統計データをリセットする権限がありません。');
             return;
         }
@@ -853,9 +882,25 @@ const App: React.FC = () => {
                             ownerDisplayName ? ownerDisplayName.charAt(0).toUpperCase() : 'U'
                         )}
                     </div>
-                    <span className="bar-profile-name" style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)' }}>
-                        {ownerDisplayName}
-                    </span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <span className="bar-profile-name" style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)', lineHeight: 1.1 }}>
+                            {ownerDisplayName}
+                        </span>
+                        <span style={{
+                            alignSelf: 'flex-start',
+                            fontSize: '0.55rem',
+                            fontWeight: 700,
+                            padding: '1px 4px',
+                            borderRadius: '4px',
+                            backgroundColor: isManager ? 'rgba(255, 77, 77, 0.15)' : 'rgba(255, 255, 255, 0.1)',
+                            border: isManager ? '1px solid rgba(255, 77, 77, 0.3)' : '1px solid rgba(255, 255, 255, 0.15)',
+                            color: isManager ? '#ff4d4d' : 'var(--text-secondary)',
+                            lineHeight: 1,
+                            letterSpacing: '0.5px'
+                        }}>
+                            {userRole}
+                        </span>
+                    </div>
                     <button 
                         className="bar-logout-button" 
                         onClick={handleLogout} 
@@ -1028,15 +1073,42 @@ const App: React.FC = () => {
                     <div className="outgoing-memo-history-panel" style={{ bottom: '80px', left: '50%', transform: 'translateX(-50%)', right: 'auto', width: '420px' }}>
                         <div className="history-header">
                             <span>不通履歴一覧</span>
-                            <button className="close-button" aria-label="閉じる" onClick={() => setShowHistory(false)}>
+                            <button className="close-button" aria-label="閉じる" onClick={() => {
+                                setShowHistory(false);
+                                setHistorySearchQuery('');
+                            }}>
                                 <CloseIcon size={18} />
                             </button>
                         </div>
+                        {/* 検索入力欄を追加 */}
+                        <div className="history-search-container" style={{ padding: '8px 12px', borderBottom: '1px solid var(--glass-border)' }}>
+                            <input
+                                type="text"
+                                className="memo-input"
+                                placeholder="物件名、電話番号、架電者で検索..."
+                                value={historySearchQuery}
+                                onChange={(e) => setHistorySearchQuery(e.target.value)}
+                                style={{
+                                    width: '100%',
+                                    height: '32px',
+                                    fontSize: '0.8rem',
+                                    padding: '0 10px',
+                                    borderRadius: '8px',
+                                    backgroundColor: 'var(--input-bg)',
+                                    color: 'var(--text)',
+                                    border: '1px solid var(--glass-border)',
+                                    outline: 'none',
+                                    boxSizing: 'border-box'
+                                }}
+                            />
+                        </div>
                         <div className="history-list">
-                            {outgoingMemos.length === 0 ? (
-                                <div className="history-empty">履歴はありません</div>
+                            {filteredOutgoingMemos.length === 0 ? (
+                                <div className="history-empty">
+                                    {outgoingMemos.length === 0 ? '履歴はありません' : '該当する履歴が見つかりません'}
+                                </div>
                             ) : (
-                                outgoingMemos.map((m) => {
+                                filteredOutgoingMemos.map((m) => {
                                     const isMine = !!ownerEmail && m.created_by_email?.toLowerCase() === ownerEmail.toLowerCase();
                                     const isDone = !!m.completed_at;
                                     return (
@@ -1214,7 +1286,7 @@ const App: React.FC = () => {
                                     </button>
                                 ))}
                             </div>
-                            {isAdmin && (
+                            {isManager && (
                                 <button
                                     className="dashboard-reset-button"
                                     onClick={handleResetDashboard}
