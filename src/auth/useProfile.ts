@@ -33,6 +33,12 @@ export const useProfile = () => {
         setLoading(true);
 
         const fetchProfile = async () => {
+            if (!supabase) {
+                console.warn('[useProfile] Supabase is not initialized (missing environment variables)');
+                setProfile(null);
+                setLoading(false);
+                return;
+            }
             try {
                 const emailQuery = email.toLowerCase();
                 const { data, error } = await supabase
