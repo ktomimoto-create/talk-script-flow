@@ -1700,6 +1700,7 @@ html[data-theme="light"] .history-header .close-button:hover {
     font-weight: 700;
     color: var(--text);
     margin: 0;
+    white-space: nowrap;
 }
 
 .dashboard-period-filter {
@@ -1715,12 +1716,13 @@ html[data-theme="light"] .history-header .close-button:hover {
     background: transparent;
     border: none;
     color: var(--text-secondary);
-    padding: 6px 14px;
+    padding: 6px 10px;
     border-radius: 6px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .dashboard-period-filter .period-btn.active {

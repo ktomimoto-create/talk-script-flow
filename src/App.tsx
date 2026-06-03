@@ -1313,7 +1313,7 @@ const App: React.FC = () => {
                                             className={`period-btn ${dashboardScope === s ? 'active' : ''}`}
                                             onClick={() => setDashboardScope(s)}
                                         >
-                                            {s === 'all' ? '全体' : 'マイデータ'}
+                                            {s === 'all' ? 'ALL DATA' : 'MY DATA'}
                                         </button>
                                     ))}
                                 </div>
@@ -1335,7 +1335,8 @@ const App: React.FC = () => {
                                         transition: 'all 0.2s',
                                         display: 'flex',
                                         alignItems: 'center',
-                                        gap: '4px'
+                                        gap: '4px',
+                                        whiteSpace: 'nowrap'
                                     }}
                                     onMouseOver={(e) => {
                                         e.currentTarget.style.backgroundColor = 'rgba(255, 77, 77, 0.2)';
