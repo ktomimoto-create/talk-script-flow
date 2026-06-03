@@ -178,7 +178,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
         <div className="visual-flow-map">
             {/* 第1層 */}
             <div className="visual-flow-layer">
-                <div className="visual-flow-node active" style={{ minWidth: '220px', width: 'auto', fontSize: '1.25rem', padding: '18px 28px' }}>
+                <div className="visual-flow-node active static" style={{ minWidth: '220px', width: 'auto', fontSize: '1.25rem', padding: '18px 28px' }}>
                     <span className="visual-flow-node-label">受電</span>
                     <div className="visual-flow-connector"></div>
                 </div>
@@ -209,7 +209,8 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                 {/* Layer 2 Node */}
                                 <div
                                     className="visual-flow-node"
-                                    style={{ width: '100%', padding: '14px 12px', fontSize: '1rem', cursor: 'default' }}
+                                    style={{ width: '100%', padding: '14px 12px', fontSize: '1rem', cursor: 'pointer' }}
+                                    onClick={() => onSelect(branch.nextNodeId)}
                                 >
                                     <span className="visual-flow-node-label">{branch.label}</span>
                                     <div className="visual-flow-connector"></div>
@@ -219,7 +220,7 @@ const VisualFlow: React.FC<{ onSelect: (id: string) => void }> = React.memo(({ o
                                     {midNode?.branches?.map((b) => (
                                         <div
                                             key={b.nextNodeId}
-                                            className="visual-flow-node"
+                                            className={`visual-flow-node ${b.subBranches ? 'static' : ''}`}
                                             style={{
                                                 fontSize: '0.85rem',
                                                 padding: b.subBranches ? '10px 8px' : '10px',
