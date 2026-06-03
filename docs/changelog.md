@@ -1,5 +1,9 @@
 # 変更履歴
 
+## [2026-06-03]
+- **ローカル環境変数の更新**:
+  - 開発環境（ローカル）でユーザーのプロフィール画像や追加のユーザー情報をSupabaseから取得して表示できるよう、`.env.local` および `.env.example` にSupabaseの接続設定（`VITE_SUPABASE_URL`、`VITE_SUPABASE_ANON_KEY`）を追記しました。
+
 ## [2026-06-02]
 - **Vercelへの本番デプロイおよびSSOログイン環境構築の完了**
   - アプリケーションを Vercel（GitHub連携）へインポートし、本番環境への自動デプロイワークフローを確立しました（本番URL: `https://talk-script-flow.vercel.app/`）。
