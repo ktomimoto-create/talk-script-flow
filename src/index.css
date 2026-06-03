@@ -2096,10 +2096,10 @@ html[data-theme="light"] .bar-profile-avatar {
 
 html[data-theme="light"] .branch-button:not([style*="background-color:"]):hover,
 html[data-theme="light"] .branch-button[style*="var(--branch-default-bg)"]:hover {
-  background: var(--primary) !important;
-  color: #ffffff !important;
-  border-color: var(--primary) !important;
-  box-shadow: 0 0 16px rgba(2, 132, 199, 0.35) !important;
+  background: #bae7ff !important;
+  color: #003a8c !important;
+  border-color: #0050b3 !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15) !important;
 }
 
 /* Secondary/Informational text legibility tweaks (Dark Mode) */
