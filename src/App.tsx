@@ -346,13 +346,18 @@ const App: React.FC = () => {
     // 不通履歴の検索ワード
     const [historySearchQuery, setHistorySearchQuery] = useState('');
 
-    // 不通履歴のフィルタリング（ハイフン有無無視機能付き）
+    // 未完了の不通履歴のみに絞り込む（完了履歴の非表示化）
+    const activeOutgoingMemos = React.useMemo(() => {
+        return outgoingMemos.filter(m => !m.completed_at);
+    }, [outgoingMemos]);
+
+    // 不通履歴のフィルタリング（未完了のみ＋ハイフン有無無視検索機能付き）
     const filteredOutgoingMemos = React.useMemo(() => {
-        if (!historySearchQuery.trim()) return outgoingMemos;
+        if (!historySearchQuery.trim()) return activeOutgoingMemos;
         const query = historySearchQuery.toLowerCase().trim();
         const cleanQuery = query.replace(/-/g, '');
 
-        return outgoingMemos.filter(m => {
+        return activeOutgoingMemos.filter(m => {
             const cleanPhone = (m.phone || '').replace(/-/g, '');
             const phoneMatched = (
                 (m.phone || '').toLowerCase().includes(query) ||
@@ -366,7 +371,7 @@ const App: React.FC = () => {
                 (m.created_by_name || '').toLowerCase().includes(query)
             );
         });
-    }, [outgoingMemos, historySearchQuery]);
+    }, [activeOutgoingMemos, historySearchQuery]);
 
     // 履歴表示の状態
     const [showHistory, setShowHistory] = useState(false);
@@ -1019,7 +1024,7 @@ const App: React.FC = () => {
                                 }
                             }}
                         >
-                            履歴 {outgoingMemos.length > 0 && `(${outgoingMemos.length})`}
+                            履歴 {activeOutgoingMemos.length > 0 && `(${activeOutgoingMemos.length})`}
                         </button>
                     </div>
                 </div>
