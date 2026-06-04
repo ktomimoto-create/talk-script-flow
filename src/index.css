@@ -1429,6 +1429,39 @@ html[data-theme="light"] .history-header .close-button:hover {
     flex-shrink: 0;
 }
 
+.personal-memo-history-button,
+.dashboard-trigger-button,
+.manual-trigger-button {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+}
+
+/* 画面幅が1350px以下の時、ボタンの文字を非表示にしてアイコンのみ（個人メモは件数付き）にする */
+@media (max-width: 1350px) {
+    .outgoing-memo-right-compact-section .button-text {
+        display: none !important;
+    }
+    .outgoing-memo-right-compact-section button {
+        padding: 0 10px !important;
+        justify-content: center !important;
+        gap: 0 !important;
+    }
+    .outgoing-memo-right-compact-section .personal-memo-history-button {
+        gap: 4px !important;
+        padding: 0 8px !important;
+    }
+    .outgoing-memo-bar {
+        padding: 0 16px !important;
+        gap: 12px !important;
+    }
+    .outgoing-memo-left-section {
+        gap: 10px !important;
+    }
+    .outgoing-memo-left-row {
+        gap: 8px !important;
+    }
+}
+
 .personal-memo-history-button {
     background: rgba(64, 169, 255, 0.08);
     color: var(--primary);
