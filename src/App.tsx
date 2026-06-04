@@ -1047,6 +1047,7 @@ const App: React.FC = () => {
                 <div className="outgoing-memo-right-compact-section" style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: '8px', alignItems: 'center' }}>
                     <button
                         className="personal-memo-history-button"
+                        title="個人メモ履歴"
                         style={{ 
                             height: '32px', 
                             padding: '0 14px', 
@@ -1075,6 +1076,7 @@ const App: React.FC = () => {
                     <button
                         className="dashboard-trigger-button"
                         onClick={openDashboard}
+                        title="集計ダッシュボード"
                         style={{
                             height: '32px',
                             padding: '0 14px',
@@ -1102,6 +1104,7 @@ const App: React.FC = () => {
                     <button
                         className="manual-trigger-button"
                         onClick={() => window.open('/user_manual.html', '_blank')}
+                        title="操作マニュアル"
                         style={{
                             height: '32px',
                             padding: '0 14px',
