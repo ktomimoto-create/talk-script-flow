@@ -110,6 +110,36 @@ export const getCallLogMetadata = (nodeId: string) => {
     return { callerCategory, destination };
 };
 
+export const mapNodeLabelToCategory = (label: string): string | null => {
+    if (!label) return null;
+    const cleanLabel = label.trim();
+    if (cleanLabel.includes('架電の折り返し')) {
+        return '📞 架電の折り返し';
+    }
+    if (cleanLabel.includes('現地作業') || cleanLabel.includes('現場作業時の報告')) {
+        return '🛠️ 現地作業に関する連絡';
+    }
+    if (cleanLabel.includes('メンテナンス日') || cleanLabel.includes('定期点検対応結果') || cleanLabel.includes('報告書')) {
+        return '📋 点検・メンテナンス関連';
+    }
+    if (cleanLabel.includes('連動日の確認') || cleanLabel.includes('設置日の確認') || cleanLabel.includes('現場状況の確認')) {
+        return '🏗️ 工事・設置・連動日の確認';
+    }
+    if (cleanLabel.includes('不具合通報') || cleanLabel.includes('利用方法/不具合通報') || cleanLabel.includes('不具合の通報')) {
+        return '⚠️ 不具合の通報';
+    }
+    if (cleanLabel.includes('登録方法')) {
+        return '🔑 登録方法の問い合わせ';
+    }
+    if (cleanLabel.includes('対応結果') || cleanLabel.includes('障害対応結果')) {
+        return '💬 対応・障害結果の問い合わせ';
+    }
+    if (cleanLabel.includes('契約内容')) {
+        return '📄 契約内容の確認';
+    }
+    return null;
+};
+
 // ログデータから統計を集計するヘルパー関数
 export type DashboardStats = {
     totalCalls: number;
@@ -148,7 +178,12 @@ export const calculateStats = (logs: CallLog[], period: 'today' | 'week' | 'mont
         const opKey = l.operator_name || l.operator_email || '不明なオペレーター';
         opMap[opKey] = (opMap[opKey] || 0) + 1;
 
-        if (l.node_label) nodeMap[l.node_label] = (nodeMap[l.node_label] || 0) + 1;
+        if (l.node_label) {
+            const category = mapNodeLabelToCategory(l.node_label);
+            if (category) {
+                nodeMap[category] = (nodeMap[category] || 0) + 1;
+            }
+        }
     });
 
     const sortByCount = (map: Record<string, number>) => {
@@ -166,7 +201,7 @@ export const calculateStats = (logs: CallLog[], period: 'today' | 'week' | 'mont
         byCaller: sortByCount(callerMap),
         byDestination: sortByCount(destMap),
         byOperator: Object.entries(opMap).map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count),
-        byNode: Object.entries(nodeMap).map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count).slice(0, 10),
+        byNode: Object.entries(nodeMap).map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count),
     };
 };
 
@@ -614,8 +649,11 @@ const App: React.FC = () => {
             // 宛先は nextNodeId から特定
             const { destination } = getCallLogMetadata(nextNodeId);
             
+            // 直前のアクティブノードのテキストを用件名とする（完了画面タイトルではなく具体的な用件を記録）
+            const lastNodeText = scriptData.find(n => n.id === currentNodeId)?.text || nextNode.text;
+            
             // 自動的に受電統計ログを記録
-            saveCallLog(callerCategory, destination, nextNodeId, nextNode.text);
+            saveCallLog(callerCategory, destination, nextNodeId, lastNodeText);
         }
 
         if (currentNodeId === 'juden') {
@@ -831,14 +869,16 @@ const App: React.FC = () => {
                         </button>
                     ))}
                 </div>
-                <div className="call-complete-section">
-                    <button
-                        className="call-complete-button"
-                        onClick={() => handleCallComplete(node.id, node.text)}
-                    >
-                        対応完了として記録
-                    </button>
-                </div>
+                {node.id.startsWith('bottom-') && (
+                    <div className="call-complete-section">
+                        <button
+                            className="call-complete-button"
+                            onClick={() => handleCallComplete(node.id, node.text)}
+                        >
+                            対応完了として記録
+                        </button>
+                    </div>
+                )}
             </div>
         );
     };

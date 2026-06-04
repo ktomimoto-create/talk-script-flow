@@ -1423,6 +1423,36 @@
             return { callerCategory, destination };
         };
 
+        const mapNodeLabelToCategory = (label) => {
+            if (!label) return null;
+            const cleanLabel = label.trim();
+            if (cleanLabel.includes('架電の折り返し')) {
+                return '📞 架電の折り返し';
+            }
+            if (cleanLabel.includes('現地作業') || cleanLabel.includes('現場作業時の報告')) {
+                return '🛠️ 現地作業に関する連絡';
+            }
+            if (cleanLabel.includes('メンテナンス日') || cleanLabel.includes('定期点検対応結果') || cleanLabel.includes('報告書')) {
+                return '📋 点検・メンテナンス関連';
+            }
+            if (cleanLabel.includes('連動日の確認') || cleanLabel.includes('設置日の確認') || cleanLabel.includes('現場状況の確認')) {
+                return '🏗️ 工事・設置・連動日の確認';
+            }
+            if (cleanLabel.includes('不具合通報') || cleanLabel.includes('利用方法/不具合通報') || cleanLabel.includes('不具合の通報')) {
+                return '⚠️ 不具合の通報';
+            }
+            if (cleanLabel.includes('登録方法')) {
+                return '🔑 登録方法の問い合わせ';
+            }
+            if (cleanLabel.includes('対応結果') || cleanLabel.includes('障害対応結果')) {
+                return '💬 対応・障害結果の問い合わせ';
+            }
+            if (cleanLabel.includes('契約内容')) {
+                return '📄 契約内容の確認';
+            }
+            return null;
+        };
+
         const calculateStats = (logs, period) => {
             const now = new Date();
             let filteredLogs = logs;
@@ -1452,7 +1482,12 @@
                 const opKey = l.operator_name || '不明なオペレーター';
                 opMap[opKey] = (opMap[opKey] || 0) + 1;
 
-                if (l.node_label) nodeMap[l.node_label] = (nodeMap[l.node_label] || 0) + 1;
+                if (l.node_label) {
+                    const category = mapNodeLabelToCategory(l.node_label);
+                    if (category) {
+                        nodeMap[category] = (nodeMap[category] || 0) + 1;
+                    }
+                }
             });
 
             const sortByCount = (map) => {
@@ -1470,7 +1505,7 @@
                 byCaller: sortByCount(callerMap),
                 byDestination: sortByCount(destMap),
                 byOperator: Object.entries(opMap).map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count),
-                byNode: Object.entries(nodeMap).map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count).slice(0, 10),
+                byNode: Object.entries(nodeMap).map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count),
             };
         };
 
@@ -1630,7 +1665,8 @@
                 if (nextNode && nextNode.isFinal) {
                     const { callerCategory } = getCallLogMetadata(currentNodeId);
                     const { destination } = getCallLogMetadata(id);
-                    saveCallLog(callerCategory, destination, id, nextNode.text);
+                    const lastNodeText = scriptData.find(n => n.id === currentNodeId)?.text || nextNode.text;
+                    saveCallLog(callerCategory, destination, id, lastNodeText);
                 }
                 window.history.pushState({ id }, '', `#${id}`);
                 setCurrentNodeId(id);
@@ -1776,7 +1812,7 @@
                                 ))}
                             </div>
                         )}
-                        {currentNodeId !== 'juden' && (
+                        {currentNodeId !== 'juden' && currentNodeId.startsWith('bottom-') && (
                             <div className="call-complete-section">
                                 <button
                                     className="call-complete-button"
