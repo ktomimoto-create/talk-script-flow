@@ -5,6 +5,9 @@
   - 東京試行運用（第1ステップ、2ヶ月試行）から大阪オフィス展開（第2ステップ、チャネル作成含む）、そして将来のデータ活用・IVR化（第3ステップ）までのマイルストーンを定義しました。
   - 受電統計ダッシュボードの表示データについて、上長や一般オペレーター、管理者に応じた「全体」「課内」「個人」の3段階の閲覧権限制御設計を策定し、ドキュメントにまとめました。
   - [roadmap_and_milestones.md](file:///C:/Users/000644/.gemini/antigravity/brain/2120ce92-fe2c-4200-a8f2-189204bfec67/roadmap_and_milestones.md) を新規作成し、仕様書 [specifications.md](file:///c:/Users/000644/dev/talk-script-flow/docs/specifications.md) に将来のロードマップセクションを追記しました。
+- **上長説明用プレゼン資料（PowerPoint等）構成案の策定**:
+  - 社内説明（上長や関係部署）でのプレゼンテーション用に、ロードマップ、運用ルール（フォロー体制）、ダッシュボードの閲覧権限設計をまとめたスライド構成案（台本ナレーション付き、全6スライド）を策定しました。
+  - スライド構成をまとめた [presentation_draft.md](file:///C:/Users/000644/.gemini/antigravity/brain/2120ce92-fe2c-4200-a8f2-189204bfec67/presentation_draft.md) を新規作成し、仕様書 [specifications.md](file:///c:/Users/000644/dev/talk-script-flow/docs/specifications.md) を更新しました。
 
 ## [2026-06-04]
 - **用件別受電件数の名寄せ集計（8カテゴリ統合）とノイズ排除**:
