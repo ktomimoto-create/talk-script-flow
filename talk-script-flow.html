@@ -10,9 +10,12 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=BIZ+UDGothic:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* 数値用の書体。BIZ UDPゴシックは数字の幅がそろわないため等幅版の BIZ UDゴシックを使う */
+            --font-num: "BIZ UDGothic", "BIZ UDゴシック", sans-serif;
+
             --primary: #40a9ff;
             --success: #73d13d;
             --warning: #faad14;
@@ -135,7 +138,7 @@
         }
 
         body {
-            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            font-family: "BIZ UDPGothic", "BIZ UDPゴシック", sans-serif;
             background: var(--bg-gradient);
             color: var(--text);
             min-height: 100vh;
@@ -143,6 +146,35 @@
             justify-content: center;
             align-items: center;
             overflow-x: hidden;
+        }
+
+        /* フォーム部品とコードは UA 既定の書体が残るので本文の書体を継承させる */
+        button,
+        input,
+        select,
+        textarea,
+        code {
+            font-family: inherit;
+        }
+
+        /* 行高 normal のままだと BIZ UDPゴシックではボタン・入力欄が従来より低くなるため固定する */
+        button {
+            line-height: 1.4;
+        }
+
+        input,
+        select,
+        textarea {
+            line-height: 1.2;
+        }
+
+        /* 数値（件数・%・電話番号）のセル */
+        .stats-summary-card .summary-val,
+        .row-val,
+        .rank-val,
+        .history-phone {
+            font-family: var(--font-num);
+            font-variant-numeric: tabular-nums;
         }
 
         #root {
@@ -172,7 +204,7 @@
             font-size: 1.5rem;
             line-height: 1.6;
             margin-bottom: 24px;
-            font-weight: 500;
+            font-weight: 400;
         }
 
         .sub-text {
@@ -214,7 +246,7 @@
             min-width: 180px;
             text-align: center;
             font-size: 1.1rem;
-            font-weight: 600;
+            font-weight: 700;
             position: relative;
             cursor: pointer;
             transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
@@ -321,7 +353,7 @@
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             border-color: var(--sub-link-hover-border);
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .branches {
@@ -417,7 +449,7 @@
             border: none;
             padding: 10px 20px;
             border-radius: 10px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
@@ -450,7 +482,7 @@
             border: 1px solid var(--dashboard-trigger-border);
             padding: 10px 16px;
             border-radius: 10px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
@@ -591,7 +623,7 @@
         .history-caller {
             color: var(--primary);
             margin-left: 4px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .history-item .delete-button {
@@ -725,7 +757,7 @@
             padding: 6px 14px;
             border-radius: 6px;
             font-size: 0.8rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -788,7 +820,6 @@
             font-size: 2.5rem;
             font-weight: 700;
             color: var(--primary);
-            font-family: 'Outfit', sans-serif;
             line-height: 1;
         }
 
@@ -796,7 +827,7 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
             margin-top: 6px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .dashboard-grid {
@@ -851,7 +882,7 @@
 
         .row-label {
             color: var(--text);
-            font-weight: 500;
+            font-weight: 400;
         }
 
         .row-val {
@@ -923,7 +954,7 @@
 
         .rank-val {
             color: var(--text-secondary);
-            font-weight: 600;
+            font-weight: 700;
         }
 
         /* ダッシュボードボタンホバー効果 */
@@ -1756,7 +1787,7 @@
                                             const parts = p.split('→');
                                             content = (
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                                    <div style={{ fontWeight: '500', color: 'var(--text)', whiteSpace: 'pre-wrap' }}>{parts[0].trim()}</div>
+                                                    <div style={{ fontWeight: '400', color: 'var(--text)', whiteSpace: 'pre-wrap' }}>{parts[0].trim()}</div>
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                                                         {parts.slice(1).map((part, idx) => (
                                                             <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', color: 'var(--text-secondary)', paddingLeft: '12px', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
@@ -1771,7 +1802,7 @@
                                             const parts = p.split(/　{2,}/);
                                             content = (
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                                    <div style={{ fontWeight: '500', color: 'var(--text)', whiteSpace: 'pre-wrap' }}>{parts[0].trim()}</div>
+                                                    <div style={{ fontWeight: '400', color: 'var(--text)', whiteSpace: 'pre-wrap' }}>{parts[0].trim()}</div>
                                                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', color: 'var(--text-secondary)', paddingLeft: '12px', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
                                                         <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>→</span>
                                                         <div style={{ flex: 1 }}>{parts.slice(1).join(' ').trim()}</div>
@@ -1916,7 +1947,7 @@
                                     height: '32px',
                                     padding: '0 14px',
                                     fontSize: '0.8rem',
-                                    fontWeight: 600,
+                                    fontWeight: 700,
                                     backgroundColor: 'var(--dashboard-trigger-bg)',
                                     border: '1px solid var(--dashboard-trigger-border)',
                                     borderRadius: '10px',
@@ -1997,7 +2028,7 @@
                                                 backgroundColor: 'rgba(255, 77, 77, 0.1)',
                                                 color: '#ff4d4d',
                                                 fontSize: '0.8rem',
-                                                fontWeight: 600,
+                                                fontWeight: 700,
                                                 cursor: 'pointer',
                                                 transition: 'all 0.2s',
                                                 display: 'flex',

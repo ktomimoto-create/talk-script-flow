@@ -942,7 +942,7 @@ const App: React.FC = () => {
                         )}
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                        <span className="bar-profile-name" style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)', lineHeight: 1.1 }}>
+                        <span className="bar-profile-name" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text)', lineHeight: 1.1 }}>
                             {ownerDisplayName}
                         </span>
                         <span style={{
@@ -1092,7 +1092,7 @@ const App: React.FC = () => {
                             height: '32px', 
                             padding: '0 14px', 
                             fontSize: '0.8rem', 
-                            fontWeight: 600,
+                            fontWeight: 700,
                             whiteSpace: 'nowrap',
                             display: 'flex',
                             alignItems: 'center',
@@ -1121,7 +1121,7 @@ const App: React.FC = () => {
                             height: '32px',
                             padding: '0 14px',
                             fontSize: '0.8rem',
-                            fontWeight: 600,
+                            fontWeight: 700,
                             backgroundColor: 'var(--dashboard-trigger-bg)',
                             border: '1px solid var(--dashboard-trigger-border)',
                             borderRadius: '10px',
@@ -1149,7 +1149,7 @@ const App: React.FC = () => {
                             height: '32px',
                             padding: '0 14px',
                             fontSize: '0.8rem',
-                            fontWeight: 600,
+                            fontWeight: 700,
                             backgroundColor: 'var(--dashboard-trigger-bg)',
                             border: '1px solid var(--dashboard-trigger-border)',
                             borderRadius: '10px',
@@ -1315,7 +1315,7 @@ const App: React.FC = () => {
                                 </div>
                             </div>
                             <span className="memo-detail-time">
-                                保存日時: {new Date(activeDetailMemo.created_at).toLocaleString()}
+                                保存日時: <span className="num">{new Date(activeDetailMemo.created_at).toLocaleString()}</span>
                             </span>
                         </div>
                         <div className="memo-detail-body">
@@ -1413,7 +1413,7 @@ const App: React.FC = () => {
                                         backgroundColor: 'rgba(255, 77, 77, 0.1)',
                                         color: '#ff4d4d',
                                         fontSize: '0.8rem',
-                                        fontWeight: 600,
+                                        fontWeight: 700,
                                         cursor: 'pointer',
                                         transition: 'all 0.2s',
                                         display: 'flex',
@@ -1468,7 +1468,10 @@ const App: React.FC = () => {
                                                         <div key={item.label} className="stats-row-item">
                                                             <div className="row-info">
                                                                 <span className="row-label">{item.label}</span>
-                                                                <span className="row-val">{item.count}件 ({item.percentage}%)</span>
+                                                                <span className="row-val">
+                                                                    <span className="row-count">{item.count}件</span>
+                                                                    <span className="row-pct">({item.percentage}%)</span>
+                                                                </span>
                                                             </div>
                                                             <div className="progress-bar-bg">
                                                                 <div className="progress-bar-fill" style={{ width: `${item.percentage}%`, backgroundColor: '#40a9ff' }}></div>
@@ -1490,7 +1493,10 @@ const App: React.FC = () => {
                                                         <div key={item.label} className="stats-row-item">
                                                             <div className="row-info">
                                                                 <span className="row-label">{item.label}</span>
-                                                                <span className="row-val">{item.count}件 ({item.percentage}%)</span>
+                                                                <span className="row-val">
+                                                                    <span className="row-count">{item.count}件</span>
+                                                                    <span className="row-pct">({item.percentage}%)</span>
+                                                                </span>
                                                             </div>
                                                             <div className="progress-bar-bg">
                                                                 <div className="progress-bar-fill" style={{ width: `${item.percentage}%`, backgroundColor: '#52c41a' }}></div>
