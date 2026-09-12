@@ -1,4 +1,8 @@
 :root {
+  /* 数値用の書体。BIZ UDPゴシックは数字の幅がそろわない（「1」だけ狭く tabular-nums も効かない）ため、
+     同じファミリーの等幅版 BIZ UDゴシック（数字はすべて 0.5em）を使う */
+  --font-num: "BIZ UDGothic", "BIZ UDゴシック", sans-serif;
+
   --primary: #38bdf8;       /* sleeker cyan */
   --success: #4ade80;       /* modern bright green */
   --warning: #fbbf24;       /* modern warm yellow */
@@ -132,8 +136,9 @@ html[data-theme="light"] {
   padding: 0;
 }
 
+/* 書体は BIZ UDPゴシック 1 ファミリー。階層はサイズと太さ（400 / 700）で作る */
 body {
-  font-family: 'Outfit', 'Inter', 'Meiryo', 'BIZ UDPGothic', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "BIZ UDPGothic", "BIZ UDPゴシック", sans-serif;
   background: var(--bg-gradient);
   color: var(--text);
   min-height: 100vh;
@@ -144,6 +149,39 @@ body {
   position: relative;
   z-index: 1;
   line-height: 1.6;
+}
+
+/* フォーム部品とコードは UA 既定の書体が残るので本文の書体を継承させる */
+button,
+input,
+select,
+textarea,
+code {
+  font-family: inherit;
+}
+
+/* 行高は normal のままにしない（設計基準 3.1）。BIZ UDPゴシックの normal は約 1.0em で、
+   ボタン・入力欄が移行前より 3〜7px 低くなるため。select を使う場合は Chrome が line-height を
+   無視するので min-height:calc(1.4em + 上下 padding + 上下 border) を付ける */
+button,
+input,
+select,
+textarea {
+  line-height: 1.4;
+}
+
+/* 数値（件数・%・日付・時刻・電話番号）のセル */
+.num,
+.stats-summary-card .summary-val,
+.row-count,
+.row-pct,
+.rank-val,
+.history-phone,
+.history-meta-time,
+.memo-item-time,
+.personal-memo-time {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Liquid Background Circles */
@@ -214,7 +252,7 @@ html[data-theme="light"] .card {
   font-size: 1.5rem;
   line-height: 1.6;
   margin-bottom: 24px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .sub-text {
@@ -259,7 +297,7 @@ html[data-theme="light"] .card {
 }
 
 .point-question {
-  font-weight: 500;
+  font-weight: 400;
   color: var(--text);
 }
 
@@ -421,7 +459,7 @@ html[data-theme="light"] .card {
   min-width: 140px;
   text-align: center;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 400;
   position: relative;
   transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   color: var(--node-text);
@@ -657,7 +695,7 @@ html[data-theme="light"] .visual-flow-sub-link:hover {
 
 .memo-label {
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-secondary);
 }
 
@@ -774,14 +812,14 @@ html[data-theme="light"] .visual-flow-sub-link:hover {
     border: 1px solid var(--caller-match-badge-border);
     color: var(--caller-match-badge-text);
     font-size: 0.82rem;
-    font-weight: 600;
+    font-weight: 700;
     white-space: nowrap;
     line-height: 1;
 }
 
 .outgoing-memo-caller-fixed strong {
     color: var(--caller-match-badge-strong);
-    font-weight: 800;
+    font-weight: 700;
 }
 
 .outgoing-memo-save-button {
@@ -834,7 +872,7 @@ html[data-theme="light"] .visual-flow-sub-link:hover {
     border: none;
     padding: 10px 18px;
     border-radius: 10px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: filter 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
@@ -856,7 +894,7 @@ html[data-theme="light"] .visual-flow-sub-link:hover {
     border: 1px solid var(--glass-border);
     padding: 10px 16px;
     border-radius: 10px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
@@ -911,7 +949,7 @@ html[data-theme="light"] .visual-flow-sub-link:hover {
 
 .personal-memo-node {
     color: var(--primary);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .personal-memo-body > div {
@@ -977,7 +1015,7 @@ html[data-theme="light"] .visual-flow-sub-link:hover {
     height: 38px;
     padding: 0 16px;
     border-radius: 10px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s;
@@ -1319,7 +1357,7 @@ html[data-theme="light"] .history-header .close-button:hover {
     font-size: 0.65rem;
     padding: 2px 6px;
     border-radius: 6px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .history-actions {
@@ -1336,7 +1374,7 @@ html[data-theme="light"] .history-header .close-button:hover {
     padding: 4px 10px;
     border-radius: 6px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.15s;
 }
@@ -1365,7 +1403,7 @@ html[data-theme="light"] .history-header .close-button:hover {
 .history-caller {
     color: var(--primary);
     margin-left: 4px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .history-site {
@@ -1516,16 +1554,23 @@ html[data-theme="light"] .history-header .close-button:hover {
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.7rem;
-    font-weight: 600;
-    white-space: nowrap;
+    font-weight: 700;
+    /* 長いノード名（node.text）でタイトルが潰れないよう幅に上限を付ける。
+       ノード名・物件名は識別情報なので省略せず折り返す */
+    flex: 0 1 auto;
+    max-width: 45%;
+    min-width: 0;
+    overflow-wrap: break-word;
+    line-break: strict;
 }
 
 .memo-item-title {
+    flex: 1 1 0;
+    min-width: 0;
     color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-weight: 500;
+    overflow-wrap: break-word;
+    line-break: strict;
+    font-weight: 400;
 }
 
 .memo-item-time {
@@ -1595,7 +1640,7 @@ html[data-theme="light"] .history-header .close-button:hover {
     font-size: 0.75rem;
     color: var(--primary);
     margin-top: 4px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .memo-detail-time {
@@ -1618,7 +1663,7 @@ html[data-theme="light"] .history-header .close-button:hover {
 
 .memo-detail-label {
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-secondary);
 }
 
@@ -1651,7 +1696,7 @@ html[data-theme="light"] .history-header .close-button:hover {
     border: 1px solid var(--glass-border);
     padding: 10px 20px;
     border-radius: 10px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.15s;
@@ -1667,7 +1712,7 @@ html[data-theme="light"] .history-header .close-button:hover {
     border: none;
     padding: 10px 20px;
     border-radius: 10px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.15s;
@@ -1752,7 +1797,7 @@ html[data-theme="light"] .history-header .close-button:hover {
     padding: 6px 10px;
     border-radius: 6px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
@@ -1821,7 +1866,6 @@ html[data-theme="light"] .dashboard-header .close-button:hover {
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--primary);
-    font-family: 'Outfit', sans-serif;
     line-height: 1;
 }
 
@@ -1829,7 +1873,7 @@ html[data-theme="light"] .dashboard-header .close-button:hover {
     font-size: 0.85rem;
     color: var(--text-secondary);
     margin-top: 6px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .dashboard-grid {
@@ -1884,11 +1928,17 @@ html[data-theme="light"] .dashboard-header .close-button:hover {
 
 .row-label {
     color: var(--text);
-    font-weight: 500;
+    font-weight: 400;
 }
 
+/* 件数と % を別の列に分けて右揃え。% 列は最長の「(100%)」= 3em（BIZ UDゴシックの数字・記号は 0.5em）で固定 */
 .row-val {
     color: var(--text-secondary);
+    display: inline-grid;
+    grid-template-columns: auto 3em;
+    column-gap: 6px;
+    text-align: right;
+    white-space: nowrap;
 }
 
 .progress-bar-bg {
@@ -1939,7 +1989,7 @@ html[data-theme="light"] .dashboard-header .close-button:hover {
 
 .rank-val {
     color: var(--text-secondary);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 /* ダッシュボードボタンホバー効果 */
@@ -1999,7 +2049,7 @@ html[data-theme="light"] .dashboard-header .close-button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 0.8rem;
   border: 1.5px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -2193,7 +2243,7 @@ body:not([data-theme="light"]) .sub-text,
 body:not([data-theme="light"]) .flow-hint,
 body:not([data-theme="light"]) .memo-label {
   color: var(--text-secondary) !important;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.02em;
 }
 
