@@ -160,16 +160,14 @@ code {
   font-family: inherit;
 }
 
-/* 行高 normal のままだと BIZ UDPゴシックではボタン・入力欄が従来より 3〜7px 低くなる
-   （従来はボタン=メイリオ、入力欄=Outfit の行高で高さが決まっていた）。実測で従来の高さに合わせる */
-button {
-  line-height: 1.4;
-}
-
+/* 行高は normal のままにしない（設計基準 3.1）。BIZ UDPゴシックの normal は約 1.0em で、
+   ボタン・入力欄が移行前より 3〜7px 低くなるため。select を使う場合は Chrome が line-height を
+   無視するので min-height:calc(1.4em + 上下 padding + 上下 border) を付ける */
+button,
 input,
 select,
 textarea {
-  line-height: 1.2;
+  line-height: 1.4;
 }
 
 /* 数値（件数・%・日付・時刻・電話番号）のセル */

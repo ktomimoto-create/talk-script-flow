@@ -42,6 +42,11 @@
             font-family: inherit;
         }
 
+        /* 行高 normal のままだと BIZ UDPゴシックでは「閉じる」ボタンが 37px→32px に縮むため明示する */
+        button {
+            line-height: 1.4;
+        }
+
         /* 太字は 700 のみ（太字の中の strong が 900 にならないようにする） */
         strong,
         b {

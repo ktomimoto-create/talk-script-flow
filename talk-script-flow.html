@@ -157,15 +157,12 @@
             font-family: inherit;
         }
 
-        /* 行高 normal のままだと BIZ UDPゴシックではボタン・入力欄が従来より低くなるため固定する */
-        button {
-            line-height: 1.4;
-        }
-
+        /* 行高は normal のままにしない（設計基準 3.1）。BIZ UDPゴシックの normal は約 1.0em で移行前より低くなるため */
+        button,
         input,
         select,
         textarea {
-            line-height: 1.2;
+            line-height: 1.4;
         }
 
         /* 数値（件数・%・電話番号）のセル */
